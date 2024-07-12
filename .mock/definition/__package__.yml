@@ -1,0 +1,1342 @@
+types:
+  UnauthorizedErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  UnauthorizedErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: UnauthorizedErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  UnauthorizedErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: UnauthorizedErrorBodyError
+        docs: Detailed information about the error that occurred.
+  InternalServerErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  InternalServerErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: InternalServerErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  InternalServerErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: InternalServerErrorBodyError
+        docs: Detailed information about the error that occurred.
+  CreateIndexRequestMetric:
+    docs: >-
+      The distance metric to be used for similarity search. You can use
+      'euclidean', 'cosine', or 'dotproduct'.
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+  BadRequestErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  BadRequestErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: BadRequestErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  BadRequestErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: BadRequestErrorBodyError
+        docs: Detailed information about the error that occurred.
+  ForbiddenErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  ForbiddenErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: ForbiddenErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  ForbiddenErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: ForbiddenErrorBodyError
+        docs: Detailed information about the error that occurred.
+  NotFoundErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  NotFoundErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: NotFoundErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  NotFoundErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: NotFoundErrorBodyError
+        docs: Detailed information about the error that occurred.
+  ConflictErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  ConflictErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: ConflictErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  ConflictErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: ConflictErrorBodyError
+        docs: Detailed information about the error that occurred.
+  UnprocessableEntityErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  UnprocessableEntityErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: UnprocessableEntityErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  UnprocessableEntityErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: UnprocessableEntityErrorBodyError
+        docs: Detailed information about the error that occurred.
+  PreconditionFailedErrorBodyErrorCode:
+    enum:
+      - OK
+      - UNKNOWN
+      - INVALID_ARGUMENT
+      - DEADLINE_EXCEEDED
+      - QUOTA_EXCEEDED
+      - NOT_FOUND
+      - ALREADY_EXISTS
+      - PERMISSION_DENIED
+      - UNAUTHENTICATED
+      - RESOURCE_EXHAUSTED
+      - FAILED_PRECONDITION
+      - ABORTED
+      - OUT_OF_RANGE
+      - UNIMPLEMENTED
+      - INTERNAL
+      - UNAVAILABLE
+      - DATA_LOSS
+      - FORBIDDEN
+  PreconditionFailedErrorBodyError:
+    docs: Detailed information about the error that occurred.
+    properties:
+      code: PreconditionFailedErrorBodyErrorCode
+      message: string
+      details:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional information about the error. This field is not guaranteed
+          to be present.
+  PreconditionFailedErrorBody:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: PreconditionFailedErrorBodyError
+        docs: Detailed information about the error that occurred.
+  ConfigureIndexRequestSpecPod:
+    properties:
+      replicas:
+        type: optional<integer>
+        default: 1
+        validation:
+          min: 1
+        docs: >-
+          The number of replicas. Replicas duplicate your index. They provide
+          higher availability and throughput. Replicas can be scaled up or down
+          as your needs change.
+      pod_type:
+        type: optional<string>
+        default: p1.x1
+        docs: >-
+          The type of pod to use. One of `s1`, `p1`, or `p2` appended with `.`
+          and one of `x1`, `x2`, `x4`, or `x8`.
+  ConfigureIndexRequestSpec:
+    properties:
+      pod: ConfigureIndexRequestSpecPod
+  ServerlessSpecCloud:
+    docs: >-
+      The public cloud where you would like your index hosted. Serverless
+      indexes can be hosted only in AWS at this time.
+    enum:
+      - gcp
+      - aws
+      - azure
+  ServerlessSpec:
+    docs: Configuration needed to deploy a serverless index.
+    examples:
+      - name: Default
+        value:
+          cloud: aws
+          region: us-east-1
+    properties:
+      cloud:
+        type: ServerlessSpecCloud
+        docs: >-
+          The public cloud where you would like your index hosted. Serverless
+          indexes can be hosted only in AWS at this time.
+      region:
+        type: string
+        docs: >-
+          The region where you would like your index to be created.  Serverless
+          indexes can be created only in the us-east-1,us-west-2, and eu-west-1
+          regions of AWS at this time.
+  Embedding:
+    docs: Embedding of a single input
+    examples:
+      - name: Default
+        value:
+          values:
+            - 0.1
+            - 0.2
+            - 0.3
+    properties:
+      values:
+        type: optional<list<double>>
+        docs: The embedding values.
+  IndexSpec:
+    examples:
+      - name: Default
+        value:
+          serverless:
+            cloud: aws
+            region: us-east-1
+    type: unknown
+  CollectionModelStatus:
+    docs: The status of the collection.
+    enum:
+      - Initializing
+      - Ready
+      - Terminating
+  CollectionModel:
+    docs: >-
+      The CollectionModel describes the configuration and status of a Pinecone
+      collection.
+    examples:
+      - name: Default
+        value:
+          name: example-collection
+          size: 10000000
+          status: Ready
+          dimension: 1536
+          vector_count: 120000
+          environment: us-east1-gcp
+    properties:
+      name:
+        type: string
+        docs: The name of the collection.
+      size:
+        type: optional<integer>
+        docs: The size of the collection in bytes.
+      status:
+        type: CollectionModelStatus
+        docs: The status of the collection.
+      dimension:
+        type: optional<integer>
+        validation:
+          min: 1
+          max: 2000
+        docs: >-
+          The dimension of the vectors stored in each record held in the
+          collection.
+      vector_count:
+        type: optional<integer>
+        docs: The number of records stored in the collection.
+      environment:
+        type: string
+        docs: The environment where the collection is hosted.
+  IndexList:
+    docs: The list of indexes that exist in the project.
+    properties:
+      indexes: optional<list<Index>>
+  IndexModelMetric:
+    docs: >-
+      The distance metric to be used for similarity search. You can use
+      'euclidean', 'cosine', or 'dotproduct'.
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+  IndexModelSpec:
+    examples:
+      - name: Default
+        value:
+          pod:
+            environment: us-east1-gcp
+            replicas: 1
+            shards: 1
+            pod_type: p1.x1
+            pods: 1
+            metadata_config:
+              indexed:
+                - genre
+                - title
+                - rating
+          serverless:
+            cloud: aws
+            region: us-east-1
+    properties:
+      pod: optional<PodSpec>
+      serverless: optional<ServerlessSpec>
+  IndexModelStatusState:
+    enum:
+      - Initializing
+      - InitializationFailed
+      - ScalingUp
+      - ScalingDown
+      - ScalingUpPodSize
+      - ScalingDownPodSize
+      - Terminating
+      - Ready
+  IndexModelStatus:
+    properties:
+      ready: boolean
+      state: IndexModelStatusState
+  Index:
+    docs: The IndexModel describes the configuration and status of a Pinecone index.
+    properties:
+      name:
+        type: string
+        validation:
+          minLength: 1
+          maxLength: 45
+        docs: >
+          The name of the index. Resource name must be 1-45 characters long,
+          start and end with an alphanumeric character, and consist only of
+          lower case alphanumeric characters or '-'.
+      dimension:
+        type: integer
+        validation:
+          min: 1
+          max: 20000
+        docs: The dimensions of the vectors to be inserted in the index.
+      metric:
+        type: IndexModelMetric
+        docs: >-
+          The distance metric to be used for similarity search. You can use
+          'euclidean', 'cosine', or 'dotproduct'.
+      host:
+        type: string
+        docs: The URL address where the index is hosted.
+      spec: IndexModelSpec
+      status: IndexModelStatus
+  CollectionList:
+    docs: The list of collections that exist in the project.
+    examples:
+      - name: Default
+        value:
+          collections:
+            - name: movie-embeddings
+              size: 10000000
+              status: Ready
+              dimension: 1536
+              vector_count: 100000
+              environment: us-east1-gcp
+            - name: product-catalog
+              size: 5000000
+              status: Initializing
+              dimension: 768
+              vector_count: 50000
+              environment: us-west1-gcp
+    properties:
+      collections: optional<list<CollectionModel>>
+  EmbeddingsListUsage:
+    docs: Usage statistics for model inference including any instruction prefixes
+    examples:
+      - name: Default
+        value:
+          total_tokens: 150
+    properties:
+      total_tokens: optional<integer>
+  EmbeddingsList:
+    docs: Embeddings generated for the input
+    examples:
+      - name: Default
+        value:
+          model: multilingual-e5-large
+          data:
+            - values:
+                - 0.1
+                - 0.2
+                - 0.3
+          usage:
+            total_tokens: 205
+    properties:
+      model: optional<string>
+      data: optional<list<Embedding>>
+      usage:
+        type: optional<EmbeddingsListUsage>
+        docs: >-
+          Usage statistics for model inference including any instruction
+          prefixes
+  PodSpecMetadataConfig:
+    docs: >-
+      Configuration for the behavior of Pinecone's internal metadata index. By
+      default, all metadata is indexed; when `metadata_config` is present, only
+      specified metadata fields are indexed. These configurations are only valid
+      for use with pod-based indexes.
+    examples:
+      - name: Default
+        value:
+          indexed:
+            - genre
+            - title
+            - release_year
+            - director
+            - actor
+    properties:
+      indexed:
+        type: optional<list<string>>
+        docs: >-
+          By default, all metadata is indexed; to change this behavior, use this
+          property to specify an array of metadata fields that should be
+          indexed.
+  PodSpec:
+    docs: Configuration needed to deploy a pod-based index.
+    examples:
+      - name: Default
+        value:
+          environment: us-east1-gcp
+          replicas: 1
+          shards: 1
+          pod_type: p1.x1
+          pods: 1
+          metadata_config:
+            indexed:
+              - genre
+              - title
+              - imdb_rating
+          source_collection: movie-embeddings
+    properties:
+      environment:
+        type: string
+        docs: The environment where the index is hosted.
+      replicas:
+        type: optional<integer>
+        default: 1
+        validation:
+          min: 1
+        docs: >-
+          The number of replicas. Replicas duplicate your index. They provide
+          higher availability and throughput. Replicas can be scaled up or down
+          as your needs change.
+      shards:
+        type: optional<integer>
+        default: 1
+        validation:
+          min: 1
+        docs: >-
+          The number of shards. Shards split your data across multiple pods so
+          you can fit more data into an index.
+      pod_type:
+        type: string
+        default: p1.x1
+        docs: >-
+          The type of pod to use. One of `s1`, `p1`, or `p2` appended with `.`
+          and one of `x1`, `x2`, `x4`, or `x8`.
+      pods:
+        type: integer
+        default: 1
+        validation:
+          min: 1
+        docs: >-
+          The number of pods to be used in the index. This should be equal to
+          `shards` x `replicas`.'
+      metadata_config:
+        type: optional<PodSpecMetadataConfig>
+        docs: >-
+          Configuration for the behavior of Pinecone's internal metadata index.
+          By default, all metadata is indexed; when `metadata_config` is
+          present, only specified metadata fields are indexed. These
+          configurations are only valid for use with pod-based indexes.
+      source_collection:
+        type: optional<string>
+        docs: The name of the collection to be used as the source for the index.
+  ServerlessIndexSpec:
+    examples:
+      - name: Default
+        value:
+          serverless:
+            cloud: aws
+            region: us-east-1
+    properties:
+      serverless: optional<ServerlessSpec>
+  PodIndexSpec:
+    examples:
+      - name: Default
+        value:
+          pod:
+            environment: us-east1-gcp
+            replicas: 2
+            shards: 1
+            pod_type: p1.x2
+            pods: 2
+            metadata_config:
+              indexed:
+                - category
+                - price
+                - brand
+            source_collection: product-catalog
+    properties:
+      pod: optional<PodSpec>
+  IndexStatus: unknown
+  IndexStatusState: unknown
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    list_indexes:
+      docs: This operation returns a list of all indexes in a project.
+      method: GET
+      display-name: List indexes
+      path: /indexes
+      auth: true
+      response:
+        docs: >-
+          This operation returns a list of all the indexes that you have
+          previously created, and which are associated with the given project
+        type: IndexList
+      errors:
+        - UnauthorizedError
+        - InternalServerError
+      examples:
+        - name: A list containing one serverless index and one pod-based index.
+          response:
+            body:
+              indexes:
+                - name: semantic-search
+                  dimension: 384
+                  metric: cosine
+                  host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+                  spec:
+                    pod:
+                      environment: us-west1-gcp
+                      replicas: 2
+                      shards: 2
+                      pod_type: p1.x1
+                      pods: 4
+                      metadata_config:
+                        indexed:
+                          - genre
+                          - title
+                          - imdb_rating
+                      source_collection: movie-embeddings
+                    serverless:
+                      cloud: gcp
+                      region: us-east-1
+                  status:
+                    ready: true
+                    state: Ready
+                - name: image-search
+                  dimension: 200
+                  metric: dotproduct
+                  host: image-search-a31f9c1.svc.us-east1-gcp.pinecone.io
+                  spec:
+                    pod:
+                      environment: us-east1-gcp
+                      replicas: 1
+                      shards: 1
+                      pod_type: p1.x1
+                      pods: 1
+                      metadata_config:
+                        indexed:
+                          - genre
+                          - title
+                          - imdb_rating
+                      source_collection: movie-embeddings
+                    serverless:
+                      cloud: aws
+                      region: us-east-1
+                  status:
+                    ready: false
+                    state: Initializing
+        - name: A list containing one serverless index.
+          response:
+            body:
+              indexes:
+                - name: movie-embeddings
+                  dimension: 1536
+                  metric: cosine
+                  host: movie-embeddings-c01b5b5.svc.us-east1-gcp.pinecone.io
+                  spec:
+                    pod:
+                      environment: us-east1-gcp
+                      replicas: 1
+                      shards: 1
+                      pod_type: p1.x1
+                      pods: 1
+                      metadata_config:
+                        indexed:
+                          - genre
+                          - title
+                          - imdb_rating
+                      source_collection: movie-embeddings
+                    serverless:
+                      cloud: aws
+                      region: us-east-1
+                  status:
+                    ready: false
+                    state: Initializing
+        - name: No indexes created yet.
+          response:
+            body:
+              indexes:
+                - name: example-index
+                  dimension: 1536
+                  metric: cosine
+                  host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+                  spec:
+                    pod:
+                      environment: us-east-1-aws
+                      replicas: 1
+                      shards: 1
+                      pod_type: p1.x1
+                      pods: 1
+                      metadata_config:
+                        indexed:
+                          - genre
+                          - title
+                          - imdb_rating
+                      source_collection: movie-embeddings
+                    serverless:
+                      cloud: gcp
+                      region: us-east-1
+                  status:
+                    ready: true
+                    state: ScalingUpPodSize
+    create_index:
+      docs: >
+        This operation deploys a Pinecone index. This is where you specify the
+        measure of similarity, the dimension of vectors to be stored in the
+        index, which cloud provider you would like to deploy with, and more.
+          
+        For guidance and examples, see [Create an
+        index](https://docs.pinecone.io/guides/indexes/create-an-index#create-a-serverless-index).
+      method: POST
+      display-name: Create an index
+      path: /indexes
+      auth: true
+      request:
+        name: CreateIndexRequest
+        body:
+          properties:
+            name:
+              type: string
+              validation:
+                minLength: 1
+                maxLength: 45
+              docs: >
+                The name of the index. Resource name must be 1-45 characters
+                long, start and end with an alphanumeric character, and consist
+                only of lower case alphanumeric characters or '-'.
+            dimension:
+              type: integer
+              validation:
+                min: 1
+                max: 20000
+              docs: The dimensions of the vectors to be inserted in the index.
+            metric:
+              type: optional<CreateIndexRequestMetric>
+              docs: >-
+                The distance metric to be used for similarity search. You can
+                use 'euclidean', 'cosine', or 'dotproduct'.
+            spec: IndexSpec
+      response:
+        docs: The index has been successfully created.
+        type: Index
+      errors:
+        - BadRequestError
+        - UnauthorizedError
+        - ForbiddenError
+        - NotFoundError
+        - ConflictError
+        - UnprocessableEntityError
+        - InternalServerError
+      examples:
+        - name: Creating a serverless index
+          request:
+            name: movie-recommendations
+            dimension: 1536
+            metric: cosine
+            spec:
+              serverless:
+                cloud: gcp
+                region: us-east1
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              spec:
+                pod:
+                  environment: us-east-1-aws
+                  replicas: 1
+                  shards: 1
+                  pod_type: p1.x1
+                  pods: 1
+                  metadata_config:
+                    indexed:
+                      - genre
+                      - title
+                      - imdb_rating
+                  source_collection: movie-embeddings
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+        - name: Creating a pod-based index
+          request:
+            name: movie-recommendations
+            dimension: 1536
+            metric: cosine
+            spec:
+              pod:
+                environment: us-east-1-aws
+                replicas: 1
+                shards: 1
+                pod_type: p1.x1
+                pods: 1
+                metadata_config:
+                  indexed:
+                    - genre
+                    - title
+                    - imdb_rating
+                source_collection: movie-embeddings
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              spec:
+                pod:
+                  environment: us-east-1-aws
+                  replicas: 1
+                  shards: 1
+                  pod_type: p1.x1
+                  pods: 1
+                  metadata_config:
+                    indexed:
+                      - genre
+                      - title
+                      - imdb_rating
+                  source_collection: movie-embeddings
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+    describe_index:
+      docs: Get a description of an index.
+      method: GET
+      display-name: Describe an index
+      path: /indexes/{index_name}
+      path-parameters:
+        index_name:
+          type: string
+          docs: The name of the index to be described.
+      auth: true
+      response:
+        docs: Configuration information and deployment status of the index.
+        type: Index
+      errors:
+        - UnauthorizedError
+        - NotFoundError
+        - InternalServerError
+      examples:
+        - name: A serverless index
+          path-parameters:
+            index_name: index_name
+          response:
+            body:
+              name: movie-recommendations
+              dimension: 1536
+              metric: cosine
+              host: movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io
+              spec:
+                pod:
+                  environment: us-east1-gcp
+                  replicas: 1
+                  shards: 1
+                  pod_type: p1.x1
+                  pods: 1
+                  metadata_config:
+                    indexed:
+                      - genre
+                      - title
+                      - imdb_rating
+                  source_collection: movie-embeddings
+                serverless:
+                  cloud: aws
+                  region: us-east-1
+              status:
+                ready: false
+                state: Initializing
+        - name: A pod-based index
+          path-parameters:
+            index_name: index_name
+          response:
+            body:
+              name: movie-recommendations
+              dimension: 1536
+              metric: cosine
+              host: movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io
+              spec:
+                pod:
+                  environment: us-east-1-aws
+                  replicas: 1
+                  shards: 1
+                  pod_type: p1.x1
+                  pods: 1
+                  metadata_config:
+                    indexed:
+                      - genre
+                      - title
+                      - imdb_rating
+                  source_collection: movie-embeddings
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: false
+                state: Initializing
+    delete_index:
+      docs: This operation deletes an existing index.
+      method: DELETE
+      display-name: Delete an index
+      path: /indexes/{index_name}
+      path-parameters:
+        index_name:
+          type: string
+          docs: The name of the index to delete.
+      auth: true
+      errors:
+        - UnauthorizedError
+        - NotFoundError
+        - PreconditionFailedError
+        - InternalServerError
+      examples:
+        - path-parameters:
+            index_name: index_name
+    configure_index:
+      docs: >-
+        This operation specifies the pod type and number of replicas for an
+        index. It applies to pod-based indexes only. Serverless indexes scale
+        automatically based on usage.
+      method: PATCH
+      display-name: Configure an index
+      path: /indexes/{index_name}
+      path-parameters:
+        index_name:
+          type: string
+          docs: The name of the index to configure.
+      auth: true
+      request:
+        name: ConfigureIndexRequest
+        body:
+          properties:
+            spec: ConfigureIndexRequestSpec
+      response:
+        docs: >-
+          The request to configure the index has been accepted. Check the  index
+          status to see when the change has been applied.
+        type: Index
+      errors:
+        - BadRequestError
+        - UnauthorizedError
+        - ForbiddenError
+        - NotFoundError
+        - UnprocessableEntityError
+        - InternalServerError
+      examples:
+        - name: Scaling both pod type and number of replicas
+          path-parameters:
+            index_name: index_name
+          request:
+            spec:
+              pod:
+                replicas: 4
+                pod_type: p1.x2
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              spec:
+                pod:
+                  environment: us-east-1-aws
+                  replicas: 1
+                  shards: 1
+                  pod_type: p1.x1
+                  pods: 1
+                  metadata_config:
+                    indexed:
+                      - genre
+                      - title
+                      - imdb_rating
+                  source_collection: movie-embeddings
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+    list_collections:
+      docs: |
+        This operation returns a list of all collections in a project.
+        Serverless indexes do not support collections.
+      method: GET
+      display-name: List collections
+      path: /collections
+      auth: true
+      response:
+        docs: >-
+          This operation returns a list of all the collections in your current
+          project.
+        type: CollectionList
+      errors:
+        - UnauthorizedError
+        - InternalServerError
+      examples:
+        - name: Multiple collections with different states
+          response:
+            body:
+              collections:
+                - name: small-collection
+                  size: 3126700
+                  status: Ready
+                  dimension: 3
+                  vector_count: 99
+                  environment: us-east1-gcp
+                - name: small-collection-new
+                  size: 3126700
+                  status: Initializing
+                  dimension: 3
+                  vector_count: 99
+                  environment: us-east1-gcp
+                - name: big-collection
+                  size: 160087040000000
+                  status: Ready
+                  dimension: 1536
+                  vector_count: 10000000
+                  environment: us-east1-gcp
+        - name: No collections created yet
+          response:
+            body:
+              collections:
+                - name: example-collection
+                  size: 10000000
+                  status: Initializing
+                  dimension: 1536
+                  vector_count: 120000
+                  environment: us-east1-gcp
+    create_collection:
+      docs: |
+        This operation creates a Pinecone collection.
+          
+        Serverless indexes do not support collections.
+      method: POST
+      display-name: Create a collection
+      path: /collections
+      auth: true
+      request:
+        name: CreateCollectionRequest
+        body:
+          properties:
+            name:
+              type: string
+              validation:
+                minLength: 1
+                maxLength: 45
+              docs: >
+                The name of the collection to be created. Resource name must be
+                1-45 characters long, start and end with an alphanumeric
+                character, and consist only of lower case alphanumeric
+                characters or '-'.
+            source:
+              type: string
+              docs: >-
+                The name of the index to be used as the source for the
+                collection.
+      response:
+        docs: The collection has been successfully created.
+        type: CollectionModel
+      errors:
+        - BadRequestError
+        - UnauthorizedError
+        - ForbiddenError
+        - ConflictError
+        - UnprocessableEntityError
+        - InternalServerError
+      examples:
+        - name: Creating a collection
+          request:
+            name: example-collection
+            source: example-source-index
+          response:
+            body:
+              name: example-collection
+              size: 10000000
+              status: Initializing
+              dimension: 1536
+              vector_count: 120000
+              environment: us-east1-gcp
+    describe_collection:
+      docs: |
+        This operation gets a description of a collection.
+        Serverless indexes do not support collections.
+      method: GET
+      display-name: Describe a collection
+      path: /collections/{collection_name}
+      path-parameters:
+        collection_name:
+          type: string
+          docs: The name of the collection to be described.
+      auth: true
+      response:
+        docs: Configuration information and status of the collection.
+        type: CollectionModel
+      errors:
+        - UnauthorizedError
+        - NotFoundError
+        - InternalServerError
+      examples:
+        - name: A small collection.
+          path-parameters:
+            collection_name: collection_name
+          response:
+            body:
+              name: tiny-collection
+              size: 3126700
+              status: Ready
+              dimension: 3
+              vector_count: 99
+              environment: us-east1-gcp
+    delete_collection:
+      docs: |
+        This operation deletes an existing collection.
+        Serverless indexes do not support collections.
+      method: DELETE
+      display-name: Delete a collection
+      path: /collections/{collection_name}
+      path-parameters:
+        collection_name:
+          type: string
+          docs: The name of the collection.
+      auth: true
+      errors:
+        - UnauthorizedError
+        - NotFoundError
+        - InternalServerError
+      examples:
+        - path-parameters:
+            collection_name: collection_name
+errors:
+  UnauthorizedError:
+    docs: 'Unauthorized. Possible causes: Invalid API key.'
+    status-code: 401
+    type: UnauthorizedErrorBody
+    examples:
+      - name: Unauthorized
+        value:
+          error:
+            code: UNAUTHENTICATED
+            message: Invalid API key.
+          status: 401
+  InternalServerError:
+    docs: Internal server error.
+    status-code: 500
+    type: InternalServerErrorBody
+    examples:
+      - name: Internal server error
+        value:
+          error:
+            code: UNKNOWN
+            message: Internal server error
+          status: 500
+  BadRequestError:
+    docs: Bad request. The request body included invalid request parameters.
+    status-code: 400
+    type: BadRequestErrorBody
+    examples:
+      - name: Validation error on metric.
+        value:
+          error:
+            code: INVALID_ARGUMENT
+            message: Metric must be cosine, euclidean, or dotproduct.
+          status: 400
+  ForbiddenError:
+    docs: You've exceed your pod quota.
+    status-code: 403
+    type: ForbiddenErrorBody
+    examples:
+      - name: Forbidden
+        value:
+          error:
+            code: FORBIDDEN
+            message: Increase your quota or upgrade to create more indexes.
+          status: 403
+      - name: Forbidden
+        value:
+          error:
+            code: FORBIDDEN
+            message: >-
+              Collection exceeds quota. Maximum allowed on your account is 1.
+              Currently have 1.
+          status: 403
+  NotFoundError:
+    docs: Unknown cloud or region when creating a serverless index.
+    status-code: 404
+    type: NotFoundErrorBody
+    examples:
+      - name: Cannot create serverless index with invalid spec.
+        value:
+          error:
+            code: NOT_FOUND
+            message: 'Resource cloud: aws region: us-west1 not found.'
+          status: 404
+      - name: Index not found
+        value:
+          error:
+            code: NOT_FOUND
+            message: Index example-index not found.
+          status: 404
+      - name: Collection not found.
+        value:
+          error:
+            code: NOT_FOUND
+            message: Collection example-collection not found.
+          status: 404
+  ConflictError:
+    docs: Index of given name already exists.
+    status-code: 409
+    type: ConflictErrorBody
+    examples:
+      - name: Index name needs to be unique.
+        value:
+          error:
+            code: ALREADY_EXISTS
+            message: Resource already exists.
+          status: 409
+      - name: Collection name needs to be unique.
+        value:
+          error:
+            code: ALREADY_EXISTS
+            message: Resource already exists.
+          status: 409
+  UnprocessableEntityError:
+    docs: Unprocessable entity. The request body could not be deserialized.
+    status-code: 422
+    type: UnprocessableEntityErrorBody
+    examples:
+      - name: Unprocessable entity
+        value:
+          error:
+            code: INVALID_ARGUMENT
+            message: >-
+              Failed to deserialize the JSON body into the target type: missing
+              field `metric` at line 1 column 16
+          status: 422
+  PreconditionFailedError:
+    docs: There is a pending collection created from this index.
+    status-code: 412
+    type: PreconditionFailedErrorBody
+    examples:
+      - name: There is a pending collection from this index.
+        value:
+          error:
+            code: FAILED_PRECONDITION
+            message: >-
+              Unable to delete an index. There are pending collections for this
+              index: ['test-collection']
+          status: 412
