@@ -1,0 +1,62 @@
+docs: Generate embeddings for input data
+imports:
+  root: control_plane.yml
+types:
+  EmbedRequestParameters:
+    docs: Model-specific parameters.
+    properties:
+      input_type:
+        type: optional<string>
+        docs: Common property used to distinguish between types of data.
+      truncate:
+        type: optional<string>
+        default: END
+        docs: >-
+          How to handle inputs longer than those supported by the model. If
+          NONE, when the input exceeds the maximum input token length an error
+          will be returned.
+  EmbedRequestInputsItem:
+    properties:
+      text: optional<string>
+service:
+  auth: false
+  display-name: Inference
+  base-path: ''
+  endpoints:
+    embed:
+      docs: Generate embeddings for input data
+      method: POST
+      display-name: Embed data
+      path: /embed
+      auth: true
+      request:
+        name: EmbedRequest
+        body:
+          properties:
+            model: string
+            parameters:
+              type: optional<EmbedRequestParameters>
+              docs: Model-specific parameters.
+            inputs: list<EmbedRequestInputsItem>
+      response:
+        docs: OK
+        type: root.EmbeddingsList
+      errors:
+        - root.BadRequestError
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - request:
+            model: multilingual-e5-large
+            inputs:
+              - {}
+          response:
+            body:
+              model: multilingual-e5-large
+              data:
+                - values:
+                    - 0.1
+                    - 0.2
+                    - 0.3
+              usage:
+                total_tokens: 205
