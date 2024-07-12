@@ -1,4 +1,4 @@
-using Pinecone.Client.ControlPlane;
+using Pinecone.Client;
 using Pinecone.Client.Core;
 
 #nullable enable
@@ -22,14 +22,17 @@ public partial class Pinecone
                 { "X-Pinecone-API-Version", "2024-07" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone.Client" },
-                { "X-Fern-SDK-Version", "0.0.56" },
+                { "X-Fern-SDK-Version", "0.0.57" },
             },
             clientOptions ?? new ClientOptions()
         );
         ControlPlane = new ControlPlaneClient(_client);
+        Inference = new InferenceClient(_client);
     }
 
     public ControlPlaneClient ControlPlane { get; init; }
+
+    public InferenceClient Inference { get; init; }
 
     private static string GetFromEnvironmentOrThrow(string env, string message)
     {

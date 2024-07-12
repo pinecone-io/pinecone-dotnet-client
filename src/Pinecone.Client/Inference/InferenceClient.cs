@@ -1,11 +1,11 @@
 using System.Net.Http;
 using System.Text.Json;
-using Pinecone.Client.ControlPlane;
+using Pinecone.Client;
 using Pinecone.Client.Core;
 
 #nullable enable
 
-namespace Pinecone.Client.ControlPlane;
+namespace Pinecone.Client;
 
 public class InferenceClient
 {

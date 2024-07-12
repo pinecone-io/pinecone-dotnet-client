@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Pinecone.Client.ControlPlane;
+using Pinecone.Client;
 
 #nullable enable
 

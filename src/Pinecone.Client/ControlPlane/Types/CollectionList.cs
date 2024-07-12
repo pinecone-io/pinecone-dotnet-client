@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using Pinecone.Client.ControlPlane;
+using Pinecone.Client;
 
 #nullable enable
 
-namespace Pinecone.Client.ControlPlane;
+namespace Pinecone.Client;
 
 public record CollectionList
 {
