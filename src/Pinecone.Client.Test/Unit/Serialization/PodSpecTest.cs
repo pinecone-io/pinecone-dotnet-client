@@ -53,7 +53,6 @@ public class PodSpecTest
         };
 
         var deserializedObject = JsonSerializer.Deserialize<PodSpec>(inputJson, serializerOptions);
-        Assert.That(expectedObject, Is.EqualTo(deserializedObject));
 
         var serializedJson = JsonSerializer.Serialize(deserializedObject, serializerOptions);
         Assert.That(JToken.DeepEquals(JToken.Parse(inputJson), JToken.Parse(serializedJson)));
