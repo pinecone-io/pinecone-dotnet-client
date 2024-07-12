@@ -50,7 +50,7 @@ var createIndexRequest = new CreateIndexRequest
     }
 };
 
-var indexModel = pinecone.ControlPlane.CreateIndexAsync(request: createIndexRequest).Result;
+var indexModel = pinecone.CreateIndexAsync(request: createIndexRequest).Result;
 ```
 
 ### Create Collection
@@ -67,9 +67,7 @@ var createCollectionRequest = new CreateCollectionRequest
     Source = "pod-index"
 };
 
-var collectionModel = pinecone
-    .ControlPlane.CreateCollectionAsync(request: createCollectionRequest)
-    .Result;
+var collectionModel = pinecone.CreateCollectionAsync(request: createCollectionRequest).Result;
 ```
 
 ### Configure Pod
@@ -88,9 +86,7 @@ var configureIndexRequest = new ConfigureIndexRequest
     }
 };
 
-var index = _client
-    .ControlPlane.ConfigureIndexAsync("pod-index", configureIndexRequest)
-    .Result;
+var index = _client.ConfigureIndexAsync("pod-index", configureIndexRequest).Result;
 ```
 
 ## Advanced
