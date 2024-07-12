@@ -22,7 +22,7 @@ public partial class Pinecone
                 { "X-Pinecone-API-Version", "2024-07" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone.Client" },
-                { "X-Fern-SDK-Version", "0.0.53" },
+                { "X-Fern-SDK-Version", "0.0.54" },
             },
             clientOptions ?? new ClientOptions()
         );
