@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client", "Pinecone.Client\Pinecone.Client.csproj", "{B3453BEA-58FB-482D-B937-333AF0909F8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client", "Pinecone.Client\Pinecone.Client.csproj", "{13AEEAC3-ECEA-465C-BE71-59968006B806}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client.Test", "Pinecone.Client.Test\Pinecone.Client.Test.csproj", "{48AEE5CB-8162-4B2A-9A2C-C6FAC3B4EDA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client.Test", "Pinecone.Client.Test\Pinecone.Client.Test.csproj", "{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3453BEA-58FB-482D-B937-333AF0909F8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3453BEA-58FB-482D-B937-333AF0909F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3453BEA-58FB-482D-B937-333AF0909F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3453BEA-58FB-482D-B937-333AF0909F8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48AEE5CB-8162-4B2A-9A2C-C6FAC3B4EDA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48AEE5CB-8162-4B2A-9A2C-C6FAC3B4EDA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48AEE5CB-8162-4B2A-9A2C-C6FAC3B4EDA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48AEE5CB-8162-4B2A-9A2C-C6FAC3B4EDA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

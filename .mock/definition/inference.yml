@@ -1,6 +1,6 @@
 docs: Generate embeddings for input data
 imports:
-  root: control_plane.yml
+  root: __package__.yml
 types:
   EmbedRequestParameters:
     docs: Model-specific parameters.
