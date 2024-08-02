@@ -11,11 +11,11 @@ public record CreateCollectionRequest
     ///
     /// </summary>
     [JsonPropertyName("name")]
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// The name of the index to be used as the source for the collection.
     /// </summary>
     [JsonPropertyName("source")]
-    public required string Source { get; init; }
+    public required string Source { get; set; }
 }

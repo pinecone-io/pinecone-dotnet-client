@@ -8,5 +8,5 @@ namespace Pinecone.Client;
 public record IndexList
 {
     [JsonPropertyName("indexes")]
-    public IEnumerable<Index>? Indexes { get; init; }
+    public IEnumerable<Index>? Indexes { get; set; }
 }

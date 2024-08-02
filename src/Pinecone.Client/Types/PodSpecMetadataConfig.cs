@@ -10,5 +10,5 @@ public record PodSpecMetadataConfig
     /// By default, all metadata is indexed; to change this behavior, use this property to specify an array of metadata fields that should be indexed.
     /// </summary>
     [JsonPropertyName("indexed")]
-    public IEnumerable<string>? Indexed { get; init; }
+    public IEnumerable<string>? Indexed { get; set; }
 }

@@ -8,5 +8,5 @@ namespace Pinecone.Client;
 public record ServerlessIndexSpec
 {
     [JsonPropertyName("serverless")]
-    public ServerlessSpec? Serverless { get; init; }
+    public ServerlessSpec? Serverless { get; set; }
 }

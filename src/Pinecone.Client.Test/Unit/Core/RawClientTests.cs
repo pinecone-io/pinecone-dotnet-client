@@ -13,6 +13,7 @@ namespace Pinecone.Client.Test.Unit.Core
         private HttpClient _httpClient;
         private ClientOptions _clientOptions;
         private Dictionary<string, string> _headers;
+        private Dictionary<string, Func<string>> _headerSuppliers;
         private RawClient _rawClient;
 
         [SetUp]
@@ -29,7 +30,8 @@ namespace Pinecone.Client.Test.Unit.Core
                 BaseUrl = "https://api.example.com"
             };
             _headers = new Dictionary<string, string> { { "Authorization", "Bearer token" } };
-            _rawClient = new RawClient(_headers, _clientOptions);
+            _headerSuppliers = new Dictionary<string, Func<string>>();
+            _rawClient = new RawClient(_headers, _headerSuppliers, _clientOptions);
         }
 
         [Test]
@@ -37,6 +39,7 @@ namespace Pinecone.Client.Test.Unit.Core
         {
             var request = new RawClient.JsonApiRequest
             {
+                BaseUrl = _clientOptions.BaseUrl,
                 Method = HttpMethod.Post,
                 Path = "/test",
                 Body = new { Name = "Test" }
@@ -67,6 +70,7 @@ namespace Pinecone.Client.Test.Unit.Core
         {
             var request = new RawClient.StreamApiRequest
             {
+                BaseUrl = _clientOptions.BaseUrl,
                 Method = HttpMethod.Put,
                 Path = "/upload",
                 Body = new MemoryStream(new byte[] { 1, 2, 3 })
@@ -94,6 +98,7 @@ namespace Pinecone.Client.Test.Unit.Core
         {
             var request = new RawClient.JsonApiRequest
             {
+                BaseUrl = _clientOptions.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = "/headers"
             };
@@ -123,6 +128,7 @@ namespace Pinecone.Client.Test.Unit.Core
         {
             var request = new RawClient.JsonApiRequest
             {
+                BaseUrl = _clientOptions.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = "/test",
                 Query = new Dictionary<string, object>

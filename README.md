@@ -1,9 +1,15 @@
 # Pinecone .NET Library
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
-![NuGet Version](https://img.shields.io/nuget/v/Pinecone.Net)
+The official Pinecone C# library supporting .NET Standard, .NET Core, and .NET Framework.
 
-The official Pinecone C# library, supporting .NET Standard, .NET Core, and .NET Framework.
+## Requirements
+
+To use this SDK, ensure that your project is targeting one of the following:
+
+ * .NET Standard 2.0+
+ * .NET Core 3.0+
+ * .NET Framework 4.6.2+
+ * .NET 6.0+
 
 ## Installation
 
@@ -25,104 +31,347 @@ API reference documentation is available [here](https://docs.pinecone.io/referen
 
 ## Usage
 
-Below are code snippets of how you can use the C# SDK.
-
-### Create Index
+Instantiate the SDK using the `Pinecone` class.
 
 ```csharp
 using Pinecone.Client;
 
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY")
+```
 
-var pinecone = new Pinecone("YOUR_API_KEY")
+## Indexes
+
+Operations related to the building and managing of Pinecone indexes are called
+[control plane](https://docs.pinecone.io/reference/api/introduction#control-plane)
+operations.
+
+### Create Index
+
+You can use the Java SDK to create two types of indexes:
+  1. [Serverless indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes) (recommended for most use cases)
+  2. [Pod-based indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#pod-based-indexes) (recommended for high-throughput use cases).
+
+#### Create a Serverless Index
+
+The following is an example of creating a serverless index in the `us-west-2` region of AWS. For more information on 
+serverless and regional availability, see [Understanding indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes).
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
 
 var createIndexRequest = new CreateIndexRequest
 {
-    Name = "serverless-index",
-    Dimension = 1536,
+    Name = "example-index",
+    Dimension = 1538,
     Metric = CreateIndexRequestMetric.Cosine,
     Spec = new ServerlessIndexSpec
     {
         Serverless = new ServerlessSpec
         {
             Cloud = ServerlessSpecCloud.Aws,
-            Region = "us-east-1"
+            Region = "us-west-1"
         }
-    }
+    },
+    DeletionProtection = DeletionProtection.Enabled
 };
 
-var indexModel = pinecone.CreateIndexAsync(request: createIndexRequest).Result;
+Index index = pinecone.CreateIndexAsync(createIndexRequest).Result;
 ```
 
-### Create Collection
+#### Create a Pod Index
+
+The following is a minimal example of creating a pod-based index.
 
 ```csharp
 using Pinecone.Client;
 
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
 
-var pinecone = new Pinecone("YOUR_API_KEY")
-
-var createCollectionRequest = new CreateCollectionRequest
+var createIndexRequest = new CreateIndexRequest
 {
-    Name = "my-collection",
-    Source = "pod-index"
+    Name = "example-index",
+    Dimension = 1538,
+    Metric = CreateIndexRequestMetric.Cosine,
+    Spec = new PodIndexSpec
+    {
+        Pod = new PodSpec
+        {
+            Environment = "us-east-1-aws",
+            PodType = "p1.x1",
+            Pods = 1,
+            Replicas = 1,
+            Shards = 1,
+        }
+    },
+    DeletionProtection = DeletionProtection.Enabled
 };
 
-var collectionModel = pinecone.CreateCollectionAsync(request: createCollectionRequest).Result;
+Index index = pinecone.CreateIndexAsync(createIndexRequest).Result;
 ```
 
-### Configure Pod
+### List Indexes
+
+The following example returns all indexes (and their corresponding metadata) in your project.
 
 ```csharp
 using Pinecone.Client;
 
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
 
-var pinecone = new Pinecone("YOUR_API_KEY")
+IndexList indexesInYourProject = pinecone.ListIndexesAsync().Result;
+```
+
+### Describe an Index
+
+The following example returns metadata about an index.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+Index indexMetadata = pinecone.DescribeIndexesAsync("example-index").Result;
+```
+
+### Scale replicas
+
+The following example changes the number of replicas for an index.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
 
 var configureIndexRequest = new ConfigureIndexRequest
 {
     Spec = new ConfigureIndexRequestSpec
     {
-        Pod = new ConfigureIndexRequestSpecPod { Replicas = 2, PodType = "p1.x1" }
+        Pod = new ConfigureIndexRequestSpecPod {
+            Replicas = 2,
+            PodType = "p1.x1"
+        }
     }
 };
 
-var index = _client.ConfigureIndexAsync("pod-index", configureIndexRequest).Result;
+Index indexMetadata = pinecone.ConfigureIndexAsync("example-index", configureIndexRequest).Result;
+```
+
+> Note that scaling replicas is only applicable to pod-based indexes.
+
+### Describe Index Statistics
+
+The following example returns statistics about an index.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+DescribeIndexStatsResponse indexStatsResponse = index.DescribeIndexStatsAsync("example-index").Result;
+```
+
+### Upsert Vectors
+
+Operations related to the indexing, deleting, and querying of vectors are called
+[data plane](https://docs.pinecone.io/reference/api/introduction#data-plane) operations.
+
+The following example upserts vectors to `example-index`.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+UpsertResponse upsertResponse = index.UpsertAsync(new UpsertRequest {
+    Vectors = new[]
+    {
+        new Vector
+        {
+            Id = "v1",
+            Values = new[] { 0.1f, 0.2f, 0.3f },
+            Metadata = new Dictionary<string, MetadataValue?> {
+                ["genre"] = new("horror"),
+                ["year"] = new(2020),
+            }
+        }
+    },
+    Namespace = "test"
+}).Result;
+```
+
+### Query an Index
+
+The following example queries the index `example-index` with metadata filtering.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+QueryResponse queryResponse = index.QueryAsync(new QueryRequest {
+    Id = "v1",
+    Namespace = "example-namespace",
+    TopK = 3,
+}).Result;
+```
+
+### Delete Vectors
+
+The following example deletes vectors by ID.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+DeleteResponse deleteResponse = index.DeleteAsync(new DeleteRequest {
+    Ids = new List<string> { "v1" },
+    Namespace = "example-namespace",
+}).Result;
+```
+
+### Fetch vectors
+
+The following example fetches vectors by ID.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+FetchResponse fetchResponse = index.FetchAsync(new FetchRequest {
+    Ids = new List<string> { "v1" },
+    Namespace = "example-namespace",
+}).Result;
+```
+
+### List Vector IDs
+
+The following example lists up to 100 vector IDs from a Pinecone index.
+
+The following demonstrates how to use the list endpoint to get vector
+IDs from a specific namespace, filtered by a given prefix.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+ListResponse listResponse = index.ListAsync(new ListRequest {
+    Namespace = "example-namespace",
+    Prefix = "prefix-",
+}).Result;
+```
+
+### Update vectors
+
+The following example updates vectors by ID.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+IndexClient index = pinecone.Index("example-index");
+
+UpdateResponse updateResponse = index.UpdateAsync(new UpdateRequest {
+    Id = "v1",
+    Namespace = "example-namespace",
+    Values = new[] { 0.1f, 0.2f, 0.3f },
+}).Result;
+```
+
+## Collections
+
+Collections fall under data plane operations.
+
+### Create Collection
+
+The following creates a collection.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+CollectionModel collectionModel = pinecone.CreateCollectionAsync(new CreateCollectionRequest {
+    Name = "example-collection",
+    Source = "example-index",
+}).Result;
+```
+
+### List Collections
+
+The following example returns a list of the collections in the current project.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+CollectionList collectionList = pinecone.ListCollectionsAsync().Result;
+```
+
+### Describe a Collection
+
+The following example returns a description of the collection.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+CollectionModel collectionModel = pinecone.DescribeCollectionAsync("example-collection").Result;
+```
+
+### Delete a Collection
+
+The following example deletes the collection `example-collection`.
+
+```csharp
+using Pinecone.Client;
+
+Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
+
+DeleteCollectionResponse response = pinecone.DescribeCollectionAsync("example-collection").Result;
 ```
 
 ## Advanced
 
-### Retries
-
-429 Rate Limit, and >=500 Internal errors will all be
-retried twice with exponential backoff. You can override this behavior
-globally or per-request.
-
-```csharp
-var pinecone = new Pinecone("...", new ClientOptions {
-    MaxRetries = 1 // Only retry once
-});
-```
-
-### Timeouts
-
-The SDK defaults to a 60s timeout. You can override this behaviour
-globally or per-request.
-
-```csharp
-var pinecone = new Pinecone("...", new ClientOptions {
-    TimeoutInSeconds = 20 // Lower timeout
-});
-```
-
 ### HTTP Client
 
-You can override the HttpClient by passing in `ClientOptions`.
-
 ```csharp
-var pinecone = new Pinecone("YOUR_API_KEY", new ClientOptions {
+var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions{
     HttpClient = ... // Override the Http Client
     BaseURL = ... // Override the Base URL
 })
+```
+
+### Exception Handling
+
+When the API returns a non-zero status code, (4xx or 5xx response), a subclass of
+`PineconeException` will be thrown:
+
+```csharp
+try {
+    pinecone.CreateIndexAsync(...);
+} catch (PineconeException e) {
+    System.Console.WriteLine(e.Message)
+    System.Console.WriteLine(e.StatusCode)
+}
 ```
 
 ## Contributing

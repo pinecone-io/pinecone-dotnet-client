@@ -8,5 +8,5 @@ namespace Pinecone.Client;
 public record PodIndexSpec
 {
     [JsonPropertyName("pod")]
-    public PodSpec? Pod { get; init; }
+    public PodSpec? Pod { get; set; }
 }

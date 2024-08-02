@@ -1,5 +1,6 @@
 # Specify files that shouldn't be modified by Fern
 
-src/Pinecone.Client.Test/Pinecone.Client.Test.csproj
-src/Pinecone.Client.Test/Unit/Core/\*
+# The following file should always be .fernignore'd.
 README.md
+src/Pinecone.Client/Pinecone.cs
+src/Pinecone.Client.Test/

@@ -8,5 +8,5 @@ namespace Pinecone.Client;
 public record ConfigureIndexRequestSpec
 {
     [JsonPropertyName("pod")]
-    public required ConfigureIndexRequestSpecPod Pod { get; init; }
+    public required ConfigureIndexRequestSpecPod Pod { get; set; }
 }

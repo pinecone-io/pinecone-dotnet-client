@@ -8,14 +8,14 @@ namespace Pinecone.Client;
 public record ServerlessSpec
 {
     /// <summary>
-    /// The public cloud where you would like your index hosted. Serverless indexes can be hosted only in AWS at this time.
+    /// The public cloud where you would like your index hosted.
     /// </summary>
     [JsonPropertyName("cloud")]
-    public required ServerlessSpecCloud Cloud { get; init; }
+    public required ServerlessSpecCloud Cloud { get; set; }
 
     /// <summary>
-    /// The region where you would like your index to be created. Serverless indexes can be created only in the us-east-1,us-west-2, and eu-west-1 regions of AWS at this time.
+    /// The region where you would like your index to be created.
     /// </summary>
     [JsonPropertyName("region")]
-    public required string Region { get; init; }
+    public required string Region { get; set; }
 }

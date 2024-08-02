@@ -8,8 +8,8 @@ namespace Pinecone.Client;
 public record IndexModelStatus
 {
     [JsonPropertyName("ready")]
-    public required bool Ready { get; init; }
+    public required bool Ready { get; set; }
 
     [JsonPropertyName("state")]
-    public required IndexModelStatusState State { get; init; }
+    public required IndexModelStatusState State { get; set; }
 }

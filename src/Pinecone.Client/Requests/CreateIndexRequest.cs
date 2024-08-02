@@ -12,20 +12,23 @@ public record CreateIndexRequest
     ///
     /// </summary>
     [JsonPropertyName("name")]
-    public required string Name { get; init; }
+    public required string Name { get; set; }
 
     /// <summary>
     /// The dimensions of the vectors to be inserted in the index.
     /// </summary>
     [JsonPropertyName("dimension")]
-    public required int Dimension { get; init; }
+    public required int Dimension { get; set; }
 
     /// <summary>
     /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'.
     /// </summary>
     [JsonPropertyName("metric")]
-    public CreateIndexRequestMetric? Metric { get; init; }
+    public CreateIndexRequestMetric? Metric { get; set; }
+
+    [JsonPropertyName("deletion_protection")]
+    public DeletionProtection? DeletionProtection { get; set; }
 
     [JsonPropertyName("spec")]
-    public required object Spec { get; init; }
+    public required object Spec { get; set; }
 }

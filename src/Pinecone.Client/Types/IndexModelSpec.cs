@@ -8,8 +8,8 @@ namespace Pinecone.Client;
 public record IndexModelSpec
 {
     [JsonPropertyName("pod")]
-    public PodSpec? Pod { get; init; }
+    public PodSpec? Pod { get; set; }
 
     [JsonPropertyName("serverless")]
-    public ServerlessSpec? Serverless { get; init; }
+    public ServerlessSpec? Serverless { get; set; }
 }

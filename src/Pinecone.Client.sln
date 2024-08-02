@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client", "Pinecone.Client\Pinecone.Client.csproj", "{13AEEAC3-ECEA-465C-BE71-59968006B806}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client", "Pinecone.Client\Pinecone.Client.csproj", "{BCBB6E57-CF20-41A2-BD9D-4908F14F61E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client.Test", "Pinecone.Client.Test\Pinecone.Client.Test.csproj", "{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Client.Test", "Pinecone.Client.Test\Pinecone.Client.Test.csproj", "{FF8FDE37-D483-4416-BD6A-EB371F99B2A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13AEEAC3-ECEA-465C-BE71-59968006B806}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9E3F95A-946F-4E2F-BB6A-2A4F0A350F47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCBB6E57-CF20-41A2-BD9D-4908F14F61E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCBB6E57-CF20-41A2-BD9D-4908F14F61E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCBB6E57-CF20-41A2-BD9D-4908F14F61E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCBB6E57-CF20-41A2-BD9D-4908F14F61E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF8FDE37-D483-4416-BD6A-EB371F99B2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8FDE37-D483-4416-BD6A-EB371F99B2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8FDE37-D483-4416-BD6A-EB371F99B2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8FDE37-D483-4416-BD6A-EB371F99B2A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
