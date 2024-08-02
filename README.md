@@ -1,6 +1,6 @@
 # Pinecone .NET Library
 
-The official Pinecone C# library supporting .NET Standard, .NET Core, and .NET Framework.
+The official Pinecone .NET library supporting .NET Standard, .NET Core, and .NET Framework.
 
 ## Requirements
 

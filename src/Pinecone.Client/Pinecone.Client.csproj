@@ -41,7 +41,6 @@
         <None Include="..\..\README.md" Pack="true" PackagePath=""/>
     </ItemGroup>
 
-    <!-- TODO: Do these dependencies need to be optional? How problematic is this? Ask OSS developer. -->
     <ItemGroup>
       <PackageReference Include="Google.Protobuf" Version="3.27.2" />
       <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
