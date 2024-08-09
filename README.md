@@ -132,7 +132,7 @@ using Pinecone.Client;
 
 Pinecone pinecone = new Pinecone("PINECONE_API_KEY");
 
-Index indexMetadata = pinecone.DescribeIndexesAsync("example-index").Result;
+Index indexMetadata = pinecone.DescribeIndexAsync("example-index").Result;
 ```
 
 ### Scale replicas
