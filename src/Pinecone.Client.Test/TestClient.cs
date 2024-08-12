@@ -16,7 +16,7 @@ public class TestClient
 
     [Ignore("Requires PINECONE_API_KEY")]
     [Test]
-    public void CreateServerless()
+    public async Task CreateServerless()
     {
         try
         {
@@ -36,16 +36,16 @@ public class TestClient
                 },
                 DeletionProtection = DeletionProtection.Disabled
             };
-            var indexModel = _client.CreateIndexAsync(request: createIndexRequest).Result;
+            var indexModel = await _client.CreateIndexAsync(request: createIndexRequest);
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
             
-            var listIndexes = _client.ListIndexesAsync().Result;
+            var listIndexes = await _client.ListIndexesAsync();
             Assert.That(listIndexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes.ToList().Count, Is.EqualTo(1));
             
-            var describeIndex = _client.DescribeIndexAsync(indexName).Result;
+            var describeIndex = await _client.DescribeIndexAsync(indexName);
             Assert.That(describeIndex, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
 
@@ -53,7 +53,7 @@ public class TestClient
             System.Threading.Thread.Sleep(3000);
             var indexClient = _client.Index(name: indexName);
         
-            var describeIndexStats = indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).Result;
+            var describeIndexStats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
             Assert.That(describeIndexStats, Is.Not.Null);
             
             var vectors = new[]
@@ -69,7 +69,7 @@ public class TestClient
                     }
                 }
             };
-            var upsertResponse = indexClient.UpsertAsync(
+            var upsertResponse = await indexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = vectors,
@@ -79,16 +79,16 @@ public class TestClient
                 {
                     Timeout = TimeSpan.FromSeconds(1)
                 }
-            ).Result;
+            );
             Assert.That(upsertResponse, Is.Not.Null);
             Assert.That(upsertResponse.UpsertedCount!, Is.EqualTo(1));
 
-            var listResponse = indexClient.ListAsync(
+            var listResponse = await indexClient.ListAsync(
                 new ListRequest
-                {
+                { 
                     Namespace = "test",
                 }
-            ).Result;
+            );
             Assert.That(listResponse, Is.Not.Null);
             Assert.That(listResponse.Vectors, Is.Not.Null);
             Assert.That(listResponse.Namespace, Is.EqualTo("test"));
@@ -100,21 +100,21 @@ public class TestClient
         }
         finally
         {
-            DeleteServerless();
+            await DeleteServerless();
         }
     }
 
     [Ignore("Requires PINECONE_API_KEY")]
     [Test]
-    public void DeleteServerless()
+    public async Task DeleteServerless()
     {
         var indexName = "serverless-index";
-        _client.DeleteIndexAsync(indexName: indexName).GetAwaiter().GetResult();
+        await _client.DeleteIndexAsync(indexName: indexName);
     }
 
     [Ignore("Requires PINECONE_API_KEY")]
     [Test]
-    public void CreatePod()
+    public async Task CreatePod()
     {
         try
         {
@@ -141,22 +141,22 @@ public class TestClient
                 },
                 DeletionProtection = DeletionProtection.Disabled
             };
-            var indexModel = _client.CreateIndexAsync(request: createIndexRequest).Result;
+            var indexModel = await _client.CreateIndexAsync(request: createIndexRequest);
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
 
             // Sleep for a few seconds while the index boots up.
             System.Threading.Thread.Sleep(5000);
 
-            var listIndexes = _client.ListIndexesAsync().Result;
+            var listIndexes = await _client.ListIndexesAsync();
             Assert.That(listIndexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes.ToList().Count, Is.EqualTo(1));
 
-            var describeIndex = _client.DescribeIndexAsync(indexName).Result;
+            var describeIndex = await _client.DescribeIndexAsync(indexName);
             Assert.That(describeIndex, Is.Not.Null);
 
-            var configureIndex = _client
+            var configureIndex = await _client
                 .ConfigureIndexAsync(
                     indexName,
                     new ConfigureIndexRequest
@@ -166,8 +166,7 @@ public class TestClient
                             Pod = new ConfigureIndexRequestSpecPod { Replicas = 2, PodType = "p1.x1" }
                         }
                     }
-                )
-                .Result;
+                );
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(configureIndex.Name, Is.EqualTo(indexName));
         }
@@ -184,9 +183,9 @@ public class TestClient
     
     [Ignore("Requires PINECONE_API_KEY")]
     [Test]
-    public void DeletePod()
+    public async Task DeletePod()
     {
         var indexName = "pod-index";
-        _client.DeleteIndexAsync(indexName: indexName).GetAwaiter().GetResult();
+        await _client.DeleteIndexAsync(indexName: indexName);
     }
 }
