@@ -27,7 +27,7 @@ public record SingleQueryResults
     {
         return new SingleQueryResults
         {
-            Matches = proto.Matches.Select(ScoredVector.FromProto),
+            Matches = proto.Matches?.Select(ScoredVector.FromProto),
             Namespace = proto.Namespace,
         };
     }

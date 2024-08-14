@@ -32,7 +32,7 @@ public record FetchResponse
     {
         return new FetchResponse
         {
-            Vectors = proto.Vectors.ToDictionary(
+            Vectors = proto.Vectors?.ToDictionary(
                 kvp => kvp.Key,
                 kvp => Vector.FromProto(kvp.Value)
             ),

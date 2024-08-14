@@ -37,7 +37,7 @@ public record ListResponse
     {
         return new ListResponse
         {
-            Vectors = proto.Vectors.Select(ListItem.FromProto),
+            Vectors = proto.Vectors?.Select(ListItem.FromProto),
             Pagination = proto.Pagination != null ? Pagination.FromProto(proto.Pagination) : null,
             Namespace = proto.Namespace,
             Usage = proto.Usage != null ? Usage.FromProto(proto.Usage) : null
