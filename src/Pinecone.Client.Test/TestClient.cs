@@ -1,3 +1,4 @@
+using System.Text.Json;
 using NUnit.Framework;
 using Pinecone.Client.Core;
 
@@ -9,7 +10,7 @@ public class TestClient
     [SetUp]
     public void Setup()
     {
-        _client = new Pinecone();
+        _client = new Pinecone("8f07403c-0a1b-474e-9ac3-752fe50fbd94");
     }
 
     private Pinecone _client;
@@ -102,6 +103,30 @@ public class TestClient
         {
             await DeleteServerless();
         }
+    }
+
+    [Test]
+    public async Task test()
+    {
+        var index = _client.Index("docs-quickstart-index");
+
+        // var queryResponse1 = await index.QueryAsync(new QueryRequest {
+        //     Vector = new[] { 1.0f, 1.5f },
+        //     Namespace = "ns1",
+        //     TopK = 3,
+        // });
+
+        var queryResponse2 = await index.QueryAsync(new QueryRequest {
+            Vector = new[] { 1.0f, -2.5f },
+            Namespace = "ns2",
+            TopK = 3,
+        });
+
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        // string jsonString1 = JsonSerializer.Serialize(queryResponse1, options);
+        string jsonString2 = JsonSerializer.Serialize(queryResponse2, options);
+        // Console.Write(jsonString1);
+        Console.Write(jsonString2);
     }
 
     [Ignore("Requires PINECONE_API_KEY")]
