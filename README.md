@@ -45,15 +45,15 @@ Operations related to the building and managing of Pinecone indexes are called
 [control plane](https://docs.pinecone.io/reference/api/introduction#control-plane)
 operations.
 
-### Create Index
+### Create index
 
-You can use the Java SDK to create two types of indexes:
+You can use the .NET SDK to create two types of indexes:
   1. [Serverless indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes) (recommended for most use cases)
   2. [Pod-based indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#pod-based-indexes) (recommended for high-throughput use cases).
 
-#### Create a Serverless Index
+#### Create a serverless index
 
-The following is an example of creating a serverless index in the `us-west-2` region of AWS. For more information on 
+The following is an example of creating a serverless index in the `us-east-1` region of AWS. For more information on 
 serverless and regional availability, see [Understanding indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes).
 
 ```csharp
@@ -71,7 +71,7 @@ var createIndexRequest = new CreateIndexRequest
         Serverless = new ServerlessSpec
         {
             Cloud = ServerlessSpecCloud.Aws,
-            Region = "us-west-1"
+            Region = "us-east-1"
         }
     },
     DeletionProtection = DeletionProtection.Enabled
@@ -80,7 +80,7 @@ var createIndexRequest = new CreateIndexRequest
 var index = await pinecone.CreateIndexAsync(createIndexRequest);
 ```
 
-#### Create a Pod Index
+#### Create a pod-based index
 
 The following is a minimal example of creating a pod-based index.
 
@@ -111,7 +111,7 @@ var createIndexRequest = new CreateIndexRequest
 var index = await pinecone.CreateIndexAsync(createIndexRequest);
 ```
 
-### List Indexes
+### List indexes
 
 The following example returns all indexes (and their corresponding metadata) in your project.
 
@@ -123,7 +123,7 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 var indexesInYourProject = await pinecone.ListIndexesAsync();
 ```
 
-### Delete an Index
+### Delete an index
 
 The following example deletes an index by name.
 
@@ -134,7 +134,8 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 
 await pinecone.DeleteIndexAsync("example-index");
 ```
-### Describe an Index
+
+### Describe an index
 
 The following example returns metadata about an index.
 
@@ -143,7 +144,7 @@ using Pinecone.Client;
 
 var pinecone = new Pinecone("PINECONE_API_KEY");
 
-Index indexMetadata = await pinecone.DescribeIndexAsync("example-index").Result;
+var indexModel = pinecone.DescribeIndexAsync("example-index");
 ```
 
 ### Scale replicas
@@ -171,7 +172,7 @@ var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", configur
 
 > Note that scaling replicas is only applicable to pod-based indexes.
 
-### Describe Index Statistics
+### Describe index statistics
 
 The following example returns statistics about an index.
 
@@ -184,7 +185,7 @@ var index = pinecone.Index("example-index");
 var indexStatsResponse = await index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
 ```
 
-### Upsert Vectors
+### Upsert vectors
 
 Operations related to the indexing, deleting, and querying of vectors are called
 [data plane](https://docs.pinecone.io/reference/api/introduction#data-plane) operations.
@@ -215,7 +216,7 @@ var upsertResponse = await index.UpsertAsync(new UpsertRequest {
 });
 ```
 
-### Query an Index
+### Query an index
 
 The following example queries the index `example-index` with metadata filtering.
 
@@ -233,7 +234,7 @@ var queryResponse = await index.QueryAsync(new QueryRequest {
 });
 ```
 
-### Delete Vectors
+### Delete vectors
 
 The following example deletes vectors by ID.
 
@@ -246,6 +247,21 @@ var index = pinecone.Index("example-index");
 
 var deleteResponse = await index.DeleteAsync(new DeleteRequest {
     Ids = new List<string> { "v1" },
+    Namespace = "example-namespace",
+});
+```
+
+The following example deletes all records in a namespace and the namespace itself:
+
+```csharp
+using Pinecone.Client;
+
+var pinecone = new Pinecone("PINECONE_API_KEY");
+
+var index = pinecone.Index("example-index");
+
+var deleteResponse = await index.DeleteAsync(new DeleteRequest {
+    DeleteAll = true,
     Namespace = "example-namespace",
 });
 ```
@@ -267,7 +283,7 @@ var fetchResponse = await index.FetchAsync(new FetchRequest {
 });
 ```
 
-### List Vector IDs
+### List vector IDs
 
 The following example lists up to 100 vector IDs from a Pinecone index.
 
@@ -309,7 +325,7 @@ var updateResponse = await index.UpdateAsync(new UpdateRequest {
 
 Collections fall under data plane operations.
 
-### Create Collection
+### Create a collection
 
 The following creates a collection.
 
@@ -324,7 +340,7 @@ var collectionModel = await pinecone.CreateCollectionAsync(new CreateCollectionR
 });
 ```
 
-### List Collections
+### List collections
 
 The following example returns a list of the collections in the current project.
 
@@ -336,7 +352,7 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 var collectionList = await pinecone.ListCollectionsAsync();
 ```
 
-### Describe a Collection
+### Describe a collection
 
 The following example returns a description of the collection.
 
@@ -348,7 +364,7 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 var collectionModel = await pinecone.DescribeCollectionAsync("example-collection");
 ```
 
-### Delete a Collection
+### Delete a collection
 
 The following example deletes the collection `example-collection`.
 
@@ -357,12 +373,12 @@ using Pinecone.Client;
 
 var pinecone = new Pinecone("PINECONE_API_KEY");
 
-var response = await pinecone.DescribeCollectionAsync("example-collection");
+await pinecone.DeleteCollectionAsync("example-collection");
 ```
 
 ## Advanced
 
-### HTTP Client
+### HTTP client
 
 ```csharp
 var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions{
@@ -371,7 +387,7 @@ var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions{
 })
 ```
 
-### Exception Handling
+### Exception handling
 
 When the API returns a non-zero status code, (4xx or 5xx response), a subclass of
 `PineconeException` will be thrown:
