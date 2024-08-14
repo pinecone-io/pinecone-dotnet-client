@@ -125,7 +125,7 @@ var indexesInYourProject = await pinecone.ListIndexesAsync();
 
 ### Delete an Index
 
-The following example returns metadata about an index.
+The following example deletes an index by name.
 
 ```csharp
 using Pinecone.Client;
