@@ -123,6 +123,17 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 var indexesInYourProject = await pinecone.ListIndexesAsync();
 ```
 
+### Delete an Index
+
+The following example returns metadata about an index.
+
+```csharp
+using Pinecone.Client;
+
+var pinecone = new Pinecone("PINECONE_API_KEY");
+
+await pinecone.DeleteIndexAsync("example-index");
+```
 ### Describe an Index
 
 The following example returns metadata about an index.
