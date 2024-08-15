@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Text.Json.Serialization;
 using Proto = Pinecone.Grpc;
 
@@ -37,8 +38,8 @@ public record QueryResponse
     {
         return new QueryResponse
         {
-            Results = proto.Results.Select(SingleQueryResults.FromProto),
-            Matches = proto.Matches.Select(ScoredVector.FromProto),
+            Results = proto.Results?.Select(SingleQueryResults.FromProto),
+            Matches = proto.Matches?.Select(ScoredVector.FromProto),
             Namespace = proto.Namespace,
             Usage = proto.Usage != null ? Usage.FromProto(proto.Usage) : null
         };

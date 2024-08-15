@@ -57,9 +57,9 @@ public record Vector
         return new Vector
         {
             Id = proto.Id,
-            Values = proto.Values.ToList(),
-            SparseValues = SparseValues.FromProto(proto.SparseValues),
-            Metadata = Core.ProtoConverter.FromProtoStruct(proto.Metadata)
+            Values = proto.Values?.ToList() ?? [],
+            SparseValues = proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
+            Metadata = proto.Metadata != null ? Core.ProtoConverter.FromProtoStruct(proto.Metadata) : null
         };
     }
     

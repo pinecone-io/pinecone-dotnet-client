@@ -46,8 +46,8 @@ public record ScoredVector
         {
             Id = proto.Id,
             Score = proto.Score,
-            Values = proto.Values.ToList(),
-            SparseValues = SparseValues.FromProto(proto.SparseValues),
+            Values = proto.Values?.ToList(),
+            SparseValues = proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
             Metadata = proto.Metadata != null ? ProtoConverter.FromProtoStruct(proto.Metadata) : null,
         };
     }

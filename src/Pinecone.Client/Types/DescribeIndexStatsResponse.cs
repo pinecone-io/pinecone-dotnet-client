@@ -43,7 +43,7 @@ public record DescribeIndexStatsResponse
     {
         return new DescribeIndexStatsResponse
         {
-            Namespaces = proto.Namespaces.ToDictionary(
+            Namespaces = proto.Namespaces?.ToDictionary(
                 kvp => kvp.Key,
                 kvp => NamespaceSummary.FromProto(kvp.Value)
             ),

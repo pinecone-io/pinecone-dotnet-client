@@ -34,8 +34,8 @@ public record SparseValues
     {
         return new SparseValues
         {
-            Indices = proto.Indices.ToList(),
-            Values = proto.Values.ToList(),
+            Indices = proto.Indices?.ToList() ?? [],
+            Values = proto.Values?.ToList() ?? [],
         };
     }
     
