@@ -1,3 +1,4 @@
+using System.Text.Json;
 using NUnit.Framework;
 using Pinecone.Client.Core;
 
