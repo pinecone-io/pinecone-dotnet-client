@@ -176,17 +176,4 @@ public class TestClient
         var indexName = "pod-index";
         await _client.DeleteIndexAsync(indexName);
     }
-
-    public void test()
-    {
-        //Need to show how to query by vector, with IncludeValues, IncludeMetadata, and metadata filter.
-
-        //Need to show a dense-sparse query.
-        var pinecone = new Pinecone(
-            "PINECONE_API_KEY",
-            new ClientOptions { MaxRetries = 3, Timeout = TimeSpan.FromSeconds(60) }
-        );
-
-        var index = pinecone.Index("example-index");
-    }
 }
