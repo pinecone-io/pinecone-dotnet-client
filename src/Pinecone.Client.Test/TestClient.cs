@@ -188,4 +188,29 @@ public class TestClient
         var indexName = "pod-index";
         await _client.DeleteIndexAsync(indexName: indexName);
     }
+
+    public void test()
+    {
+        //Need to show how to query by vector, with IncludeValues, IncludeMetadata, and metadata filter.
+        
+        //Need to show a dense-sparse query.
+        var pinecone = new Pinecone("PINECONE_API_KEY");
+
+        var index = pinecone.Index("example-index");
+
+        var queryResponse = await index.QueryAsync(new QueryRequest {
+            Namespace = "example-namespace",
+            Vector = [0.1f, 0.2f, 0.3f, 0.4f],
+            TopK = 10,
+            IncludeValues = true,
+            IncludeMetadata = true,
+            Filter = new Dictionary<string, MetadataValue?>
+            {
+                {"genre", new Dictionary<string, MetadataValue?>
+                {
+                    
+                }}
+            }
+        });
+    }
 }
