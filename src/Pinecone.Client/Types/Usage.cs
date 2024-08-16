@@ -13,7 +13,7 @@ public record Usage
     /// </summary>
     [JsonPropertyName("readUnits")]
     public uint? ReadUnits { get; set; }
-    
+
     #region Mappers
 
     public Proto.Usage ToProto()
@@ -28,10 +28,7 @@ public record Usage
 
     public static Usage FromProto(Proto.Usage proto)
     {
-        return new Usage
-        {
-            ReadUnits = proto.ReadUnits
-        };
+        return new Usage { ReadUnits = proto.ReadUnits };
     }
 
     #endregion

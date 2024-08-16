@@ -33,9 +33,9 @@ public record DeleteRequest
     /// </summary>
     [JsonPropertyName("filter")]
     public Dictionary<string, MetadataValue?>? Filter { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.DeleteRequest ToProto()
     {
         var deleteRequest = new Proto.DeleteRequest();
@@ -56,7 +56,7 @@ public record DeleteRequest
             deleteRequest.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
         }
         return deleteRequest;
-    } 
-    
+    }
+
     #endregion
 }

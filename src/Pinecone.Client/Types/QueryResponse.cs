@@ -31,7 +31,7 @@ public record QueryResponse
     /// </summary>
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
-    
+
     #region Mappers
 
     public static QueryResponse FromProto(Proto.QueryResponse proto)

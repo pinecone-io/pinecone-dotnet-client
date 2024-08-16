@@ -12,12 +12,12 @@ public partial class GrpcRequestOptions
     /// The maximum number of retry attempts.
     /// </summary>
     public int? MaxRetries { get; init; }
-    
+
     /// <summary>
     /// The timeout for the request.
     /// </summary>
     public TimeSpan? Timeout { get; init; }
-    
+
     /// <summary>
     /// Headers to be sent with this particular request.
     /// </summary>
@@ -27,12 +27,12 @@ public partial class GrpcRequestOptions
     /// The cancellation token used with this particular request.
     /// </summary>
     public CancellationToken CancellationToken { get; init; } = default(CancellationToken);
-    
+
     /// <summary>
     /// Options for write operations.
     /// </summary>
     public WriteOptions? WriteOptions { get; init; }
-    
+
     /// <summary>
     /// Client-side call credentials. Provide authorization with per-call granularity.
     /// </summary>

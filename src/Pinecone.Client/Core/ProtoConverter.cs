@@ -1,71 +1,63 @@
-namespace Pinecone.Client.Core;
-
-using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
 
-public static class ProtoConverter
+#nullable enable
+
+namespace Pinecone.Client.Core;
+
+/// <summary>
+/// Utility class for converting to and from Protobuf types.
+/// </summary>
+internal class ProtoConverter
 {
-    public static Struct ToProtoStruct(Dictionary<string, MetadataValue?> dictionary)
+    public static Struct ToProtoStruct(Dictionary<string, MetadataValue?> value)
     {
-        var protoStruct = new Struct();
-        foreach (var kvp in dictionary)
+        var result = new Struct();
+        foreach (var kvp in value)
         {
-            protoStruct.Fields[kvp.Key] = ToProtoValue(kvp.Value);
+            result.Fields[kvp.Key] = ToProtoValue(kvp.Value);
         }
-        return protoStruct;
+        return result;
     }
 
-    public static Dictionary<string, MetadataValue?> FromProtoStruct(Struct protoStruct)
+    public static Dictionary<string, MetadataValue?> FromProtoStruct(Struct value)
     {
-        var dictionary = new Dictionary<string, MetadataValue?>();
-        foreach (var kvp in protoStruct.Fields)
+        var result = new Dictionary<string, MetadataValue?>();
+        foreach (var kvp in value.Fields)
         {
-            dictionary[kvp.Key] = FromProtoValue(kvp.Value);
+            result[kvp.Key] = FromProtoValue(kvp.Value);
         }
-        return dictionary;
+        return result;
     }
-    private static Value ToProtoValue(MetadataValue? metadataValue)
-    {
-        if (metadataValue == null)
-        {
-            return Value.ForNull();
-        }
 
-        return metadataValue.Match<Value>(
-            Value.ForNumber,
+    public static Value ToProtoValue(MetadataValue? value)
+    {
+        if (value == null)
+        {
+            Value.ForNull();
+        }
+        return value.Match<Value>(
             Value.ForString,
+            Value.ForNumber,
             Value.ForBool,
-            doubleList => new Value { ListValue = new ListValue { Values = { doubleList.Select(Value.ForNumber) } } },
-            stringList => new Value { ListValue = new ListValue { Values = { stringList.Select(Value.ForString) } } },
-            boolList => new Value { ListValue = new ListValue { Values = { boolList.Select(Value.ForBool) } } }
+            list => new Value
+            {
+                ListValue = new ListValue { Values = { list.Select(ToProtoValue) } }
+            },
+            nested => new Value { StructValue = ToProtoStruct(nested) }
         );
     }
-    
-    private static MetadataValue? FromProtoValue(Value value)
+
+    public static MetadataValue? FromProtoValue(Value value)
     {
         return value.KindCase switch
         {
-            Value.KindOneofCase.NumberValue => new MetadataValue(value.NumberValue),
             Value.KindOneofCase.StringValue => new MetadataValue(value.StringValue),
+            Value.KindOneofCase.NumberValue => new MetadataValue(value.NumberValue),
             Value.KindOneofCase.BoolValue => new MetadataValue(value.BoolValue),
-            Value.KindOneofCase.ListValue => FromProtoListValue(value.ListValue),
-            _ => null,
-        };
-    }
-    
-    private static MetadataValue? FromProtoListValue(ListValue listValue)
-    {
-        if (listValue.Values.Count == 0)
-        {
-            return null;
-        }
-
-        var firstValue = listValue.Values[0];
-        return firstValue.KindCase switch
-        {
-            Value.KindOneofCase.NumberValue => new MetadataValue(listValue.Values.Select(v => v.NumberValue).ToList()),
-            Value.KindOneofCase.StringValue => new MetadataValue(listValue.Values.Select(v => v.StringValue).ToList()),
-            Value.KindOneofCase.BoolValue => new MetadataValue(listValue.Values.Select(v => v.BoolValue).ToList()),
+            Value.KindOneofCase.ListValue
+                => new MetadataValue(value.ListValue.Values.Select(FromProtoValue).ToList()),
+            Value.KindOneofCase.StructValue
+                => new MetadataValue(FromProtoStruct(value.StructValue)),
             _ => null,
         };
     }

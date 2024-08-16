@@ -13,9 +13,9 @@ public record SparseValues
 
     [JsonPropertyName("values")]
     public IEnumerable<float> Values { get; set; } = new List<float>();
-    
+
     #region Mappers
-    
+
     public Proto.SparseValues ToProto()
     {
         var sparseValues = new Proto.SparseValues();
@@ -38,6 +38,6 @@ public record SparseValues
             Values = proto.Values?.ToList() ?? [],
         };
     }
-    
+
     #endregion
 }

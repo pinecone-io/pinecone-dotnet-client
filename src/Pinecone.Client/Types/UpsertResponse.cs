@@ -12,16 +12,13 @@ public record UpsertResponse
     /// </summary>
     [JsonPropertyName("upsertedCount")]
     public uint? UpsertedCount { get; set; }
-    
+
     #region Mappers
-    
+
     public static UpsertResponse FromProto(Proto.UpsertResponse proto)
     {
-        return new UpsertResponse
-        {
-            UpsertedCount = proto.UpsertedCount
-        };
+        return new UpsertResponse { UpsertedCount = proto.UpsertedCount };
     }
-    
+
     #endregion
 }

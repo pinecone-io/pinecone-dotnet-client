@@ -13,16 +13,13 @@ public record NamespaceSummary
     /// </summary>
     [JsonPropertyName("vectorCount")]
     public uint? VectorCount { get; set; }
-    
+
     #region Mappers
-    
+
     public static NamespaceSummary FromProto(Proto.NamespaceSummary proto)
     {
-        return new NamespaceSummary
-        {
-            VectorCount = proto.VectorCount,
-        };
+        return new NamespaceSummary { VectorCount = proto.VectorCount, };
     }
-    
+
     #endregion
 }

@@ -19,9 +19,9 @@ public record UpsertRequest
     /// </summary>
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.UpsertRequest ToProto()
     {
         var upsertRequest = new Proto.UpsertRequest();
@@ -35,7 +35,7 @@ public record UpsertRequest
             upsertRequest.Namespace = Namespace ?? "";
         }
         return upsertRequest;
-    } 
-    
+    }
+
     #endregion
 }
