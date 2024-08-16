@@ -61,15 +61,12 @@ public record QueryRequest
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     #region Mappers
 
     public Proto.QueryRequest ToProto()
     {
-        var queryRequest = new Proto.QueryRequest
-        {
-            TopK = TopK,
-        };
+        var queryRequest = new Proto.QueryRequest { TopK = TopK, };
         if (Namespace != null)
         {
             queryRequest.Namespace = Namespace;

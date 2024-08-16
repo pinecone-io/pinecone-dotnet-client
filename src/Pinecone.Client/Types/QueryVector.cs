@@ -37,9 +37,9 @@ public record QueryVector
     /// </summary>
     [JsonPropertyName("filter")]
     public Dictionary<string, MetadataValue?>? Filter { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.QueryVector ToProto()
     {
         var queryVector = new Proto.QueryVector();
@@ -64,7 +64,7 @@ public record QueryVector
             queryVector.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
         }
         return queryVector;
-    } 
-    
+    }
+
     #endregion
 }

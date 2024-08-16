@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using Proto = Pinecone.Grpc;
 using Pinecone.Client;
+using Proto = Pinecone.Grpc;
 
 #nullable enable
 
@@ -25,7 +25,7 @@ public record FetchResponse
     /// </summary>
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
-    
+
     #region Mappers
 
     public static FetchResponse FromProto(Proto.FetchResponse proto)

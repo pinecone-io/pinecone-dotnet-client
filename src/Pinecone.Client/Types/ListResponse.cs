@@ -30,9 +30,9 @@ public record ListResponse
     /// </summary>
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
-    
+
     #region Mappers
-    
+
     public static ListResponse FromProto(Proto.ListResponse proto)
     {
         return new ListResponse
@@ -43,6 +43,6 @@ public record ListResponse
             Usage = proto.Usage != null ? Usage.FromProto(proto.Usage) : null
         };
     }
-    
+
     #endregion
 }

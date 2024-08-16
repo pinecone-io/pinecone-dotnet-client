@@ -6,11 +6,11 @@ namespace Pinecone.Client;
 public record DeleteResponse
 {
     #region Mappers
-    
+
     public static DeleteResponse FromProto(Proto.DeleteResponse proto)
     {
         return new DeleteResponse { };
     }
-    
-    #endregion 
+
+    #endregion
 }

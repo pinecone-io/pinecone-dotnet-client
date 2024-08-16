@@ -21,9 +21,9 @@ public record ListRequest
     public string? PaginationToken { get; set; }
 
     public string? Namespace { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.ListRequest ToProto()
     {
         var listRequest = new Proto.ListRequest();
@@ -44,7 +44,7 @@ public record ListRequest
             listRequest.Namespace = Namespace ?? "";
         }
         return listRequest;
-    } 
-    
+    }
+
     #endregion
 }

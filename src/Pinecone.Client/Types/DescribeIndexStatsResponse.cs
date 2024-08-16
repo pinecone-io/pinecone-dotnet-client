@@ -36,9 +36,9 @@ public record DescribeIndexStatsResponse
     /// </summary>
     [JsonPropertyName("totalVectorCount")]
     public uint? TotalVectorCount { get; set; }
-    
+
     #region Mappers
-    
+
     public static DescribeIndexStatsResponse FromProto(Proto.DescribeIndexStatsResponse proto)
     {
         return new DescribeIndexStatsResponse

@@ -33,15 +33,12 @@ public record UpdateRequest
     /// </summary>
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.UpdateRequest ToProto()
     {
-        var updateRequest = new Proto.UpdateRequest
-        {
-            Id = Id,
-        };
+        var updateRequest = new Proto.UpdateRequest { Id = Id, };
         if (Values != null && Values.Any())
         {
             updateRequest.Values.AddRange(Values);
@@ -59,7 +56,7 @@ public record UpdateRequest
             updateRequest.Namespace = Namespace ?? "";
         }
         return updateRequest;
-    } 
-    
+    }
+
     #endregion
 }

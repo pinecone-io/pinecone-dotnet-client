@@ -9,16 +9,13 @@ public record ListItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     #region Mappers
-    
+
     public static ListItem FromProto(Proto.ListItem proto)
     {
-        return new ListItem
-        {
-            Id = proto.Id,
-        };
+        return new ListItem { Id = proto.Id, };
     }
-    
+
     #endregion
 }

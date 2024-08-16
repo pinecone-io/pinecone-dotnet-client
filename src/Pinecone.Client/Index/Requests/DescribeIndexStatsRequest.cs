@@ -14,9 +14,9 @@ public record DescribeIndexStatsRequest
     /// </summary>
     [JsonPropertyName("filter")]
     public Dictionary<string, MetadataValue?>? Filter { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.DescribeIndexStatsRequest ToProto()
     {
         var describeIndexStatsRequest = new Proto.DescribeIndexStatsRequest();
@@ -25,7 +25,7 @@ public record DescribeIndexStatsRequest
             describeIndexStatsRequest.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
         }
         return describeIndexStatsRequest;
-    } 
-    
+    }
+
     #endregion
 }

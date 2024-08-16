@@ -28,15 +28,12 @@ public record Vector
     /// </summary>
     [JsonPropertyName("metadata")]
     public Dictionary<string, MetadataValue?>? Metadata { get; set; }
-    
+
     #region Mappers
-    
+
     public Proto.Vector ToProto()
     {
-        var vector = new Proto.Vector
-        {
-            Id = Id,
-        };
+        var vector = new Proto.Vector { Id = Id, };
         if (Values.Any())
         {
             vector.Values.AddRange(Values);
@@ -58,10 +55,12 @@ public record Vector
         {
             Id = proto.Id,
             Values = proto.Values?.ToList() ?? [],
-            SparseValues = proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
-            Metadata = proto.Metadata != null ? Core.ProtoConverter.FromProtoStruct(proto.Metadata) : null
+            SparseValues =
+                proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
+            Metadata =
+                proto.Metadata != null ? Core.ProtoConverter.FromProtoStruct(proto.Metadata) : null
         };
     }
-    
+
     #endregion
 }
