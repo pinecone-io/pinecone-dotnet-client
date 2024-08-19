@@ -1,40 +1,29 @@
 using Google.Protobuf.WellKnownTypes;
 
-#nullable enable
-
 namespace Pinecone.Client.Core;
 
 /// <summary>
-/// Utility class for converting to and from Protobuf types.
+///     Utility class for converting to and from Protobuf types.
 /// </summary>
 internal class ProtoConverter
 {
     public static Struct ToProtoStruct(Dictionary<string, MetadataValue?> value)
     {
         var result = new Struct();
-        foreach (var kvp in value)
-        {
-            result.Fields[kvp.Key] = ToProtoValue(kvp.Value);
-        }
+        foreach (var kvp in value) result.Fields[kvp.Key] = ToProtoValue(kvp.Value);
         return result;
     }
 
     public static Dictionary<string, MetadataValue?> FromProtoStruct(Struct value)
     {
         var result = new Dictionary<string, MetadataValue?>();
-        foreach (var kvp in value.Fields)
-        {
-            result[kvp.Key] = FromProtoValue(kvp.Value);
-        }
+        foreach (var kvp in value.Fields) result[kvp.Key] = FromProtoValue(kvp.Value);
         return result;
     }
 
     public static Value ToProtoValue(MetadataValue? value)
     {
-        if (value == null)
-        {
-            Value.ForNull();
-        }
+        if (value == null) return Value.ForNull();
         return value.Match<Value>(
             Value.ForString,
             Value.ForNumber,
@@ -58,7 +47,7 @@ internal class ProtoConverter
                 => new MetadataValue(value.ListValue.Values.Select(FromProtoValue).ToList()),
             Value.KindOneofCase.StructValue
                 => new MetadataValue(FromProtoStruct(value.StructValue)),
-            _ => null,
+            _ => null
         };
     }
 }
