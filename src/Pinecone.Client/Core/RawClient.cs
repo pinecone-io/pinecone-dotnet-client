@@ -14,7 +14,6 @@ public class RawClient(
     ClientOptions clientOptions
 )
 {
-    
     /// <summary>
     /// The client options applied on every request.
     /// </summary>
@@ -24,7 +23,7 @@ public class RawClient(
     /// Global headers to be sent with every request.
     /// </summary>
     private readonly Dictionary<string, string> _headers = headers;
-    
+
     /// <summary>
     /// Return the equivalent gRPC client.
     /// </summary>

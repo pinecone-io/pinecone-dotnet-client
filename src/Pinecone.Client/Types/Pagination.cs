@@ -9,16 +9,13 @@ public record Pagination
 {
     [JsonPropertyName("next")]
     public string? Next { get; set; }
-    
+
     #region Mappers
-    
+
     public static Pagination FromProto(Proto.Pagination proto)
     {
-        return new Pagination
-        {
-            Next = proto.Next,
-        };
+        return new Pagination { Next = proto.Next, };
     }
-    
+
     #endregion
 }

@@ -33,7 +33,10 @@ public class IndexClient
     )
     {
         var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.DescribeIndexStatsAsync(request.ToProto(), callOptions);
+        var call = _grpcClient.VectorServiceClient.DescribeIndexStatsAsync(
+            request.ToProto(),
+            callOptions
+        );
         var response = await call.ConfigureAwait(false);
         return DescribeIndexStatsResponse.FromProto(response);
     }
@@ -103,7 +106,10 @@ public class IndexClient
     ///
     /// **Note:** `list` is supported only for serverless indexes.
     /// </summary>
-    public async Task<ListResponse> ListAsync(ListRequest request, GrpcRequestOptions? options = null)
+    public async Task<ListResponse> ListAsync(
+        ListRequest request,
+        GrpcRequestOptions? options = null
+    )
     {
         var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
         var call = _grpcClient.VectorServiceClient.ListAsync(request.ToProto(), callOptions);

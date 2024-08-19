@@ -37,9 +37,9 @@ public record ScoredVector
     /// </summary>
     [JsonPropertyName("metadata")]
     public Dictionary<string, MetadataValue?>? Metadata { get; set; }
-    
+
     #region Mappers
-    
+
     public static ScoredVector FromProto(Proto.ScoredVector proto)
     {
         return new ScoredVector
@@ -47,10 +47,12 @@ public record ScoredVector
             Id = proto.Id,
             Score = proto.Score,
             Values = proto.Values?.ToList(),
-            SparseValues = proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
-            Metadata = proto.Metadata != null ? ProtoConverter.FromProtoStruct(proto.Metadata) : null,
+            SparseValues =
+                proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
+            Metadata =
+                proto.Metadata != null ? ProtoConverter.FromProtoStruct(proto.Metadata) : null,
         };
     }
-    
+
     #endregion
 }

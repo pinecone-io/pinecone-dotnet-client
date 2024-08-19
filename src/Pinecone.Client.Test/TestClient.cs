@@ -37,63 +37,53 @@ public class TestClient
                 },
                 DeletionProtection = DeletionProtection.Disabled
             };
-            var indexModel = await _client.CreateIndexAsync(request: createIndexRequest);
+            var indexModel = await _client.CreateIndexAsync(createIndexRequest);
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
-            
+
             var listIndexes = await _client.ListIndexesAsync();
             Assert.That(listIndexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes, Is.Not.Null);
             Assert.That(listIndexes.Indexes.ToList().Count, Is.EqualTo(1));
-            
+
             var describeIndex = await _client.DescribeIndexAsync(indexName);
             Assert.That(describeIndex, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
 
             // Sleep for a few seconds while the index boots up.
-            System.Threading.Thread.Sleep(3000);
-            var indexClient = _client.Index(name: indexName);
-        
-            var describeIndexStats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+            Thread.Sleep(3000);
+            var indexClient = _client.Index(indexName);
+
+            var describeIndexStats = await indexClient.DescribeIndexStatsAsync(
+                new DescribeIndexStatsRequest()
+            );
             Assert.That(describeIndexStats, Is.Not.Null);
-            
+
             var vectors = new[]
             {
                 new Vector
                 {
                     Id = "vector1",
                     Values = new[] { 0.1f, 0.2f, 0.3f },
-                    Metadata = new Dictionary<string, MetadataValue?> {
-                        ["genre"] = new("horror"),
-                        ["duration"] = new(120),
-                        ["extra"] = new(new List<string> { "one", "two", "three"}),
+                    Metadata = new Dictionary<string, MetadataValue?>
+                    {
+                        ["genre"] = "horror",
+                        ["duration"] = 120,
+                        ["extra"] = new[] { "one", "two", "three" }
                     }
                 }
             };
             var upsertResponse = await indexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = vectors,
-                    Namespace = "test"
-                },
-                new GrpcRequestOptions
-                {
-                    Timeout = TimeSpan.FromSeconds(1)
-                }
+                new UpsertRequest { Vectors = vectors, Namespace = "test" },
+                new GrpcRequestOptions { Timeout = TimeSpan.FromSeconds(1) }
             );
             Assert.That(upsertResponse, Is.Not.Null);
             Assert.That(upsertResponse.UpsertedCount!, Is.EqualTo(1));
 
-            var listResponse = await indexClient.ListAsync(
-                new ListRequest
-                { 
-                    Namespace = "test",
-                }
-            );
+            var listResponse = await indexClient.ListAsync(new ListRequest { Namespace = "test" });
             Assert.That(listResponse, Is.Not.Null);
             Assert.That(listResponse.Vectors, Is.Not.Null);
             Assert.That(listResponse.Namespace, Is.EqualTo("test"));
-            
         }
         catch (Exception ex)
         {
@@ -110,7 +100,7 @@ public class TestClient
     public async Task DeleteServerless()
     {
         var indexName = "serverless-index";
-        await _client.DeleteIndexAsync(indexName: indexName);
+        await _client.DeleteIndexAsync(indexName);
     }
 
     [Ignore("Requires PINECONE_API_KEY")]
@@ -142,12 +132,12 @@ public class TestClient
                 },
                 DeletionProtection = DeletionProtection.Disabled
             };
-            var indexModel = await _client.CreateIndexAsync(request: createIndexRequest);
+            var indexModel = await _client.CreateIndexAsync(createIndexRequest);
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(indexModel.Name, Is.EqualTo(indexName));
 
             // Sleep for a few seconds while the index boots up.
-            System.Threading.Thread.Sleep(5000);
+            Thread.Sleep(5000);
 
             var listIndexes = await _client.ListIndexesAsync();
             Assert.That(listIndexes, Is.Not.Null);
@@ -157,17 +147,16 @@ public class TestClient
             var describeIndex = await _client.DescribeIndexAsync(indexName);
             Assert.That(describeIndex, Is.Not.Null);
 
-            var configureIndex = await _client
-                .ConfigureIndexAsync(
-                    indexName,
-                    new ConfigureIndexRequest
+            var configureIndex = await _client.ConfigureIndexAsync(
+                indexName,
+                new ConfigureIndexRequest
+                {
+                    Spec = new ConfigureIndexRequestSpec
                     {
-                        Spec = new ConfigureIndexRequestSpec
-                        {
-                            Pod = new ConfigureIndexRequestSpecPod { Replicas = 2, PodType = "p1.x1" }
-                        }
+                        Pod = new ConfigureIndexRequestSpecPod { Replicas = 2, PodType = "p1.x1" }
                     }
-                );
+                }
+            );
             Assert.That(indexModel, Is.Not.Null);
             Assert.That(configureIndex.Name, Is.EqualTo(indexName));
         }
@@ -179,14 +168,13 @@ public class TestClient
         {
             DeletePod();
         }
-
     }
-    
+
     [Ignore("Requires PINECONE_API_KEY")]
     [Test]
     public async Task DeletePod()
     {
         var indexName = "pod-index";
-        await _client.DeleteIndexAsync(indexName: indexName);
+        await _client.DeleteIndexAsync(indexName);
     }
 }

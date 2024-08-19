@@ -6,10 +6,10 @@ The official Pinecone .NET library supporting .NET Standard, .NET Core, and .NET
 
 To use this SDK, ensure that your project is targeting one of the following:
 
- * .NET Standard 2.0+
- * .NET Core 3.0+
- * .NET Framework 4.6.2+
- * .NET 6.0+
+* .NET Standard 2.0+
+* .NET Core 3.0+
+* .NET Framework 4.6.2+
+* .NET 6.0+
 
 ## Installation
 
@@ -48,36 +48,38 @@ operations.
 ### Create index
 
 You can use the .NET SDK to create two types of indexes:
-  1. [Serverless indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes) (recommended for most use cases)
-  2. [Pod-based indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#pod-based-indexes) (recommended for high-throughput use cases).
+
+1. [Serverless indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes) (recommended
+   for most use cases)
+2. [Pod-based indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#pod-based-indexes) (recommended for
+   high-throughput use cases).
 
 #### Create a serverless index
 
-The following is an example of creating a serverless index in the `us-east-1` region of AWS. For more information on 
-serverless and regional availability, see [Understanding indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes).
+The following is an example of creating a serverless index in the `us-east-1` region of AWS. For more information on
+serverless and regional availability,
+see [Understanding indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes).
 
 ```csharp
 using Pinecone.Client;
 
 var pinecone = new Pinecone("PINECONE_API_KEY");
 
-var createIndexRequest = new CreateIndexRequest
+var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
-    Name = "example-index",
-    Dimension = 1538,
-    Metric = CreateIndexRequestMetric.Cosine,
-    Spec = new ServerlessIndexSpec
-    {
-        Serverless = new ServerlessSpec
-        {
-            Cloud = ServerlessSpecCloud.Aws,
-            Region = "us-east-1"
-        }
-    },
-    DeletionProtection = DeletionProtection.Enabled
-};
-
-var index = await pinecone.CreateIndexAsync(createIndexRequest);
+   Name = "example-index",
+   Dimension = 1538,
+   Metric = CreateIndexRequestMetric.Cosine,
+   Spec = new ServerlessIndexSpec
+   {
+       Serverless = new ServerlessSpec
+       {
+           Cloud = ServerlessSpecCloud.Aws,
+           Region = "us-east-1"
+       }
+   },
+   DeletionProtection = DeletionProtection.Enabled
+});
 ```
 
 #### Create a pod-based index
@@ -89,26 +91,24 @@ using Pinecone.Client;
 
 var pinecone = new Pinecone("PINECONE_API_KEY");
 
-var createIndexRequest = new CreateIndexRequest
+var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
-    Name = "example-index",
-    Dimension = 1538,
-    Metric = CreateIndexRequestMetric.Cosine,
-    Spec = new PodIndexSpec
-    {
-        Pod = new PodSpec
-        {
-            Environment = "us-east-1-aws",
-            PodType = "p1.x1",
-            Pods = 1,
-            Replicas = 1,
-            Shards = 1,
-        }
-    },
-    DeletionProtection = DeletionProtection.Enabled
-};
-
-var index = await pinecone.CreateIndexAsync(createIndexRequest);
+   Name = "example-index",
+   Dimension = 1538,
+   Metric = CreateIndexRequestMetric.Cosine,
+   Spec = new PodIndexSpec
+   {
+       Pod = new PodSpec
+       {
+           Environment = "us-east-1-aws",
+           PodType = "p1.x1",
+           Pods = 1,
+           Replicas = 1,
+           Shards = 1
+       }
+   },
+   DeletionProtection = DeletionProtection.Enabled
+});
 ```
 
 ### List indexes
@@ -156,18 +156,17 @@ using Pinecone.Client;
 
 var pinecone = new Pinecone("PINECONE_API_KEY");
 
-var configureIndexRequest = new ConfigureIndexRequest
+var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", new ConfigureIndexRequest
 {
-    Spec = new ConfigureIndexRequestSpec
-    {
-        Pod = new ConfigureIndexRequestSpecPod {
-            Replicas = 2,
-            PodType = "p1.x1"
-        }
-    }
-};
-
-var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", configureIndexRequest);
+   Spec = new ConfigureIndexRequestSpec
+   {
+       Pod = new ConfigureIndexRequestSpecPod
+       {
+           Replicas = 2,
+           PodType = "p1.x1"
+       }
+   }
+});
 ```
 
 > Note that scaling replicas is only applicable to pod-based indexes.
@@ -207,8 +206,8 @@ var upsertResponse = await index.UpsertAsync(new UpsertRequest {
             Id = "v1",
             Values = new[] { 0.1f, 0.2f, 0.3f },
             Metadata = new Dictionary<string, MetadataValue?> {
-                ["genre"] = new("horror"),
-                ["year"] = new(2020),
+                ["genre"] = "horror",
+                ["year"] = 2020,
             }
         }
     },
@@ -227,11 +226,48 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var queryResponse = await index.QueryAsync(new QueryRequest {
-    Id = "v1",
-    Namespace = "example-namespace",
-    TopK = 3,
-});
+var queryResponse = await index.QueryAsync(
+   new QueryRequest
+   {
+       Namespace = "example-namespace",
+       Vector = [0.1f, 0.2f, 0.3f, 0.4f],
+       TopK = 10,
+       IncludeValues = true,
+       IncludeMetadata = true,
+       Filter = new Dictionary<string, MetadataValue?>
+       {
+           ["genre"] =
+               new Dictionary<string, MetadataValue?>
+               {
+                   ["$in"] = new[] { "comedy", "documentary", "drama" }
+               }
+       }
+   });
+```
+
+### Query sparse-dense vectors
+
+The following example queries an index using a sparse-dense vector:
+
+```csharp
+using Pinecone.Client;
+
+var pinecone = new Pinecone("PINECONE_API_KEY");
+
+var index = pinecone.Index("example-index");
+
+var queryResponse = await index.QueryAsync(
+   new QueryRequest
+   {
+       TopK = 10,
+       Vector = [0.1f, 0.2f, 0.3f],
+       SparseVector = new SparseValues
+       {
+           Indices = [10, 45, 16],
+           Values = [0.5f, 0.5f, 0.2f]
+       }
+   }
+);
 ```
 
 ### Delete vectors
@@ -245,9 +281,10 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var deleteResponse = await index.DeleteAsync(new DeleteRequest {
-    Ids = new List<string> { "v1" },
-    Namespace = "example-namespace",
+var deleteResponse = await index.DeleteAsync(new DeleteRequest
+{
+   Ids = new[] { "v1" },
+   Namespace = "example-namespace"
 });
 ```
 
@@ -278,7 +315,7 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 var index = pinecone.Index("example-index");
 
 var fetchResponse = await index.FetchAsync(new FetchRequest {
-    Ids = new List<string> { "v1" },
+    Ids = new[] { "v1" },
     Namespace = "example-namespace",
 });
 ```
@@ -314,10 +351,12 @@ var pinecone = new Pinecone("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var updateResponse = await index.UpdateAsync(new UpdateRequest {
-    Id = "v1",
-    Namespace = "example-namespace",
-    Values = new[] { 0.1f, 0.2f, 0.3f },
+var updateResponse = await index.UpdateAsync(new UpdateRequest
+{
+   Id = "vec1",
+   Values = new[] { 0.1f, 0.2f, 0.3f, 0.4f },
+   SetMetadata = new Dictionary<string, MetadataValue?> { ["genre"] = "drama" },
+   Namespace = "example-namespace"
 });
 ```
 
@@ -378,13 +417,45 @@ await pinecone.DeleteCollectionAsync("example-collection");
 
 ## Advanced
 
-### HTTP client
+### Control Plane Client Options
+
+Control Plane endpoints are accessed via standard HTTP requests. You can configure the following HTTP client options:
+
+- **MaxRetries**: The maximum number of times the client will retry a failed request. Default is `2`.
+- **Timeout**: The time limit for each request before it times out. Default is `30 seconds`.
+- **BaseUrl**: The base URL for all requests.
+- **HttpClient**: The HTTP client to be used for all requests.
+
+Example usage:
 
 ```csharp
-var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions{
+var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions
+{
+    MaxRetries = 3,
+    Timeout = TimeSpan.FromSeconds(60),
     HttpClient = ... // Override the Http Client
-    BaseURL = ... // Override the Base URL
-})
+    BaseUrl = ... // Override the Base URL
+});
+```
+
+### Data Plane gRPC Options
+
+Data Plane endpoints are accessed via gRPC. You can configure the Pinecone client with gRPC channel options for advanced
+control over gRPC communication settings. These options allow you to customize various aspects like message size limits,
+retry attempts, credentials, and more.
+
+Example usage:
+
+```csharp
+var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions
+{
+    GrpcOptions = new GrpcChannelOptions
+    {
+        MaxRetryAttempts = 5,
+        MaxReceiveMessageSize = 4 * 1024 * 1024 // 4 MB
+        // Additional configuration options...
+    }
+});
 ```
 
 ### Exception handling

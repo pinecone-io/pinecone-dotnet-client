@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using Proto = Pinecone.Grpc;
 using Pinecone.Client;
-
+using Proto = Pinecone.Grpc;
 
 #nullable enable
 
@@ -20,9 +19,9 @@ public record SingleQueryResults
     /// </summary>
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
-    
+
     #region Mappers
-    
+
     public static SingleQueryResults FromProto(Proto.SingleQueryResults proto)
     {
         return new SingleQueryResults
@@ -31,6 +30,6 @@ public record SingleQueryResults
             Namespace = proto.Namespace,
         };
     }
-    
+
     #endregion
 }

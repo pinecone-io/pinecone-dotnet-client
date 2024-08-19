@@ -6,7 +6,7 @@ namespace Pinecone.Client;
 public class Pinecone : BasePinecone
 {
     private readonly string _apiKey;
-    
+
     public Pinecone(string? apiKey = "", ClientOptions? clientOptions = null)
         : base(apiKey, clientOptions)
     {
@@ -27,7 +27,7 @@ public class Pinecone : BasePinecone
         {
             throw new Exception("Either name or host must be specified");
         }
-        
+
         host ??= DescribeIndexAsync(indexName: name!).Result.Host;
         clientOptions ??= new ClientOptions();
         var client = new RawClient(
@@ -59,10 +59,9 @@ public class Pinecone : BasePinecone
         }
         return "https://" + host;
     }
-    
+
     private static string GetFromEnvironmentOrThrow(string env, string message)
     {
         return Environment.GetEnvironmentVariable(env) ?? throw new Exception(message);
     }
-
 }

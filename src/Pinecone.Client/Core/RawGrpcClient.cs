@@ -1,7 +1,7 @@
 using Grpc.Core;
-using Pinecone.Grpc;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Options;
+using Pinecone.Grpc;
 
 namespace Pinecone.Client.Core;
 
@@ -12,7 +12,7 @@ namespace Pinecone.Client.Core;
 public class RawGrpcClient
 {
     public VectorService.VectorServiceClient VectorServiceClient;
-    
+
     /// <summary>
     /// The client options applied on every request.
     /// </summary>
@@ -23,22 +23,23 @@ public class RawGrpcClient
     /// a copy for immutability.
     /// </summary>
     private readonly Dictionary<string, string> _headers;
-    
+
     public RawGrpcClient(Dictionary<string, string> headers, ClientOptions clientOptions)
     {
         _clientOptions = clientOptions;
         _headers = new Dictionary<string, string>(headers);
 
         var grpcOptions = PrepareGrpcChannelOptions();
-        var channel = grpcOptions != null
-            ? GrpcChannel.ForAddress(_clientOptions.BaseUrl, grpcOptions)
-            : GrpcChannel.ForAddress(_clientOptions.BaseUrl);
-        VectorServiceClient = new VectorService.VectorServiceClient(channel); 
+        var channel =
+            grpcOptions != null
+                ? GrpcChannel.ForAddress(_clientOptions.BaseUrl, grpcOptions)
+                : GrpcChannel.ForAddress(_clientOptions.BaseUrl);
+        VectorServiceClient = new VectorService.VectorServiceClient(channel);
     }
 
     /// <summary>
     /// Prepares the gRPC metadata associated with the given request.
-    /// 
+    ///
     /// The provided request headers take precedence over the headers
     /// associated with this client (which are sent on _every_ request).
     /// </summary>
@@ -54,7 +55,7 @@ public class RawGrpcClient
         {
             metadata.Add(header.Key, header.Value);
         }
-        
+
         // Configure the gRPC deadline.
         var timeout = options.Timeout ?? _clientOptions.Timeout;
         var deadline = DateTime.UtcNow.Add(timeout);
@@ -79,7 +80,7 @@ public class RawGrpcClient
 
         grpcChannelOptions.HttpClient ??= _clientOptions.HttpClient;
         grpcChannelOptions.MaxRetryAttempts ??= _clientOptions.MaxRetries;
-        
+
         return grpcChannelOptions;
     }
 }
