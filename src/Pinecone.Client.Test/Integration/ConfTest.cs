@@ -3,10 +3,10 @@ using NUnit.Framework;
 
 namespace Pinecone.Client.Test.Integration;
 
-public class BaseTest
+public class ConfTest
 {
     private string _apiKey;
-    private IndexClient _client;
+    private Pinecone _client;
     private string _indexHost;
     private string _indexName;
     private string _listNamespace;
@@ -18,8 +18,8 @@ public class BaseTest
     [OneTimeSetUp]
     public async Task GlobalSetup()
     {
-        _apiKey = Helpers.ApiKey();
-        _client = Helpers.BuildClient();
+        _apiKey = Helpers.GetEnvironmentVar("");
+        _client = new Pinecone(_apiKey);
         _metric = Utils.GetEnvironmentVar("METRIC", "cosine");
         _spec = JsonConvert.DeserializeObject<dynamic>(Utils.GetEnvironmentVar("SPEC"));
         _indexName = "dataplane-" + Helpers.RandomString(20);
@@ -55,17 +55,17 @@ public class BaseTest
     {
         Console.WriteLine("Seeding data in host " + _indexHost);
 
-        Console.WriteLine("Seeding data in weird ids namespace " + _weirdIdsNamespace);
-        await Utils.SetupWeirdIdsData(_client, _weirdIdsNamespace, true);
+        // Console.WriteLine("Seeding data in weird ids namespace " + _weirdIdsNamespace);
+        // await Utils.SetupWeirdIdsData(_client, _weirdIdsNamespace, true);
 
         Console.WriteLine("Seeding list data in namespace " + _listNamespace);
-        await Utils.SetupListData(_client, _listNamespace, true);
+        await Seed.SetupListData(_client.Index(host: _indexHost), _listNamespace, true);
 
         Console.WriteLine("Seeding data in namespace " + _namespace);
-        await Utils.SetupData(_client, _namespace, false);
+        await Seed.SetupData(_client, _namespace, false);
 
         Console.WriteLine("Seeding data in namespace \"\"");
-        await Utils.SetupData(_client, "", true);
+        await Seed.SetupData(_client, "", true);
 
         Console.WriteLine("Waiting a bit more to ensure freshness");
         await Task.Delay(120000); // 120 seconds
@@ -75,7 +75,7 @@ public class BaseTest
     public async Task GlobalTeardown()
     {
         Console.WriteLine("Deleting index with name: " + _indexName);
-        await _client.DeleteIndexAsync(new DeleteIndexRequest { Name = _indexName, Force = true });
+        await _client.DeleteIndexAsync(_indexName);
     }
 
     [Test]

@@ -1,21 +1,8 @@
-using NUnit.Framework;
-using Pinecone.Client.Core;
-
 namespace Pinecone.Client.Test.Integration;
 
-[TestFixture]
-public class PineconeTests
+public class Seed
 {
-    [SetUp]
-    public void Setup()
-    {
-        var rawClient = new RawClient(); // Initialize as per your configuration
-        _indexClient = new IndexClient(rawClient);
-    }
-
-    private IndexClient _indexClient;
-
-    private async Task SetupData(IndexClient idx, string targetNamespace, bool wait)
+    public static async Task SetupData(IndexClient idx, string targetNamespace, bool wait)
     {
         // Upsert without metadata
         await idx.UpsertAsync(new UpsertRequest
@@ -70,12 +57,27 @@ public class PineconeTests
                 targetNamespace);
     }
 
-    private async Task PollFetchForIdsInNamespace(IndexClient idx, string[] ids, string targetNamespace)
+    public static async Task SetupListData(IndexClient idx, string targetNamespace, bool wait)
+    {
+        // Upsert a bunch more stuff for testing list pagination
+        for (var i = 0; i < 1000; i += 50)
+        {
+            var vectors = new List<Vector>();
+            for (var d = 0; d < 50; d++)
+                vectors.Add(new Vector { Id = (i + d).ToString(), Values = EmbeddingValues(2) });
+
+            await idx.UpsertAsync(new UpsertRequest { Vectors = vectors, Namespace = targetNamespace });
+        }
+
+        if (wait) await PollFetchForIdsInNamespace(idx, new[] { "999" }, targetNamespace);
+    }
+
+    private static async Task PollFetchForIdsInNamespace(IndexClient idx, string[] ids, string targetNamespace)
     {
         // Implement polling logic as per your requirement.
     }
 
-    private float[] EmbeddingValues(int count)
+    private static float[] EmbeddingValues(int count)
     {
         return new float[count];
     }
