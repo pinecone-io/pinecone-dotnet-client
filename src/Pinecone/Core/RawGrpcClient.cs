@@ -46,7 +46,7 @@ public class RawGrpcClient
     public CallOptions CreateCallOptions(GrpcRequestOptions options)
     {
         // Prepare the gRPC metadata (i.e. headers).
-        var metadata = new Metadata();
+        var metadata = new global::Grpc.Core.Metadata();
         foreach (var header in _headers)
         {
             metadata.Add(header.Key, header.Value);

@@ -27,7 +27,7 @@ public record Vector
     /// This is the metadata included in the request.
     /// </summary>
     [JsonPropertyName("metadata")]
-    public Dictionary<string, MetadataValue?>? Metadata { get; set; }
+    public Metadata? Metadata { get; set; }
 
     #region Mappers
 
@@ -44,7 +44,7 @@ public record Vector
         }
         if (Metadata != null)
         {
-            vector.Metadata = Core.ProtoConverter.ToProtoStruct(Metadata);
+            vector.Metadata = Metadata.ToProto();
         }
         return vector;
     }
@@ -58,7 +58,7 @@ public record Vector
             SparseValues =
                 proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
             Metadata =
-                proto.Metadata != null ? Core.ProtoConverter.FromProtoStruct(proto.Metadata) : null
+                proto.Metadata != null ? Metadata.FromProto(proto.Metadata) : null
         };
     }
 

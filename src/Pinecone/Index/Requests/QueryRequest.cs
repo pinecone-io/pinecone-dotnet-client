@@ -24,7 +24,7 @@ public record QueryRequest
     /// The filter to apply. You can use vector metadata to limit your search. See [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
     /// </summary>
     [JsonPropertyName("filter")]
-    public Dictionary<string, MetadataValue?>? Filter { get; set; }
+    public Metadata? Filter { get; set; }
 
     /// <summary>
     /// Indicates whether vector values are included in the response.
@@ -73,7 +73,7 @@ public record QueryRequest
         }
         if (Filter != null)
         {
-            queryRequest.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
+            queryRequest.Filter = Filter.ToProto();
         }
         if (IncludeValues != null)
         {

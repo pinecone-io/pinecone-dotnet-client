@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
 using OneOf;
 using Pinecone.Core;
+using Proto = Google.Protobuf.WellKnownTypes;
+
+#nullable enable
 
 namespace Pinecone;
 
@@ -11,7 +14,7 @@ public class MetadataValue(
         double,
         bool,
         IEnumerable<MetadataValue?>,
-        Dictionary<string, MetadataValue?>
+        Metadata
     > value
 )
     : OneOfBase<
@@ -19,9 +22,31 @@ public class MetadataValue(
         double,
         bool,
         IEnumerable<MetadataValue?>,
-        Dictionary<string, MetadataValue?>
+        Metadata
     >(value)
 {
+    internal Proto.Value ToProto() =>
+        Match<Proto.Value>(
+            Proto.Value.ForString,
+            Proto.Value.ForNumber,
+            Proto.Value.ForBool,
+            list => new Proto.Value { ListValue = new Proto.ListValue { Values = { list.Select(item => item?.ToProto()) } } },
+            nested => new Proto.Value { StructValue = nested.ToProto() }
+        );
+
+    internal static MetadataValue? FromProto(Proto.Value value)
+    {
+        return value.KindCase switch
+        {
+            Proto.Value.KindOneofCase.StringValue => value.StringValue,
+            Proto.Value.KindOneofCase.NumberValue => value.NumberValue,
+            Proto.Value.KindOneofCase.BoolValue => value.BoolValue,
+            Proto.Value.KindOneofCase.ListValue => value.ListValue.Values.Select(FromProto).ToList(),
+            Proto.Value.KindOneofCase.StructValue => Metadata.FromProto(value.StructValue),
+            _ => null,
+        };
+    }
+
     public static implicit operator MetadataValue(string value)
     {
         return new MetadataValue(value);
@@ -37,7 +62,7 @@ public class MetadataValue(
         return new MetadataValue(value);
     }
 
-    public static implicit operator MetadataValue(Dictionary<string, MetadataValue?> value)
+    public static implicit operator MetadataValue(Metadata value)
     {
         return new MetadataValue(value);
     }
@@ -54,7 +79,7 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(string[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v) : null).ToList());
+        return new MetadataValue(value.Select(v => new MetadataValue(v)).ToList());
     }
 
     public static implicit operator MetadataValue(double[] value)

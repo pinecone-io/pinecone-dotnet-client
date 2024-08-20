@@ -36,7 +36,7 @@ public record QueryVector
     /// An override for the metadata filter to apply. This replaces the request-level filter.
     /// </summary>
     [JsonPropertyName("filter")]
-    public Dictionary<string, MetadataValue?>? Filter { get; set; }
+    public Metadata? Filter { get; set; }
 
     #region Mappers
 
@@ -61,7 +61,7 @@ public record QueryVector
         }
         if (Filter != null)
         {
-            queryVector.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
+            queryVector.Filter = Filter.ToProto();
         }
         return queryVector;
     }

@@ -13,7 +13,7 @@ public record DescribeIndexStatsRequest
     ///  See https://docs.pinecone.io/guides/data/filtering-with-metadata.
     /// </summary>
     [JsonPropertyName("filter")]
-    public Dictionary<string, MetadataValue?>? Filter { get; set; }
+    public Metadata? Filter { get; set; }
 
     #region Mappers
 
@@ -22,7 +22,7 @@ public record DescribeIndexStatsRequest
         var describeIndexStatsRequest = new Proto.DescribeIndexStatsRequest();
         if (Filter != null)
         {
-            describeIndexStatsRequest.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
+            describeIndexStatsRequest.Filter = Filter.ToProto();
         }
         return describeIndexStatsRequest;
     }

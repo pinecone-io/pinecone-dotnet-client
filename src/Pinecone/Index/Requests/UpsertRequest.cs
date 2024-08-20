@@ -27,7 +27,6 @@ public record UpsertRequest
         var upsertRequest = new Proto.UpsertRequest();
         if (Vectors.Any())
         {
-            // TODO: Test if we can drop the any check.
             upsertRequest.Vectors.AddRange(Vectors.Select(vector => vector.ToProto()));
         }
         if (Namespace != null)
