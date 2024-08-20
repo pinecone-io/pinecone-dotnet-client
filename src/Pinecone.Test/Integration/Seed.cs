@@ -28,7 +28,7 @@ public static class Seed
                     {
                         Id = "4",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Dictionary<string, MetadataValue?>
+                        Metadata = new Metadata
                         {
                             { "genre", "action" },
                             { "runtime", 120 }
@@ -38,7 +38,7 @@ public static class Seed
                     {
                         Id = "5",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Dictionary<string, MetadataValue?>
+                        Metadata = new Metadata
                         {
                             { "genre", "comedy" },
                             { "runtime", 90 }
@@ -48,7 +48,7 @@ public static class Seed
                     {
                         Id = "6",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Dictionary<string, MetadataValue?>
+                        Metadata = new Metadata
                         {
                             { "genre", "romance" },
                             { "runtime", 240 }

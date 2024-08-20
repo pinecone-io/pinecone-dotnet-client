@@ -15,7 +15,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?> { { "genre", "action" } },
+                Filter = new Metadata { { "genre", "action" } },
                 TopK = 10
             }
         );
@@ -37,11 +37,11 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "runtime",
-                        new MetadataValue(new Dictionary<string, MetadataValue?> { { "$gt", 100 } })
+                        new MetadataValue(new Metadata { { "$gt", 100 } })
                     }
                 },
                 TopK = 10
@@ -66,11 +66,11 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "runtime",
-                        new MetadataValue(new Dictionary<string, MetadataValue?> { { "$gte", 90 } })
+                        new MetadataValue(new Metadata { { "$gte", 90 } })
                     }
                 },
                 TopK = 10
@@ -96,11 +96,11 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "runtime",
-                        new MetadataValue(new Dictionary<string, MetadataValue?> { { "$lt", 100 } })
+                        new MetadataValue(new Metadata { { "$lt", 100 } })
                     }
                 },
                 TopK = 10
@@ -124,12 +124,12 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "runtime",
                         new MetadataValue(
-                            new Dictionary<string, MetadataValue?> { { "$lte", 120 } }
+                            new Metadata { { "$lte", 120 } }
                         )
                     }
                 },
@@ -155,12 +155,12 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "genre",
                         new MetadataValue(
-                            new Dictionary<string, MetadataValue?>
+                            new Metadata
                             {
                                 {
                                     "$in",
@@ -192,12 +192,12 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "genre",
                         new MetadataValue(
-                            new Dictionary<string, MetadataValue?>
+                            new Metadata
                             {
                                 {
                                     "$nin",
@@ -229,12 +229,12 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "genre",
                         new MetadataValue(
-                            new Dictionary<string, MetadataValue?> { { "$eq", "action" } }
+                            new Metadata { { "$eq", "action" } }
                         )
                     }
                 },
@@ -260,12 +260,12 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
             {
                 Id = "1",
                 Namespace = targetNamespace,
-                Filter = new Dictionary<string, MetadataValue?>
+                Filter = new Metadata
                 {
                     {
                         "genre",
                         new MetadataValue(
-                            new Dictionary<string, MetadataValue?> { { "$ne", "action" } }
+                            new Metadata { { "$ne", "action" } }
                         )
                     }
                 },
