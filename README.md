@@ -34,9 +34,9 @@ API reference documentation is available [here](https://docs.pinecone.io/referen
 Instantiate the SDK using the `Pinecone` class.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-Pinecone pinecone = new Pinecone("PINECONE_API_KEY")
+var pinecone = new PineconeClient("PINECONE_API_KEY")
 ```
 
 ## Indexes
@@ -61,9 +61,9 @@ serverless and regional availability,
 see [Understanding indexes](https://docs.pinecone.io/guides/indexes/understanding-indexes#serverless-indexes).
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
@@ -87,9 +87,9 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 The following is a minimal example of creating a pod-based index.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
@@ -116,9 +116,9 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 The following example returns all indexes (and their corresponding metadata) in your project.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var indexesInYourProject = await pinecone.ListIndexesAsync();
 ```
@@ -128,9 +128,9 @@ var indexesInYourProject = await pinecone.ListIndexesAsync();
 The following example deletes an index by name.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 await pinecone.DeleteIndexAsync("example-index");
 ```
@@ -140,9 +140,9 @@ await pinecone.DeleteIndexAsync("example-index");
 The following example returns metadata about an index.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var indexModel = pinecone.DescribeIndexAsync("example-index");
 ```
@@ -152,9 +152,9 @@ var indexModel = pinecone.DescribeIndexAsync("example-index");
 The following example changes the number of replicas for an index.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", new ConfigureIndexRequest
 {
@@ -176,9 +176,9 @@ var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", new Conf
 The following example returns statistics about an index.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 var indexStatsResponse = await index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
@@ -192,9 +192,9 @@ Operations related to the indexing, deleting, and querying of vectors are called
 The following example upserts vectors to `example-index`.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -220,9 +220,9 @@ var upsertResponse = await index.UpsertAsync(new UpsertRequest {
 The following example queries the index `example-index` with metadata filtering.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -250,9 +250,9 @@ var queryResponse = await index.QueryAsync(
 The following example queries an index using a sparse-dense vector:
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -275,9 +275,9 @@ var queryResponse = await index.QueryAsync(
 The following example deletes vectors by ID.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -291,9 +291,9 @@ var deleteResponse = await index.DeleteAsync(new DeleteRequest
 The following example deletes all records in a namespace and the namespace itself:
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -308,9 +308,9 @@ var deleteResponse = await index.DeleteAsync(new DeleteRequest {
 The following example fetches vectors by ID.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -328,9 +328,9 @@ The following demonstrates how to use the list endpoint to get vector
 IDs from a specific namespace, filtered by a given prefix.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -345,9 +345,9 @@ var listResponse = await index.ListAsync(new ListRequest {
 The following example updates vectors by ID.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
@@ -369,9 +369,9 @@ Collections fall under data plane operations.
 The following creates a collection.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var collectionModel = await pinecone.CreateCollectionAsync(new CreateCollectionRequest {
     Name = "example-collection",
@@ -384,9 +384,9 @@ var collectionModel = await pinecone.CreateCollectionAsync(new CreateCollectionR
 The following example returns a list of the collections in the current project.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var collectionList = await pinecone.ListCollectionsAsync();
 ```
@@ -396,9 +396,9 @@ var collectionList = await pinecone.ListCollectionsAsync();
 The following example returns a description of the collection.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var collectionModel = await pinecone.DescribeCollectionAsync("example-collection");
 ```
@@ -408,9 +408,9 @@ var collectionModel = await pinecone.DescribeCollectionAsync("example-collection
 The following example deletes the collection `example-collection`.
 
 ```csharp
-using Pinecone.Client;
+using Pinecone;
 
-var pinecone = new Pinecone("PINECONE_API_KEY");
+var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 await pinecone.DeleteCollectionAsync("example-collection");
 ```
@@ -429,7 +429,7 @@ Control Plane endpoints are accessed via standard HTTP requests. You can configu
 Example usage:
 
 ```csharp
-var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions
+var pinecone = new PineconeClient("PINECONE_API_KEY", new ClientOptions
 {
     MaxRetries = 3,
     Timeout = TimeSpan.FromSeconds(60),
@@ -447,7 +447,7 @@ retry attempts, credentials, and more.
 Example usage:
 
 ```csharp
-var pinecone = new Pinecone("PINECONE_API_KEY", new ClientOptions
+var pinecone = new PineconeClient("PINECONE_API_KEY", new ClientOptions
 {
     GrpcOptions = new GrpcChannelOptions
     {
