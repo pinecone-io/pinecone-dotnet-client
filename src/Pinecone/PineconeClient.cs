@@ -27,7 +27,14 @@ public class PineconeClient : BasePinecone
             throw new Exception("Either name or host must be specified");
         }
 
-        host ??= DescribeIndexAsync(indexName: name!).Result.Host;
+        try
+        {
+            host ??= DescribeIndexAsync(indexName: name!).Result.Host;
+        }
+        catch (AggregateException e)
+        {
+            throw e.InnerException ?? e;
+        } 
         clientOptions ??= new ClientOptions();
         var client = new RawClient(
             new Dictionary<string, string>

@@ -54,7 +54,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(string[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(double[] value)
@@ -64,7 +66,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(double?[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(bool[] value)
@@ -74,7 +78,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(bool?[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(List<string> value)
@@ -89,7 +95,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(List<double?> value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(List<bool> value)
@@ -99,6 +107,8 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(List<bool?> value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 }

@@ -31,50 +31,41 @@ public class CreateIndexTest
     public void TestCreateIndex()
     {
         var inputJson = """
-                        {
-                          "name": "serverless-index",
-                          "dimension": 1536,
-                          "metric": "cosine",
-                          "deletion_protection": null,
-                          "spec": {
-                            "cloud": "aws",
-                            "region": "us-east-1"
-                          }
-                        }
-                        """;
+            {
+              "name": "serverless-index",
+              "dimension": 1536,
+              "metric": "cosine",
+              "deletion_protection": null,
+              "spec": {
+                "cloud": "aws",
+                "region": "us-east-1"
+              }
+            }
+            """;
 
         var mockResponse = """
-                           {
-                             "name": "serverless-index",
-                             "dimension": 3,
-                             "metric": "cosine",
-                             "host": "serverless-index-gb6vrs7.svc.aped-4627-b74a.pinecone.io",
-                             "deletion_protection": "disabled",
-                             "spec": {
-                               "pod": null,
-                               "serverless": {
-                                 "cloud": "aws",
-                                 "region": "us-east-1"
-                               }
-                             },
-                             "status": {
-                               "ready": false,
-                               "state": "Initializing"
-                             }
-                           }
-                           """;
+            {
+              "name": "serverless-index",
+              "dimension": 3,
+              "metric": "cosine",
+              "host": "serverless-index-gb6vrs7.svc.aped-4627-b74a.pinecone.io",
+              "deletion_protection": "disabled",
+              "spec": {
+                "pod": null,
+                "serverless": {
+                  "cloud": "aws",
+                  "region": "us-east-1"
+                }
+              },
+              "status": {
+                "ready": false,
+                "state": "Initializing"
+              }
+            }
+            """;
         _server
-            .Given(
-                Request.Create()
-                    .WithPath("/indexes")
-                    .UsingPost()
-                    .WithBody(inputJson)
-            )
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
+            .Given(Request.Create().WithPath("/indexes").UsingPost().WithBody(inputJson))
+            .RespondWith(Response.Create().WithStatusCode(200).WithBody(mockResponse));
 
         var request = new CreateIndexRequest
         {

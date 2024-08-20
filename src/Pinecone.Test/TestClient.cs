@@ -15,7 +15,6 @@ public class TestClient
 
     private PineconeClient _client;
 
-    [Ignore("Requires PINECONE_API_KEY")]
     [Test]
     public async Task CreateServerless()
     {
