@@ -64,7 +64,7 @@ public class TestClient
                 {
                     Id = "vector1",
                     Values = new[] { 0.1f, 0.2f, 0.3f },
-                    Metadata = new Dictionary<string, MetadataValue?>
+                    Metadata = new Metadata
                     {
                         ["genre"] = "horror",
                         ["duration"] = 120,
@@ -83,6 +83,27 @@ public class TestClient
             Assert.That(listResponse, Is.Not.Null);
             Assert.That(listResponse.Vectors, Is.Not.Null);
             Assert.That(listResponse.Namespace, Is.EqualTo("test"));
+
+            // Sleep for a few more seconds so that the query can succeed.
+            Thread.Sleep(3000);
+            var queryResponse = await indexClient.QueryAsync(new QueryRequest {
+                TopK = 1,
+                Namespace = "test",
+                Vector = new[] { 0.1f, 0.2f, 0.3f },
+                Filter = new Metadata
+                {
+                    ["genre"] =
+                        new Metadata
+                        {
+                            ["$eq"] = "horror"
+                        }
+                },
+                IncludeMetadata = true,
+                IncludeValues = true
+            });
+            Assert.That(queryResponse, Is.Not.Null);
+            Assert.That(queryResponse.Matches, Is.Not.Null);
+            Assert.That(queryResponse.Matches.ToList().Count, Is.EqualTo(1));
         }
         catch (Exception ex)
         {
@@ -165,7 +186,7 @@ public class TestClient
         }
         finally
         {
-            DeletePod();
+            await DeletePod();
         }
     }
 

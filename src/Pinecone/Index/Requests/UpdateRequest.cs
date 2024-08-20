@@ -26,7 +26,7 @@ public record UpdateRequest
     /// Metadata to set for the vector.
     /// </summary>
     [JsonPropertyName("setMetadata")]
-    public Dictionary<string, MetadataValue?>? SetMetadata { get; set; }
+    public Metadata? SetMetadata { get; set; }
 
     /// <summary>
     /// The namespace containing the vector to update.
@@ -49,7 +49,7 @@ public record UpdateRequest
         }
         if (SetMetadata != null)
         {
-            updateRequest.SetMetadata = Core.ProtoConverter.ToProtoStruct(SetMetadata);
+            updateRequest.SetMetadata = SetMetadata.ToProto();
         }
         if (Namespace != null)
         {

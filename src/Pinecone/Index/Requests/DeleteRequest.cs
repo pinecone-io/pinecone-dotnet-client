@@ -32,7 +32,7 @@ public record DeleteRequest
     ///  Serverless indexes do not support delete by metadata. Instead, you can use the `list` operation to fetch the vector IDs based on their common ID prefix and then delete the records by ID.
     /// </summary>
     [JsonPropertyName("filter")]
-    public Dictionary<string, MetadataValue?>? Filter { get; set; }
+    public Metadata? Filter { get; set; }
 
     #region Mappers
 
@@ -53,7 +53,7 @@ public record DeleteRequest
         }
         if (Filter != null)
         {
-            deleteRequest.Filter = Core.ProtoConverter.ToProtoStruct(Filter);
+            deleteRequest.Filter = Filter.ToProto();
         }
         return deleteRequest;
     }

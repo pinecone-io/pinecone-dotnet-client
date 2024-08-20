@@ -205,7 +205,7 @@ var upsertResponse = await index.UpsertAsync(new UpsertRequest {
         {
             Id = "v1",
             Values = new[] { 0.1f, 0.2f, 0.3f },
-            Metadata = new Dictionary<string, MetadataValue?> {
+            Metadata = new Metadata {
                 ["genre"] = "horror",
                 ["year"] = 2020,
             }
@@ -234,10 +234,10 @@ var queryResponse = await index.QueryAsync(
        TopK = 10,
        IncludeValues = true,
        IncludeMetadata = true,
-       Filter = new Dictionary<string, MetadataValue?>
+       Filter = new Metadata
        {
            ["genre"] =
-               new Dictionary<string, MetadataValue?>
+               new Metadata
                {
                    ["$in"] = new[] { "comedy", "documentary", "drama" }
                }
@@ -355,7 +355,7 @@ var updateResponse = await index.UpdateAsync(new UpdateRequest
 {
    Id = "vec1",
    Values = new[] { 0.1f, 0.2f, 0.3f, 0.4f },
-   SetMetadata = new Dictionary<string, MetadataValue?> { ["genre"] = "drama" },
+   SetMetadata = new Metadata { ["genre"] = "drama" },
    Namespace = "example-namespace"
 });
 ```
