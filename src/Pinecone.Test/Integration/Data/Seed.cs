@@ -115,7 +115,7 @@ public static class Seed
             );
             Console.WriteLine(results);
 
-            var allPresent = ids.All(id => results.Vectors.ContainsKey(id));
+            var allPresent = ids.All(id => results.Vectors!.ContainsKey(id));
             if (allPresent)
             {
                 done = true;
