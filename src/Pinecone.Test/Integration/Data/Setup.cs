@@ -1,29 +1,28 @@
-using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace Pinecone.Test.Integration;
+namespace Pinecone.Test.Integration.Data;
 
 [SetUpFixture]
 public static class Setup
 {
-    public static string ApiKey { get; private set; }
-    public static PineconeClient Client { get; private set; }
-    public static string IndexHost { get; private set; }
-    public static string IndexName { get; private set; }
-    public static string ListNamespace { get; private set; }
+    public static string ApiKey { get; private set; } = null!;
+    public static PineconeClient Client { get; private set; } = null!;
+    public static string IndexHost { get; private set; } = null!;
+    public static string IndexName { get; private set; } = null!;
+    public static string ListNamespace { get; private set; } = null!;
     public static CreateIndexRequestMetric Metric { get; private set; }
-    public static string Namespace { get; private set; }
-    public static ServerlessIndexSpec Spec { get; private set; }
-    public static IndexClient IndexClient { get; private set; }
+    public static string Namespace { get; private set; } = null!;
+    public static ServerlessIndexSpec Spec { get; private set; } = null!;
+    public static IndexClient IndexClient { get; private set; } = null!;
     private static bool _isInitialized = false;
-    private static readonly object _lock = new();
+    private static readonly object Lock = new();
 
     public static void Initialize()
     {
         if (_isInitialized)
             return;
 
-        lock (_lock)
+        lock (Lock)
         {
             if (_isInitialized)
                 return;

@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using Pinecone.Test.Wire;
+using Pinecone.Test.Integration.Data;
 
 namespace Pinecone.Test.Integration;
 

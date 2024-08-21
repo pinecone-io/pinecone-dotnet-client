@@ -5,12 +5,12 @@ namespace Pinecone.Test.Integration.Control
     [SetUpFixture]
     public class Setup
     {
-        public static PineconeClient Client { get; private set; }
-        public static string IndexName { get; private set; }
-        public static string PineconeEnvironment { get; private set; }
+        public static PineconeClient Client { get; private set; } = null!;
+        public static string IndexName { get; private set; } = null!;
+        public static string PineconeEnvironment { get; private set; } = null!;
         public static int Dimension { get; private set; }
         public static CreateIndexRequestMetric Metric { get; private set; }
-        public static string CollectionName { get; private set; }
+        public static string CollectionName { get; private set; } = null!;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()

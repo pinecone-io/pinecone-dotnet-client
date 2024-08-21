@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Pinecone.Test.Integration;
+namespace Pinecone.Test.Integration.Data;
 
 public class TestSetupQueryWithFilter : BaseTest
 {

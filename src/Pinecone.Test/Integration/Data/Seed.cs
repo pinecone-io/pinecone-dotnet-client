@@ -1,4 +1,4 @@
-namespace Pinecone.Test.Integration;
+namespace Pinecone.Test.Integration.Data;
 
 public static class Seed
 {

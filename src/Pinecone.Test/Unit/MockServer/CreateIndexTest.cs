@@ -5,7 +5,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using JsonUtils = Pinecone.Core.JsonUtils;
 
-namespace Pinecone.Test.Wire;
+namespace Pinecone.Test.Unit.MockServer;
 
 [TestFixture]
 public class CreateIndexTest

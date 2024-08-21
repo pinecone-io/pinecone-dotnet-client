@@ -2,7 +2,7 @@ using Grpc.Core;
 using NUnit.Framework;
 using Pinecone.Core;
 
-namespace Pinecone.Test.Integration;
+namespace Pinecone.Test.Integration.Data;
 
 public class TestSetupUpsertErrors : BaseTest
 {

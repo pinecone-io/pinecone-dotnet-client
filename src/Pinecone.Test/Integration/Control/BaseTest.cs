@@ -1,5 +1,3 @@
-using Pinecone.Test.Wire;
-
 namespace Pinecone.Test.Integration.Control;
 
 public abstract class BaseTest

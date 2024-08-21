@@ -4,7 +4,7 @@ using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 
-namespace Pinecone.Test.Wire;
+namespace Pinecone.Test.Unit.MockServer;
 
 [SetUpFixture]
 public class GlobalTestSetup
