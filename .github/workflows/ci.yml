@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          dotnet test src/Pinecone.Test/Unit
+          dotnet test src --filter "FullyQualifiedName~Pinecone.Test.Unit"
 
   # TODO: Uncomment to make integration tests live  
   # integration-test:
@@ -68,7 +68,7 @@ jobs:
   #       env:
   #         PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
   #       run: |
-  #         dotnet test src/Pinecone.Test/Integration
+          # dotnet test src --filter "FullyQualifiedName~Pinecone.Test.Integration"
  
   publish:
     needs: [compile]
