@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupLists : BaseDataPlaneTest
+public class TestSetupLists : BaseTest
 {
     [Test]
     public async Task TestListWithDefaults()

@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupQueryWithFilter : BaseDataPlaneTest
+public class TestSetupQueryWithFilter : BaseTest
 {
     [TestCase(true)]
     [TestCase(false)]
@@ -39,10 +39,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "runtime",
-                        new MetadataValue(new Metadata { { "$gt", 100 } })
-                    }
+                    { "runtime", new MetadataValue(new Metadata { { "$gt", 100 } }) }
                 },
                 TopK = 10
             }
@@ -68,10 +65,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "runtime",
-                        new MetadataValue(new Metadata { { "$gte", 90 } })
-                    }
+                    { "runtime", new MetadataValue(new Metadata { { "$gte", 90 } }) }
                 },
                 TopK = 10
             }
@@ -98,10 +92,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "runtime",
-                        new MetadataValue(new Metadata { { "$lt", 100 } })
-                    }
+                    { "runtime", new MetadataValue(new Metadata { { "$lt", 100 } }) }
                 },
                 TopK = 10
             }
@@ -126,12 +117,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "runtime",
-                        new MetadataValue(
-                            new Metadata { { "$lte", 120 } }
-                        )
-                    }
+                    { "runtime", new MetadataValue(new Metadata { { "$lte", 120 } }) }
                 },
                 TopK = 10
             }
@@ -231,12 +217,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "genre",
-                        new MetadataValue(
-                            new Metadata { { "$eq", "action" } }
-                        )
-                    }
+                    { "genre", new MetadataValue(new Metadata { { "$eq", "action" } }) }
                 },
                 TopK = 10
             }
@@ -262,12 +243,7 @@ public class TestSetupQueryWithFilter : BaseDataPlaneTest
                 Namespace = targetNamespace,
                 Filter = new Metadata
                 {
-                    {
-                        "genre",
-                        new MetadataValue(
-                            new Metadata { { "$ne", "action" } }
-                        )
-                    }
+                    { "genre", new MetadataValue(new Metadata { { "$ne", "action" } }) }
                 },
                 TopK = 10
             }

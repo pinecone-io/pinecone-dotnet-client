@@ -42,9 +42,32 @@ jobs:
         run: |
           dotnet tool restore
 
-      - name: Run Tests
+      - name: Run Unit Tests
         run: |
-          dotnet test src
+          dotnet test src/Pinecone.Test/Unit
+
+  # TODO: Uncomment to make integration tests live  
+  # integration-test:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v3
+
+  #     - uses: actions/checkout@master
+
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: 8.x
+
+  #     - name: Install tools
+  #       run: |
+  #         dotnet tool restore
+
+  #     - name: Run Integration Tests
+  #       run: |
+  #         dotnet test src/Pinecone.Test/Integration
  
   publish:
     needs: [compile]

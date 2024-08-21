@@ -34,7 +34,7 @@ public class PineconeClient : BasePinecone
         catch (AggregateException e)
         {
             throw e.InnerException ?? e;
-        } 
+        }
         clientOptions ??= new ClientOptions();
         var client = new RawClient(
             new Dictionary<string, string>

@@ -4,7 +4,7 @@ using Pinecone.Core;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupQueryErrorCases : BaseDataPlaneTest
+public class TestSetupQueryErrorCases : BaseTest
 {
     [TestCase(true)]
     [TestCase(false)]

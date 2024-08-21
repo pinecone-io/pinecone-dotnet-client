@@ -4,7 +4,7 @@ using Pinecone.Core;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupUpsertErrors : BaseDataPlaneTest
+public class TestSetupUpsertErrors : BaseTest
 {
     [Test]
     public void TestUpsertFailsWhenApiKeyInvalid()
@@ -16,7 +16,7 @@ public class TestSetupUpsertErrors : BaseDataPlaneTest
             pinecone.Index(_indexName);
         });
         Assert.That(e.StatusCode, Is.EqualTo(401));
-    } 
+    }
 
     [Test]
     public void TestUpsertFailsWhenDimensionMismatchObjects()

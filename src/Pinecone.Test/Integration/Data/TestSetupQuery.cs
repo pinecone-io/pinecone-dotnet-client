@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupQuery : BaseDataPlaneTest
+public class TestSetupQuery : BaseTest
 {
     private const int ExpectedDimension = 2;
 

@@ -28,31 +28,19 @@ public static class Seed
                     {
                         Id = "4",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata
-                        {
-                            { "genre", "action" },
-                            { "runtime", 120 }
-                        }
+                        Metadata = new Metadata { { "genre", "action" }, { "runtime", 120 } }
                     },
                     new()
                     {
                         Id = "5",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata
-                        {
-                            { "genre", "comedy" },
-                            { "runtime", 90 }
-                        }
+                        Metadata = new Metadata { { "genre", "comedy" }, { "runtime", 90 } }
                     },
                     new()
                     {
                         Id = "6",
                         Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata
-                        {
-                            { "genre", "romance" },
-                            { "runtime", 240 }
-                        }
+                        Metadata = new Metadata { { "genre", "romance" }, { "runtime", 240 } }
                     }
                 },
                 Namespace = targetNamespace

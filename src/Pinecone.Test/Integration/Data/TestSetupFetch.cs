@@ -4,7 +4,7 @@ using Pinecone.Core;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupFetch : BaseDataPlaneTest
+public class TestSetupFetch : BaseTest
 {
     private const int ExpectedDimension = 2;
 

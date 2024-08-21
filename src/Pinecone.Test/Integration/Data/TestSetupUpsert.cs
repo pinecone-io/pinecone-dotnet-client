@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupUpsert : BaseDataPlaneTest
+public class TestSetupUpsert : BaseTest
 {
     [TestCase(true)]
     [TestCase(false)]

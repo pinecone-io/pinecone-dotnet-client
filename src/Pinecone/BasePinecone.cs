@@ -81,7 +81,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -149,7 +149,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -249,7 +249,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -319,7 +319,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -370,7 +370,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -436,7 +436,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -492,7 +492,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 
@@ -537,7 +537,7 @@ public partial class BasePinecone
         throw new PineconeApiException(
             $"Error with status code {response.StatusCode}",
             response.StatusCode,
-            JsonUtils.Deserialize<string>(responseBody)
+            responseBody
         );
     }
 

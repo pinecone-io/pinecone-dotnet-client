@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Pinecone.Test.Integration;
 
-public class TestSetupInitialization : BaseDataPlaneTest
+public class TestSetupInitialization : BaseTest
 {
     [Test]
     public async Task TestIndexDirectHostKwarg()
@@ -15,7 +15,9 @@ public class TestSetupInitialization : BaseDataPlaneTest
     [Test]
     public async Task TestIndexDirectHostWithHttps()
     {
-        var index = _client.Index(host: _indexHost.StartsWith("https://") ? _indexHost : "https://" + _indexHost);
+        var index = _client.Index(
+            host: _indexHost.StartsWith("https://") ? _indexHost : "https://" + _indexHost
+        );
         var results = await index.FetchAsync(new FetchRequest { Ids = new[] { "1", "2", "3" } });
         Assert.That(results, Is.Not.Null);
     }
@@ -23,7 +25,9 @@ public class TestSetupInitialization : BaseDataPlaneTest
     [Test]
     public async Task TestIndexDirectHostWithoutHttps()
     {
-        var index = _client.Index(host: _indexHost.StartsWith("https://") ? _indexHost.Substring(8) : _indexHost);
+        var index = _client.Index(
+            host: _indexHost.StartsWith("https://") ? _indexHost.Substring(8) : _indexHost
+        );
         var results = await index.FetchAsync(new FetchRequest { Ids = new[] { "1", "2", "3" } });
         Assert.That(results, Is.Not.Null);
     }

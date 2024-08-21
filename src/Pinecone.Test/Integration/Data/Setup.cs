@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Pinecone.Test.Integration;
 
 [SetUpFixture]
-public static class DataPlaneTestSetup
+public static class Setup
 {
     public static string ApiKey { get; private set; }
     public static PineconeClient Client { get; private set; }
@@ -14,20 +14,21 @@ public static class DataPlaneTestSetup
     public static CreateIndexRequestMetric Metric { get; private set; }
     public static string Namespace { get; private set; }
     public static ServerlessIndexSpec Spec { get; private set; }
-    public static string WeirdIdsNamespace { get; private set; }
     public static IndexClient IndexClient { get; private set; }
     private static bool _isInitialized = false;
     private static readonly object _lock = new();
-    
+
     public static void Initialize()
     {
-        if (_isInitialized) return;
+        if (_isInitialized)
+            return;
 
         lock (_lock)
         {
-            if (_isInitialized) return;
+            if (_isInitialized)
+                return;
 
-            ApiKey = "";
+            ApiKey = Helpers.GetEnvironmentVar("PINECONE_API_KEY");
             Client = new PineconeClient(ApiKey);
             Metric = CreateIndexRequestMetric.Cosine;
             Spec = new ServerlessIndexSpec
@@ -41,7 +42,6 @@ public static class DataPlaneTestSetup
             IndexName = "dataplane-" + Helpers.RandomString(20);
             Namespace = Helpers.RandomString(10);
             ListNamespace = Helpers.RandomString(10);
-            WeirdIdsNamespace = Helpers.RandomString(10);
 
             IndexHost = Task.Run(() => SetupIndex(IndexName, Metric, Spec)).Result;
             IndexClient = Client.Index(host: IndexHost);
@@ -50,6 +50,7 @@ public static class DataPlaneTestSetup
             _isInitialized = true;
         }
     }
+
     private static async Task<string> SetupIndex(
         string indexName,
         CreateIndexRequestMetric metric,
@@ -76,11 +77,9 @@ public static class DataPlaneTestSetup
     private static async Task SeedData()
     {
         Console.WriteLine("Sleeping while index boots up...");
+
         Thread.Sleep(10000);
         Console.WriteLine("Seeding data in host " + IndexHost);
-
-        // Console.WriteLine("Seeding data in weird ids namespace " + _weirdIdsNamespace);
-        // await Utils.SetupWeirdIdsData(_client, _weirdIdsNamespace, true);
 
         Console.WriteLine("Seeding list data in namespace " + ListNamespace);
         await Seed.SetupListData(IndexClient, ListNamespace, true);
@@ -92,14 +91,11 @@ public static class DataPlaneTestSetup
         await Seed.SetupData(IndexClient, "", true);
 
         Console.WriteLine("Waiting a bit more to ensure freshness");
-        // await Task.Delay(10000); // 120 seconds
-        // await Task.Delay(120000); // 120 seconds
     }
 
     [OneTimeTearDown]
-    public static async Task Cleanup()
+    public static async Task GlobalCleanup()
     {
-        Console.WriteLine($"Deleting index with name {IndexName}...");
-        await Client.DeleteIndexAsync(IndexName);
+        await Helpers.Cleanup(Client);
     }
 }
