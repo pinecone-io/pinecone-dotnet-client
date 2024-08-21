@@ -8,29 +8,21 @@ using Proto = Google.Protobuf.WellKnownTypes;
 namespace Pinecone;
 
 [JsonConverter(typeof(OneOfSerializer<MetadataValue>))]
-public class MetadataValue(
-    OneOf<
-        string,
-        double,
-        bool,
-        IEnumerable<MetadataValue?>,
-        Metadata
-    > value
-)
-    : OneOfBase<
-        string,
-        double,
-        bool,
-        IEnumerable<MetadataValue?>,
-        Metadata
-    >(value)
+public class MetadataValue(OneOf<string, double, bool, IEnumerable<MetadataValue?>, Metadata> value)
+    : OneOfBase<string, double, bool, IEnumerable<MetadataValue?>, Metadata>(value)
 {
     internal Proto.Value ToProto() =>
         Match<Proto.Value>(
             Proto.Value.ForString,
             Proto.Value.ForNumber,
             Proto.Value.ForBool,
-            list => new Proto.Value { ListValue = new Proto.ListValue { Values = { list.Select(item => item?.ToProto()) } } },
+            list => new Proto.Value
+            {
+                ListValue = new Proto.ListValue
+                {
+                    Values = { list.Select(item => item?.ToProto()) }
+                }
+            },
             nested => new Proto.Value { StructValue = nested.ToProto() }
         );
 
@@ -41,7 +33,8 @@ public class MetadataValue(
             Proto.Value.KindOneofCase.StringValue => value.StringValue,
             Proto.Value.KindOneofCase.NumberValue => value.NumberValue,
             Proto.Value.KindOneofCase.BoolValue => value.BoolValue,
-            Proto.Value.KindOneofCase.ListValue => value.ListValue.Values.Select(FromProto).ToList(),
+            Proto.Value.KindOneofCase.ListValue
+                => value.ListValue.Values.Select(FromProto).ToList(),
             Proto.Value.KindOneofCase.StructValue => Metadata.FromProto(value.StructValue),
             _ => null,
         };
@@ -89,7 +82,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(double?[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(bool[] value)
@@ -99,7 +94,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(bool?[] value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(List<string> value)
@@ -114,7 +111,9 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(List<double?> value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 
     public static implicit operator MetadataValue(List<bool> value)
@@ -124,6 +123,8 @@ public class MetadataValue(
 
     public static implicit operator MetadataValue(List<bool?> value)
     {
-        return new MetadataValue(value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList());
+        return new MetadataValue(
+            value.Select(v => v != null ? new MetadataValue(v.Value) : null).ToList()
+        );
     }
 }

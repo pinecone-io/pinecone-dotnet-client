@@ -57,8 +57,7 @@ public record Vector
             Values = proto.Values?.ToList() ?? [],
             SparseValues =
                 proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
-            Metadata =
-                proto.Metadata != null ? Metadata.FromProto(proto.Metadata) : null
+            Metadata = proto.Metadata != null ? Metadata.FromProto(proto.Metadata) : null
         };
     }
 
