@@ -3,5 +3,5 @@
 # The following file should always be .fernignore'd.
 
 README.md
-src/Pinecone.Client/Pinecone.cs
-src/Pinecone.Client.Test/Integration
+src/Pinecone/PineconeClient.cs
+src/Pinecone.Test/Integration
