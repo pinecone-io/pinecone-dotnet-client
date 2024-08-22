@@ -12,7 +12,7 @@ namespace Pinecone.Test;
 public class AdditionalPropertiesTest
 {
     [Test]
-    public void TestAdditionalProperties()
+    public void TestSerialization()
     {
         var inputJson =
             @"
