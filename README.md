@@ -198,21 +198,60 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var upsertResponse = await index.UpsertAsync(new UpsertRequest {
-    Vectors = new[]
-    {
+// Vector ids to be upserted
+var upsertIds = new[] { "v1", "v2", "v3" };
+
+// List of values to be upserted
+float[][] values =
+[
+    [1.0f, 2.0f, 3.0f],
+    [4.0f, 5.0f, 6.0f],
+    [7.0f, 8.0f, 9.0f]
+];
+
+// List of sparse indices to be upserted
+uint[][] sparseIndices =
+[
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+];
+
+// List of sparse values to be upserted
+float[][] sparseValues =
+[
+    [1000f, 2000f, 3000f],
+    [4000f, 5000f, 6000f],
+    [7000f, 8000f, 9000f]
+];
+
+// Metadata to be upserted
+var metadataStructArray = new[]
+{
+    new Metadata { ["genre"] = "action", ["year"] = 2019 },
+    new Metadata { ["genre"] = "thriller", ["year"] = 2020 },
+    new Metadata { ["genre"] = "comedy", ["year"] = 2021 }
+};
+
+var vectors = new List<Vector>();
+for (var i = 0; i <= 2; i++)
+{
+    vectors.Add(
         new Vector
         {
-            Id = "v1",
-            Values = new[] { 0.1f, 0.2f, 0.3f },
-            Metadata = new Metadata {
-                ["genre"] = "horror",
-                ["year"] = 2020,
-            }
+            Id = upsertIds[i],
+            Values = values[i],
+            SparseValues = new SparseValues
+            {
+                Indices = sparseIndices[i],
+                Values = sparseValues[i]
+            },
+            Metadata = metadataStructArray[i]
         }
-    },
-    Namespace = "test"
-});
+    );
+}
+
+var upsertResponse = await index.UpsertAsync(new UpsertRequest { Vectors = vectors, });
 ```
 
 ### Query an index
@@ -251,7 +290,6 @@ The following example queries an index using a sparse-dense vector:
 
 ```csharp
 using Pinecone;
-
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
