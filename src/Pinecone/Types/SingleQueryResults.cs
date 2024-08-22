@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -20,16 +20,37 @@ public record SingleQueryResults
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
 
-    #region Mappers
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 
-    public static SingleQueryResults FromProto(Proto.SingleQueryResults proto)
+    /// <summary>
+    /// Maps the SingleQueryResults type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.SingleQueryResults ToProto()
+    {
+        var result = new Proto.SingleQueryResults();
+        if (Matches != null && Matches.Any())
+        {
+            result.Matches.AddRange(Matches.Select(elem => elem.ToProto()));
+        }
+        if (Namespace != null)
+        {
+            result.Namespace = Namespace ?? "";
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new SingleQueryResults type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static SingleQueryResults FromProto(Proto.SingleQueryResults value)
     {
         return new SingleQueryResults
         {
-            Matches = proto.Matches?.Select(ScoredVector.FromProto),
-            Namespace = proto.Namespace,
+            Matches = value.Matches?.Select(ScoredVector.FromProto),
+            Namespace = value.Namespace,
         };
     }
-
-    #endregion
 }

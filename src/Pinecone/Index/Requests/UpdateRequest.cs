@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -17,7 +18,7 @@ public record UpdateRequest
     /// Vector data.
     /// </summary>
     [JsonPropertyName("values")]
-    public IEnumerable<float>? Values { get; set; }
+    public ReadOnlyMemory<float>? Values { get; set; }
 
     [JsonPropertyName("sparseValues")]
     public SparseValues? SparseValues { get; set; }
@@ -34,29 +35,34 @@ public record UpdateRequest
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
 
-    #region Mappers
-
-    public Proto.UpdateRequest ToProto()
+    public override string ToString()
     {
-        var updateRequest = new Proto.UpdateRequest { Id = Id, };
-        if (Values != null && Values.Any())
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the UpdateRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.UpdateRequest ToProto()
+    {
+        var result = new Proto.UpdateRequest();
+        result.Id = Id;
+        if (Values != null && !Values.Value.IsEmpty)
         {
-            updateRequest.Values.AddRange(Values);
+            result.Values.AddRange(Values.Value.ToArray());
         }
         if (SparseValues != null)
         {
-            updateRequest.SparseValues = SparseValues.ToProto();
+            result.SparseValues = SparseValues.ToProto();
         }
         if (SetMetadata != null)
         {
-            updateRequest.SetMetadata = SetMetadata.ToProto();
+            result.SetMetadata = SetMetadata.ToProto();
         }
         if (Namespace != null)
         {
-            updateRequest.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
-        return updateRequest;
+        return result;
     }
-
-    #endregion
 }

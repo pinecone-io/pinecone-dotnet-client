@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -11,4 +12,9 @@ public record PodSpecMetadataConfig
     /// </summary>
     [JsonPropertyName("indexed")]
     public IEnumerable<string>? Indexed { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

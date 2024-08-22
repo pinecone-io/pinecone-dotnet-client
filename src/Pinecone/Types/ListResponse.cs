@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -31,18 +32,47 @@ public record ListResponse
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
 
-    #region Mappers
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 
-    public static ListResponse FromProto(Proto.ListResponse proto)
+    /// <summary>
+    /// Maps the ListResponse type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.ListResponse ToProto()
+    {
+        var result = new Proto.ListResponse();
+        if (Vectors != null && Vectors.Any())
+        {
+            result.Vectors.AddRange(Vectors.Select(elem => elem.ToProto()));
+        }
+        if (Pagination != null)
+        {
+            result.Pagination = Pagination.ToProto();
+        }
+        if (Namespace != null)
+        {
+            result.Namespace = Namespace ?? "";
+        }
+        if (Usage != null)
+        {
+            result.Usage = Usage.ToProto();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new ListResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static ListResponse FromProto(Proto.ListResponse value)
     {
         return new ListResponse
         {
-            Vectors = proto.Vectors?.Select(ListItem.FromProto),
-            Pagination = proto.Pagination != null ? Pagination.FromProto(proto.Pagination) : null,
-            Namespace = proto.Namespace,
-            Usage = proto.Usage != null ? Usage.FromProto(proto.Usage) : null
+            Vectors = value.Vectors?.Select(ListItem.FromProto),
+            Pagination = value.Pagination != null ? Pagination.FromProto(value.Pagination) : null,
+            Namespace = value.Namespace,
+            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
         };
     }
-
-    #endregion
 }

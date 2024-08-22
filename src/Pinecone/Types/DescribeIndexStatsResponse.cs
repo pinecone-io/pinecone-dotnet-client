@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -37,21 +38,54 @@ public record DescribeIndexStatsResponse
     [JsonPropertyName("totalVectorCount")]
     public uint? TotalVectorCount { get; set; }
 
-    #region Mappers
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 
-    public static DescribeIndexStatsResponse FromProto(Proto.DescribeIndexStatsResponse proto)
+    /// <summary>
+    /// Maps the DescribeIndexStatsResponse type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.DescribeIndexStatsResponse ToProto()
+    {
+        var result = new Proto.DescribeIndexStatsResponse();
+        if (Namespaces != null && Namespaces.Any())
+        {
+            foreach (var kvp in Namespaces)
+            {
+                result.Namespaces.Add(kvp.Key, kvp.Value.ToProto());
+            }
+            ;
+        }
+        if (Dimension != null)
+        {
+            result.Dimension = Dimension ?? 0;
+        }
+        if (IndexFullness != null)
+        {
+            result.IndexFullness = IndexFullness ?? 0.0f;
+        }
+        if (TotalVectorCount != null)
+        {
+            result.TotalVectorCount = TotalVectorCount ?? 0;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new DescribeIndexStatsResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static DescribeIndexStatsResponse FromProto(Proto.DescribeIndexStatsResponse value)
     {
         return new DescribeIndexStatsResponse
         {
-            Namespaces = proto.Namespaces?.ToDictionary(
+            Namespaces = value.Namespaces?.ToDictionary(
                 kvp => kvp.Key,
                 kvp => NamespaceSummary.FromProto(kvp.Value)
             ),
-            Dimension = proto.Dimension,
-            IndexFullness = proto.IndexFullness,
-            TotalVectorCount = proto.TotalVectorCount,
+            Dimension = value.Dimension,
+            IndexFullness = value.IndexFullness,
+            TotalVectorCount = value.TotalVectorCount,
         };
     }
-
-    #endregion
 }

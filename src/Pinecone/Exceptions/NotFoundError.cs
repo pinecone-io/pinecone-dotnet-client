@@ -1,8 +1,3 @@
-using Pinecone;
-using Pinecone.Core;
-
-#nullable enable
-
 namespace Pinecone;
 
 /// <summary>
@@ -13,5 +8,5 @@ public class NotFoundError(ErrorResponse body) : PineconeApiException("NotFoundE
     /// <summary>
     /// The body of the response that triggered the exception.
     /// </summary>
-    public new ErrorResponse Body { get; } = body;
+    public new ErrorResponse Body => body;
 }

@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -18,7 +18,7 @@ public record Vector
     /// This is the vector data included in the request.
     /// </summary>
     [JsonPropertyName("values")]
-    public IEnumerable<float> Values { get; set; } = new List<float>();
+    public ReadOnlyMemory<float> Values { get; set; }
 
     [JsonPropertyName("sparseValues")]
     public SparseValues? SparseValues { get; set; }
@@ -29,37 +29,45 @@ public record Vector
     [JsonPropertyName("metadata")]
     public Metadata? Metadata { get; set; }
 
-    #region Mappers
-
-    public Proto.Vector ToProto()
+    public override string ToString()
     {
-        var vector = new Proto.Vector { Id = Id, };
-        if (Values.Any())
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the Vector type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.Vector ToProto()
+    {
+        var result = new Proto.Vector();
+        result.Id = Id;
+        if (!Values.IsEmpty)
         {
-            vector.Values.AddRange(Values);
+            result.Values.AddRange(Values.ToArray());
         }
         if (SparseValues != null)
         {
-            vector.SparseValues = SparseValues.ToProto();
+            result.SparseValues = SparseValues.ToProto();
         }
         if (Metadata != null)
         {
-            vector.Metadata = Metadata.ToProto();
+            result.Metadata = Metadata.ToProto();
         }
-        return vector;
+        return result;
     }
 
-    public static Vector FromProto(Proto.Vector proto)
+    /// <summary>
+    /// Returns a new Vector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Vector FromProto(Proto.Vector value)
     {
         return new Vector
         {
-            Id = proto.Id,
-            Values = proto.Values?.ToList() ?? [],
+            Id = value.Id,
+            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
             SparseValues =
-                proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
-            Metadata = proto.Metadata != null ? Metadata.FromProto(proto.Metadata) : null
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
         };
     }
-
-    #endregion
 }

@@ -43,7 +43,7 @@ message ScoredVector {
     (google.api.field_behavior) = REQUIRED
   ];
 
-  // This is a measure of similarity between this vector and the query vector.  The higher the score, the more they are similar.
+  // This is a measure of similarity between this vector and the query vector. The higher the score, the more they are similar.
   float                  score                                        = 2;
 
   // This is the vector data, if it is requested.

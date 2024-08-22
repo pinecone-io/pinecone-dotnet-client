@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using OneOf;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -35,8 +36,14 @@ public record Index
     public DeletionProtection? DeletionProtection { get; set; }
 
     [JsonPropertyName("spec")]
-    public required IndexModelSpec Spec { get; set; }
+    [JsonConverter(typeof(OneOfSerializer<OneOf<ServerlessIndexSpec, PodIndexSpec>>))]
+    public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
 
     [JsonPropertyName("status")]
     public required IndexModelStatus Status { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

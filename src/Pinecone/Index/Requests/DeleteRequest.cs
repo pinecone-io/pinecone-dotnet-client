@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -34,29 +35,33 @@ public record DeleteRequest
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
 
-    #region Mappers
-
-    public Proto.DeleteRequest ToProto()
+    public override string ToString()
     {
-        var deleteRequest = new Proto.DeleteRequest();
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the DeleteRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.DeleteRequest ToProto()
+    {
+        var result = new Proto.DeleteRequest();
         if (Ids != null && Ids.Any())
         {
-            deleteRequest.Ids.AddRange(Ids);
+            result.Ids.AddRange(Ids);
         }
         if (DeleteAll != null)
         {
-            deleteRequest.DeleteAll = DeleteAll ?? false;
+            result.DeleteAll = DeleteAll ?? false;
         }
         if (Namespace != null)
         {
-            deleteRequest.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
         if (Filter != null)
         {
-            deleteRequest.Filter = Filter.ToProto();
+            result.Filter = Filter.ToProto();
         }
-        return deleteRequest;
+        return result;
     }
-
-    #endregion
 }

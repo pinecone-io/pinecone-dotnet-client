@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Pinecone;
 using Pinecone.Core;
 
 #nullable enable
@@ -65,5 +64,5 @@ public enum ErrorResponseErrorCode
     Forbidden,
 
     [EnumMember(Value = "UNPROCESSABLE_ENTITY")]
-    UnprocessableEntity
+    UnprocessableEntity,
 }

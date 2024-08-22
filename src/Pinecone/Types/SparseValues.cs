@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Google.Protobuf.Collections;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -12,32 +12,39 @@ public record SparseValues
     public IEnumerable<uint> Indices { get; set; } = new List<uint>();
 
     [JsonPropertyName("values")]
-    public IEnumerable<float> Values { get; set; } = new List<float>();
+    public ReadOnlyMemory<float> Values { get; set; }
 
-    #region Mappers
-
-    public Proto.SparseValues ToProto()
+    public override string ToString()
     {
-        var sparseValues = new Proto.SparseValues();
-        if (Indices.Any())
-        {
-            sparseValues.Indices.AddRange(Indices);
-        }
-        if (Values.Any())
-        {
-            sparseValues.Values.AddRange(Values);
-        }
-        return sparseValues;
+        return JsonUtils.Serialize(this);
     }
 
-    public static SparseValues FromProto(Proto.SparseValues proto)
+    /// <summary>
+    /// Maps the SparseValues type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.SparseValues ToProto()
+    {
+        var result = new Proto.SparseValues();
+        if (Indices.Any())
+        {
+            result.Indices.AddRange(Indices);
+        }
+        if (!Values.IsEmpty)
+        {
+            result.Values.AddRange(Values.ToArray());
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new SparseValues type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static SparseValues FromProto(Proto.SparseValues value)
     {
         return new SparseValues
         {
-            Indices = proto.Indices?.ToList() ?? [],
-            Values = proto.Values?.ToList() ?? [],
+            Indices = value.Indices?.ToList() ?? new List<uint>(),
+            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
         };
     }
-
-    #endregion
 }

@@ -1,5 +1,7 @@
 using NUnit.Framework;
 
+#nullable enable
+
 namespace Pinecone.Test;
 
 [TestFixture]

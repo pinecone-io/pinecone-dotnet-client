@@ -1,9 +1,10 @@
 using System;
 using System.Net.Http;
+using Pinecone.Core;
 
 #nullable enable
 
-namespace Pinecone.Core;
+namespace Pinecone;
 
 public partial class RequestOptions
 {
@@ -18,7 +19,7 @@ public partial class RequestOptions
     public HttpClient? HttpClient { get; init; }
 
     /// <summary>
-    /// The maximum number of retry attempts.
+    /// The http client used to make requests.
     /// </summary>
     public int? MaxRetries { get; init; }
 
@@ -26,4 +27,9 @@ public partial class RequestOptions
     /// The timeout for the request.
     /// </summary>
     public TimeSpan? Timeout { get; init; }
+
+    /// <summary>
+    /// The http headers sent with the request.
+    /// </summary>
+    internal Headers Headers { get; init; } = new();
 }

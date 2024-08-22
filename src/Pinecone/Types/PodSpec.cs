@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -48,4 +48,9 @@ public record PodSpec
     /// </summary>
     [JsonPropertyName("source_collection")]
     public string? SourceCollection { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

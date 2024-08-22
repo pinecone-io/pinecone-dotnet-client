@@ -1,5 +1,5 @@
-using System.Data;
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -12,7 +12,7 @@ public record QueryVector
     /// The query vector values. This should be the same length as the dimension of the index being queried.
     /// </summary>
     [JsonPropertyName("values")]
-    public IEnumerable<float> Values { get; set; } = new List<float>();
+    public ReadOnlyMemory<float> Values { get; set; }
 
     /// <summary>
     /// The query sparse values.
@@ -38,33 +38,53 @@ public record QueryVector
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
 
-    #region Mappers
-
-    public Proto.QueryVector ToProto()
+    public override string ToString()
     {
-        var queryVector = new Proto.QueryVector();
-        if (Values.Any())
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the QueryVector type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.QueryVector ToProto()
+    {
+        var result = new Proto.QueryVector();
+        if (!Values.IsEmpty)
         {
-            queryVector.Values.AddRange(Values);
+            result.Values.AddRange(Values.ToArray());
         }
         if (SparseValues != null)
         {
-            queryVector.SparseValues = SparseValues.ToProto();
+            result.SparseValues = SparseValues.ToProto();
         }
         if (TopK != null)
         {
-            queryVector.TopK = TopK ?? 0;
+            result.TopK = TopK ?? 0;
         }
         if (Namespace != null)
         {
-            queryVector.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
         if (Filter != null)
         {
-            queryVector.Filter = Filter.ToProto();
+            result.Filter = Filter.ToProto();
         }
-        return queryVector;
+        return result;
     }
 
-    #endregion
+    /// <summary>
+    /// Returns a new QueryVector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static QueryVector FromProto(Proto.QueryVector value)
+    {
+        return new QueryVector
+        {
+            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
+            SparseValues =
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            TopK = value.TopK,
+            Namespace = value.Namespace,
+            Filter = value.Filter != null ? Metadata.FromProto(value.Filter) : null,
+        };
+    }
 }

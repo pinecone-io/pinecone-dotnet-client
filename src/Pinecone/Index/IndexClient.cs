@@ -1,21 +1,25 @@
-using System.Net.Http;
-using System.Text.Json;
-using Pinecone;
+using System.Threading;
+using Grpc.Core;
 using Pinecone.Core;
+using Pinecone.Grpc;
 
 #nullable enable
 
 namespace Pinecone;
 
-public class IndexClient
+public partial class IndexClient
 {
     private RawClient _client;
-    private RawGrpcClient _grpcClient;
 
-    public IndexClient(RawClient client)
+    private RawGrpcClient _grpc;
+
+    private VectorService.VectorServiceClient _vectorService;
+
+    internal IndexClient(RawClient client)
     {
         _client = client;
-        _grpcClient = client.Grpc();
+        _grpc = _client.Grpc;
+        _vectorService = new VectorService.VectorServiceClient(_grpc.Channel);
     }
 
     /// <summary>
@@ -27,18 +31,40 @@ public class IndexClient
     ///
     /// For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+    /// </code>
+    /// </example>
     public async Task<DescribeIndexStatsResponse> DescribeIndexStatsAsync(
         DescribeIndexStatsRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.DescribeIndexStatsAsync(
-            request.ToProto(),
-            callOptions
-        );
-        var response = await call.ConfigureAwait(false);
-        return DescribeIndexStatsResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.DescribeIndexStatsAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return DescribeIndexStatsResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -48,15 +74,48 @@ public class IndexClient
     ///
     /// For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.QueryAsync(
+    ///     new QueryRequest
+    ///     {
+    ///         TopK = 3,
+    ///         Namespace = "example",
+    ///         IncludeValues = true,
+    ///         IncludeMetadata = true,
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<QueryResponse> QueryAsync(
         QueryRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.QueryAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return QueryResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.QueryAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return QueryResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -66,15 +125,46 @@ public class IndexClient
     ///
     /// For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.DeleteAsync(
+    ///     new DeleteRequest
+    ///     {
+    ///         Ids = new List<string>() { "v1", "v2", "v3" },
+    ///         Namespace = "example",
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<DeleteResponse> DeleteAsync(
         DeleteRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.DeleteAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return DeleteResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.DeleteAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return DeleteResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -84,15 +174,40 @@ public class IndexClient
     ///
     /// For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.FetchAsync(new FetchRequest { Ids = ["v1"], Namespace = "example" });
+    /// </code>
+    /// </example>
     public async Task<FetchResponse> FetchAsync(
         FetchRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.FetchAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return FetchResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.FetchAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return FetchResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -106,15 +221,47 @@ public class IndexClient
     ///
     /// **Note:** `list` is supported only for serverless indexes.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.ListAsync(
+    ///     new ListRequest
+    ///     {
+    ///         Limit = 50,
+    ///         Namespace = "example",
+    ///         PaginationToken = "eyJza2lwX3Bhc3QiOiIxMDEwMy0=",
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<ListResponse> ListAsync(
         ListRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.ListAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return ListResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.ListAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return ListResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -124,15 +271,47 @@ public class IndexClient
     ///
     /// For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.UpdateAsync(
+    ///     new UpdateRequest
+    ///     {
+    ///         Id = "v1",
+    ///         Namespace = "example",
+    ///         Values = new[] { 42.2f, 50.5f, 60.8f },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<UpdateResponse> UpdateAsync(
         UpdateRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.UpdateAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return UpdateResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.UpdateAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return UpdateResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 
     /// <summary>
@@ -142,14 +321,47 @@ public class IndexClient
     ///
     /// For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.UpsertAsync(
+    ///     new UpsertRequest
+    ///     {
+    ///         Vectors = new List<Vector>()
+    ///         {
+    ///             new Vector { Id = "v1", Values = new[] { 0.1f, 0.2f, 0.3f } },
+    ///         },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<UpsertResponse> UpsertAsync(
         UpsertRequest request,
-        GrpcRequestOptions? options = null
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
-        var callOptions = _grpcClient.CreateCallOptions(options ?? new GrpcRequestOptions());
-        var call = _grpcClient.VectorServiceClient.UpsertAsync(request.ToProto(), callOptions);
-        var response = await call.ConfigureAwait(false);
-        return UpsertResponse.FromProto(response);
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.UpsertAsync(request.ToProto(), callOptions);
+            var response = await call.ConfigureAwait(false);
+            return UpsertResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
     }
 }

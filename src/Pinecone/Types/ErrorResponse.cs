@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -18,4 +18,9 @@ public record ErrorResponse
     /// </summary>
     [JsonPropertyName("error")]
     public required ErrorResponseError Error { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

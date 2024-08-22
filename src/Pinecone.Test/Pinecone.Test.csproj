@@ -7,7 +7,6 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>Pinecone.Test</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,12 +16,11 @@
         <PackageReference Include="NUnit.Analyzers" Version="3.6.1"/>
         <PackageReference Include="coverlet.collector" Version="3.2.0"/>
         <PackageReference Include="WireMock.Net" Version="1.5.60" />
-        <PackageReference Include="Portable.System.DateTimeOnly" Version="8.0.1" />
-        <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="FluentAssertions.Json" Version="6.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pinecone\Pinecone.csproj" />
+      <ProjectReference Include="..\Pinecone\Pinecone.csproj" />
     </ItemGroup>
 
 </Project>

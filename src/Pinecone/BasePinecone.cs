@@ -1,7 +1,7 @@
-using System;
 using System.Net.Http;
 using System.Text.Json;
-using Pinecone;
+using System.Threading;
+using System.Threading.Tasks;
 using Pinecone.Core;
 
 #nullable enable
@@ -18,18 +18,25 @@ public partial class BasePinecone
             "PINECONE_API_KEY",
             "Please pass in apiKey or set the environment variable PINECONE_API_KEY."
         );
-        _client = new RawClient(
+        var defaultHeaders = new Headers(
             new Dictionary<string, string>()
             {
                 { "Api-Key", apiKey },
                 { "X-Pinecone-API-Version", "2024-07" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
-                { "X-Fern-SDK-Version", "0.0.98" },
-            },
-            new Dictionary<string, Func<string>>() { },
-            clientOptions ?? new ClientOptions()
+                { "X-Fern-SDK-Version", "0.0.108" },
+            }
         );
+        clientOptions ??= new ClientOptions();
+        foreach (var header in defaultHeaders)
+        {
+            if (!clientOptions.Headers.ContainsKey(header.Key))
+            {
+                clientOptions.Headers[header.Key] = header.Value;
+            }
+        }
+        _client = new RawClient(clientOptions);
         Index = new IndexClient(_client);
     }
 
@@ -38,7 +45,15 @@ public partial class BasePinecone
     /// <summary>
     /// This operation returns a list of all indexes in a project.
     /// </summary>
-    public async Task<IndexList> ListIndexesAsync(RequestOptions? options = null)
+    /// <example>
+    /// <code>
+    /// await client.ListIndexesAsync();
+    /// </code>
+    /// </example>
+    public async Task<IndexList> ListIndexesAsync(
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
@@ -46,8 +61,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = "indexes",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -90,9 +106,31 @@ public partial class BasePinecone
     ///
     /// For guidance and examples, see [Create an index](https://docs.pinecone.io/guides/indexes/create-an-index#create-a-serverless-index).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.CreateIndexAsync(
+    ///     new CreateIndexRequest
+    ///     {
+    ///         Name = "movie-recommendations",
+    ///         Dimension = 1536,
+    ///         Metric = CreateIndexRequestMetric.Cosine,
+    ///         DeletionProtection = DeletionProtection.Enabled,
+    ///         Spec = new ServerlessIndexSpec
+    ///         {
+    ///             Serverless = new ServerlessSpec
+    ///             {
+    ///                 Cloud = ServerlessSpecCloud.Gcp,
+    ///                 Region = "us-east1",
+    ///             },
+    ///         },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<Index> CreateIndexAsync(
         CreateIndexRequest request,
-        RequestOptions? options = null
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
         var response = await _client.MakeRequestAsync(
@@ -102,8 +140,9 @@ public partial class BasePinecone
                 Method = HttpMethod.Post,
                 Path = "indexes",
                 Body = request,
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -156,7 +195,16 @@ public partial class BasePinecone
     /// <summary>
     /// Get a description of an index.
     /// </summary>
-    public async Task<Index> DescribeIndexAsync(string indexName, RequestOptions? options = null)
+    /// <example>
+    /// <code>
+    /// await client.DescribeIndexAsync("test-index");
+    /// </code>
+    /// </example>
+    public async Task<Index> DescribeIndexAsync(
+        string indexName,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
@@ -164,8 +212,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = $"indexes/{indexName}",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -208,7 +257,16 @@ public partial class BasePinecone
     /// <summary>
     /// This operation deletes an existing index.
     /// </summary>
-    public async Task DeleteIndexAsync(string indexName, RequestOptions? options = null)
+    /// <example>
+    /// <code>
+    /// await client.DeleteIndexAsync("test-index");
+    /// </code>
+    /// </example>
+    public async Task DeleteIndexAsync(
+        string indexName,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
@@ -216,8 +274,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Delete,
                 Path = $"indexes/{indexName}",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         if (response.StatusCode is >= 200 and < 400)
         {
@@ -261,10 +320,25 @@ public partial class BasePinecone
     /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection.
     /// For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.ConfigureIndexAsync(
+    ///     "test-index",
+    ///     new ConfigureIndexRequest
+    ///     {
+    ///         Spec = new ConfigureIndexRequestSpec
+    ///         {
+    ///             Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
+    ///         },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<Index> ConfigureIndexAsync(
         string indexName,
         ConfigureIndexRequest request,
-        RequestOptions? options = null
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
         var response = await _client.MakeRequestAsync(
@@ -274,8 +348,9 @@ public partial class BasePinecone
                 Method = HttpMethodExtensions.Patch,
                 Path = $"indexes/{indexName}",
                 Body = request,
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -327,7 +402,15 @@ public partial class BasePinecone
     /// This operation returns a list of all collections in a project.
     /// Serverless indexes do not support collections.
     /// </summary>
-    public async Task<CollectionList> ListCollectionsAsync(RequestOptions? options = null)
+    /// <example>
+    /// <code>
+    /// await client.ListCollectionsAsync();
+    /// </code>
+    /// </example>
+    public async Task<CollectionList> ListCollectionsAsync(
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
@@ -335,8 +418,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = "collections",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -379,9 +463,17 @@ public partial class BasePinecone
     ///
     /// Serverless indexes do not support collections.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.CreateCollectionAsync(
+    ///     new CreateCollectionRequest { Name = "example-collection", Source = "example-source-index" }
+    /// );
+    /// </code>
+    /// </example>
     public async Task<CollectionModel> CreateCollectionAsync(
         CreateCollectionRequest request,
-        RequestOptions? options = null
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
         var response = await _client.MakeRequestAsync(
@@ -391,8 +483,9 @@ public partial class BasePinecone
                 Method = HttpMethod.Post,
                 Path = "collections",
                 Body = request,
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -444,9 +537,15 @@ public partial class BasePinecone
     /// This operation gets a description of a collection.
     /// Serverless indexes do not support collections.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.DescribeCollectionAsync("tiny-collection");
+    /// </code>
+    /// </example>
     public async Task<CollectionModel> DescribeCollectionAsync(
         string collectionName,
-        RequestOptions? options = null
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
     )
     {
         var response = await _client.MakeRequestAsync(
@@ -455,8 +554,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Get,
                 Path = $"collections/{collectionName}",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         var responseBody = await response.Raw.Content.ReadAsStringAsync();
         if (response.StatusCode is >= 200 and < 400)
@@ -500,7 +600,16 @@ public partial class BasePinecone
     /// This operation deletes an existing collection.
     /// Serverless indexes do not support collections.
     /// </summary>
-    public async Task DeleteCollectionAsync(string collectionName, RequestOptions? options = null)
+    /// <example>
+    /// <code>
+    /// await client.DeleteCollectionAsync("test-collection");
+    /// </code>
+    /// </example>
+    public async Task DeleteCollectionAsync(
+        string collectionName,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var response = await _client.MakeRequestAsync(
             new RawClient.JsonApiRequest
@@ -508,8 +617,9 @@ public partial class BasePinecone
                 BaseUrl = _client.Options.BaseUrl,
                 Method = HttpMethod.Delete,
                 Path = $"collections/{collectionName}",
-                Options = options
-            }
+                Options = options,
+            },
+            cancellationToken
         );
         if (response.StatusCode is >= 200 and < 400)
         {

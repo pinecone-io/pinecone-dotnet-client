@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -17,5 +17,10 @@ public record ErrorResponseError
     /// Additional information about the error. This field is not guaranteed to be present.
     /// </summary>
     [JsonPropertyName("details")]
-    public Dictionary<string, object?>? Details { get; set; }
+    public object? Details { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

@@ -1,6 +1,7 @@
-using System.Data;
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
+
+#nullable enable
 
 namespace Pinecone;
 
@@ -13,21 +14,25 @@ public record FetchRequest
 
     public string? Namespace { get; set; }
 
-    #region Mappers
-
-    public Proto.FetchRequest ToProto()
+    public override string ToString()
     {
-        var fetchRequest = new Proto.FetchRequest();
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the FetchRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.FetchRequest ToProto()
+    {
+        var result = new Proto.FetchRequest();
         if (Ids.Any())
         {
-            fetchRequest.Ids.AddRange(Ids);
+            result.Ids.AddRange(Ids);
         }
         if (Namespace != null)
         {
-            fetchRequest.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
-        return fetchRequest;
+        return result;
     }
-
-    #endregion
 }
