@@ -6,7 +6,7 @@ using Pinecone;
 
 #nullable enable
 
-namespace Pinecone.Test;
+namespace Pinecone.Test.Integration.Serialization;
 
 [TestFixture]
 public class AdditionalPropertiesTest
