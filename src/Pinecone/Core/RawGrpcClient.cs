@@ -1,73 +1,68 @@
+using System;
 using Grpc.Core;
 using Grpc.Net.Client;
-using Microsoft.Extensions.Options;
-using Pinecone.Grpc;
 
 namespace Pinecone.Core;
 
-#nullable enable
 /// <summary>
 /// Utility class for making gRPC requests to the API.
 /// </summary>
-public class RawGrpcClient
+internal class RawGrpcClient
 {
-    public VectorService.VectorServiceClient VectorServiceClient;
-
     /// <summary>
-    /// The client options applied on every request.
+    /// The gRPC channel used to make requests.
     /// </summary>
+    public readonly GrpcChannel Channel;
+
     private readonly ClientOptions _clientOptions;
 
-    /// <summary>
-    /// Global headers to be sent with every request. Note that we make
-    /// a copy for immutability.
-    /// </summary>
-    private readonly Dictionary<string, string> _headers;
-
-    public RawGrpcClient(Dictionary<string, string> headers, ClientOptions clientOptions)
+    public RawGrpcClient(ClientOptions clientOptions)
     {
         _clientOptions = clientOptions;
-        _headers = new Dictionary<string, string>(headers);
 
         var grpcOptions = PrepareGrpcChannelOptions();
-        var channel =
+        Channel =
             grpcOptions != null
                 ? GrpcChannel.ForAddress(_clientOptions.BaseUrl, grpcOptions)
                 : GrpcChannel.ForAddress(_clientOptions.BaseUrl);
-        VectorServiceClient = new VectorService.VectorServiceClient(channel);
     }
 
     /// <summary>
     /// Prepares the gRPC metadata associated with the given request.
-    ///
     /// The provided request headers take precedence over the headers
     /// associated with this client (which are sent on _every_ request).
     /// </summary>
-    public CallOptions CreateCallOptions(GrpcRequestOptions options)
+    public CallOptions CreateCallOptions(
+        GrpcRequestOptions options,
+        CancellationToken cancellationToken = default
+    )
     {
-        // Prepare the gRPC metadata (i.e. headers).
         var metadata = new global::Grpc.Core.Metadata();
-        foreach (var header in _headers)
-        {
-            metadata.Add(header.Key, header.Value);
-        }
-        foreach (var header in options.Headers)
-        {
-            metadata.Add(header.Key, header.Value);
-        }
+        SetHeaders(metadata, _clientOptions.Headers);
+        SetHeaders(metadata, options.Headers);
 
-        // Configure the gRPC deadline.
         var timeout = options.Timeout ?? _clientOptions.Timeout;
         var deadline = DateTime.UtcNow.Add(timeout);
-
         return new CallOptions(
             metadata,
             deadline,
-            options.CancellationToken,
+            cancellationToken,
             options.WriteOptions,
-            propagationToken: null,
+            null,
             options.CallCredentials
         );
+    }
+
+    private void SetHeaders(global::Grpc.Core.Metadata metadata, Headers headers)
+    {
+        foreach (var header in headers)
+        {
+            var value = header.Value?.Match(str => str, func => func.Invoke());
+            if (value != null)
+            {
+                metadata.Add(header.Key, value);
+            }
+        }
     }
 
     private GrpcChannelOptions? PrepareGrpcChannelOptions()
@@ -77,10 +72,8 @@ public class RawGrpcClient
         {
             return null;
         }
-
         grpcChannelOptions.HttpClient ??= _clientOptions.HttpClient;
         grpcChannelOptions.MaxRetryAttempts ??= _clientOptions.MaxRetries;
-
         return grpcChannelOptions;
     }
 }

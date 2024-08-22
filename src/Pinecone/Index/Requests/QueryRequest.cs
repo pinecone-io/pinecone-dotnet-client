@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -48,7 +48,7 @@ public record QueryRequest
     /// The query vector. This should be the same length as the dimension of the index being queried. Each `query()` request can contain only one of the parameters `id` or `vector`.
     /// </summary>
     [JsonPropertyName("vector")]
-    public IEnumerable<float>? Vector { get; set; }
+    public ReadOnlyMemory<float>? Vector { get; set; }
 
     /// <summary>
     /// The query sparse values.
@@ -62,45 +62,50 @@ public record QueryRequest
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
-    #region Mappers
-
-    public Proto.QueryRequest ToProto()
+    public override string ToString()
     {
-        var queryRequest = new Proto.QueryRequest { TopK = TopK, };
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the QueryRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.QueryRequest ToProto()
+    {
+        var result = new Proto.QueryRequest();
         if (Namespace != null)
         {
-            queryRequest.Namespace = Namespace;
+            result.Namespace = Namespace ?? "";
         }
+        result.TopK = TopK;
         if (Filter != null)
         {
-            queryRequest.Filter = Filter.ToProto();
+            result.Filter = Filter.ToProto();
         }
         if (IncludeValues != null)
         {
-            queryRequest.IncludeValues = IncludeValues ?? false;
+            result.IncludeValues = IncludeValues ?? false;
         }
         if (IncludeMetadata != null)
         {
-            queryRequest.IncludeMetadata = IncludeMetadata ?? false;
+            result.IncludeMetadata = IncludeMetadata ?? false;
         }
         if (Queries != null && Queries.Any())
         {
-            queryRequest.Queries.AddRange(Queries.Select(elem => elem.ToProto()));
+            result.Queries.AddRange(Queries.Select(elem => elem.ToProto()));
         }
-        if (Vector != null)
+        if (Vector != null && !Vector.Value.IsEmpty)
         {
-            queryRequest.Vector.AddRange(Vector);
+            result.Vector.AddRange(Vector.Value.ToArray());
         }
         if (SparseVector != null)
         {
-            queryRequest.SparseVector = SparseVector.ToProto();
+            result.SparseVector = SparseVector.ToProto();
         }
         if (Id != null)
         {
-            queryRequest.Id = Id;
+            result.Id = Id ?? "";
         }
-        return queryRequest;
+        return result;
     }
-
-    #endregion
 }

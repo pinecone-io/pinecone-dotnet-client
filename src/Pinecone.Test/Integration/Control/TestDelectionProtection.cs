@@ -45,7 +45,7 @@ public class TestDeletionProtection : BaseTest
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));
 
         // Now deletion should succeed
-        await Helpers.TryDeleteIndex(Client, indexName: indexName);
+        await Helpers.TryDeleteIndex(Client, indexName);
     }
 
     [Test]
@@ -77,7 +77,8 @@ public class TestDeletionProtection : BaseTest
             }
         );
         desc = await Client.DescribeIndexAsync(indexName);
-        Assert.That(desc.Spec.Pod!.Replicas, Is.EqualTo(2));
+        var replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
+        Assert.That(replicaCount, Is.EqualTo(2));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Changing both replicas and deletion protection
@@ -93,7 +94,8 @@ public class TestDeletionProtection : BaseTest
             }
         );
         desc = await Client.DescribeIndexAsync(indexName);
-        Assert.That(desc.Spec.Pod!.Replicas, Is.EqualTo(3));
+        replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
+        Assert.That(replicaCount, Is.EqualTo(3));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));
     }
 }

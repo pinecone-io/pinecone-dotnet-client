@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -14,12 +15,29 @@ public record NamespaceSummary
     [JsonPropertyName("vectorCount")]
     public uint? VectorCount { get; set; }
 
-    #region Mappers
-
-    public static NamespaceSummary FromProto(Proto.NamespaceSummary proto)
+    public override string ToString()
     {
-        return new NamespaceSummary { VectorCount = proto.VectorCount, };
+        return JsonUtils.Serialize(this);
     }
 
-    #endregion
+    /// <summary>
+    /// Maps the NamespaceSummary type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.NamespaceSummary ToProto()
+    {
+        var result = new Proto.NamespaceSummary();
+        if (VectorCount != null)
+        {
+            result.VectorCount = VectorCount ?? 0;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new NamespaceSummary type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static NamespaceSummary FromProto(Proto.NamespaceSummary value)
+    {
+        return new NamespaceSummary { VectorCount = value.VectorCount };
+    }
 }

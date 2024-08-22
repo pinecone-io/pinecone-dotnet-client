@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -8,5 +8,10 @@ namespace Pinecone;
 public record ServerlessIndexSpec
 {
     [JsonPropertyName("serverless")]
-    public ServerlessSpec? Serverless { get; set; }
+    public required ServerlessSpec Serverless { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

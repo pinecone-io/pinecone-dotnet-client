@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -12,4 +12,9 @@ public record IndexModelStatus
 
     [JsonPropertyName("state")]
     public required IndexModelStatusState State { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

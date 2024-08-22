@@ -28,7 +28,6 @@ namespace Pinecone.Test.Integration.Control
                 Dimension,
                 Metric
             );
-            await Task.Delay(10000); // Extra wait, since status is sometimes inaccurate
 
             CollectionName = $"reused-coll-{Helpers.RandomString(10)}";
             await CreateReusableCollection(CollectionName, Dimension);

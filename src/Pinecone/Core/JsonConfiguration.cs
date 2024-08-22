@@ -1,8 +1,9 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Pinecone.Core;
 
-public static class JsonOptions
+internal static class JsonOptions
 {
     public static readonly JsonSerializerOptions JsonSerializerOptions;
 
@@ -11,12 +12,13 @@ public static class JsonOptions
         JsonSerializerOptions = new JsonSerializerOptions
         {
             Converters = { new DateTimeSerializer() },
-            WriteIndented = true
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
     }
 }
 
-public static class JsonUtils
+internal static class JsonUtils
 {
     public static string Serialize<T>(T obj)
     {

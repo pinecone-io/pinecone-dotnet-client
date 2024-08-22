@@ -10,9 +10,9 @@ public class TestSetupQuery : BaseTest
     [TestCase(false)]
     public async Task TestQueryById(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -32,16 +32,16 @@ public class TestSetupQuery : BaseTest
         var recordWithMetadata = results.Matches!.FirstOrDefault(match => match.Id == "4");
         Assert.IsNotNull(recordWithMetadata);
         Assert.IsNull(recordWithMetadata.Metadata);
-        Assert.IsEmpty(recordWithMetadata.Values!);
+        Assert.That(recordWithMetadata.Values?.IsEmpty, Is.True);
     }
 
     [TestCase(true)]
     [TestCase(false)]
     public async Task TestQueryByVector(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Vector = EmbeddingValues(2),
@@ -58,9 +58,9 @@ public class TestSetupQuery : BaseTest
     [TestCase(false)]
     public async Task TestQueryByVectorIncludeValues(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Vector = EmbeddingValues(2),
@@ -74,16 +74,16 @@ public class TestSetupQuery : BaseTest
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.IsNotEmpty(results.Matches!);
         Assert.IsNotNull(results.Matches!.First().Values);
-        Assert.That(results.Matches!.First().Values.Count(), Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Matches!.First().Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
     [TestCase(false)]
     public async Task TestQueryByVectorIncludeMetadata(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Vector = EmbeddingValues(2),
@@ -107,9 +107,9 @@ public class TestSetupQuery : BaseTest
     [TestCase(false)]
     public async Task TestQueryByVectorIncludeValuesAndMetadata(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Vector = EmbeddingValues(2),
@@ -128,7 +128,7 @@ public class TestSetupQuery : BaseTest
         var matchWithGenre = matchesWithMetadata.FirstOrDefault(match => match.Id == "4");
         Assert.IsNotNull(matchWithGenre);
         Assert.That(matchWithGenre.Metadata!["genre"], Is.EqualTo(new MetadataValue("action")));
-        Assert.That(results.Matches!.First().Values!.Count(), Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Matches!.First().Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     // Helper method to generate embedding values (float array) of a given dimension

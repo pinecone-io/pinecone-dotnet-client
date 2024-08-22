@@ -27,7 +27,10 @@ public class TestCollectionsHappyPath : BaseTest
         {
             var fetchedVector = oldResults.Vectors![v.Id];
             Assert.That(fetchedVector.Id, Is.EqualTo(v.Id));
-            Assert.That(fetchedVector.Values, Is.EqualTo(v.Values).Within(0.01).Percent);
+            Assert.That(
+                fetchedVector.Values.ToArray(),
+                Is.EqualTo(v.Values.ToArray()).Within(0.01).Percent
+            );
         }
 
         var collectionName = $"coll1-{Helpers.RandomString(10)}";
@@ -80,7 +83,10 @@ public class TestCollectionsHappyPath : BaseTest
         {
             var fetchedVector = results.Vectors![v.Id];
             Assert.That(fetchedVector.Id, Is.EqualTo(v.Id));
-            Assert.That(fetchedVector.Values, Is.EqualTo(v.Values).Within(0.01).Percent);
+            Assert.That(
+                fetchedVector.Values.ToArray(),
+                Is.EqualTo(v.Values.ToArray()).Within(0.01).Percent
+            );
         }
     }
 
@@ -102,7 +108,7 @@ public class TestCollectionsHappyPath : BaseTest
                 Name = indexName,
                 Dimension = Dimension,
                 Metric = targetMetric,
-                Spec = new IndexModelSpec
+                Spec = new PodIndexSpec
                 {
                     Pod = new PodSpec
                     {

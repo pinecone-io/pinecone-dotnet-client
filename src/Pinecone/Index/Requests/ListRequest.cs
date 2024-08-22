@@ -1,5 +1,7 @@
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
+
+#nullable enable
 
 namespace Pinecone;
 
@@ -22,29 +24,33 @@ public record ListRequest
 
     public string? Namespace { get; set; }
 
-    #region Mappers
-
-    public Proto.ListRequest ToProto()
+    public override string ToString()
     {
-        var listRequest = new Proto.ListRequest();
-        if (Limit != null)
-        {
-            listRequest.Limit = Limit ?? 0;
-        }
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the ListRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.ListRequest ToProto()
+    {
+        var result = new Proto.ListRequest();
         if (Prefix != null)
         {
-            listRequest.Prefix = Prefix ?? "";
+            result.Prefix = Prefix ?? "";
+        }
+        if (Limit != null)
+        {
+            result.Limit = Limit ?? 0;
         }
         if (PaginationToken != null)
         {
-            listRequest.PaginationToken = PaginationToken ?? "";
+            result.PaginationToken = PaginationToken ?? "";
         }
         if (Namespace != null)
         {
-            listRequest.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
-        return listRequest;
+        return result;
     }
-
-    #endregion
 }

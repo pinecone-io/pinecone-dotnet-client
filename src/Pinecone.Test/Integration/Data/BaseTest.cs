@@ -5,19 +5,10 @@ namespace Pinecone.Test.Integration;
 
 public class BaseTest
 {
-    protected string _apiKey => Setup.ApiKey;
-    protected PineconeClient _client => Setup.Client;
-    protected string _indexHost => Setup.IndexHost;
-    protected string _indexName => Setup.IndexName;
-    protected string _listNamespace => Setup.ListNamespace;
-    protected CreateIndexRequestMetric _metric => Setup.Metric;
-    protected string _namespace => Setup.Namespace;
-    protected ServerlessIndexSpec _spec => Setup.Spec;
-    protected IndexClient _indexClient => Setup.IndexClient;
-
-    [OneTimeSetUp]
-    public void GlobalSetup()
-    {
-        Setup.Initialize();
-    }
+    protected PineconeClient Client => Setup.Client;
+    protected string IndexHost => Setup.IndexHost;
+    protected string IndexName => Setup.IndexName;
+    protected string ListNamespace => Setup.ListNamespace;
+    protected string Namespace => Setup.Namespace;
+    protected IndexClient IndexClient => Setup.IndexClient;
 }

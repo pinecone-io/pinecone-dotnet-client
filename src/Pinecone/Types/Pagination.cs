@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -10,12 +11,29 @@ public record Pagination
     [JsonPropertyName("next")]
     public string? Next { get; set; }
 
-    #region Mappers
-
-    public static Pagination FromProto(Proto.Pagination proto)
+    public override string ToString()
     {
-        return new Pagination { Next = proto.Next, };
+        return JsonUtils.Serialize(this);
     }
 
-    #endregion
+    /// <summary>
+    /// Maps the Pagination type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.Pagination ToProto()
+    {
+        var result = new Proto.Pagination();
+        if (Next != null)
+        {
+            result.Next = Next ?? "";
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new Pagination type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Pagination FromProto(Proto.Pagination value)
+    {
+        return new Pagination { Next = value.Next };
+    }
 }

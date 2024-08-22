@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Pinecone;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -42,4 +42,9 @@ public record CollectionModel
     /// </summary>
     [JsonPropertyName("environment")]
     public required string Environment { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

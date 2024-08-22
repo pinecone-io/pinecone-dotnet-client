@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -13,12 +14,29 @@ public record UpsertResponse
     [JsonPropertyName("upsertedCount")]
     public uint? UpsertedCount { get; set; }
 
-    #region Mappers
-
-    public static UpsertResponse FromProto(Proto.UpsertResponse proto)
+    public override string ToString()
     {
-        return new UpsertResponse { UpsertedCount = proto.UpsertedCount };
+        return JsonUtils.Serialize(this);
     }
 
-    #endregion
+    /// <summary>
+    /// Maps the UpsertResponse type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.UpsertResponse ToProto()
+    {
+        var result = new Proto.UpsertResponse();
+        if (UpsertedCount != null)
+        {
+            result.UpsertedCount = UpsertedCount ?? 0;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new UpsertResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static UpsertResponse FromProto(Proto.UpsertResponse value)
+    {
+        return new UpsertResponse { UpsertedCount = value.UpsertedCount };
+    }
 }

@@ -200,14 +200,37 @@ public static class Helpers
 
     public static async Task TryDeleteIndex(PineconeClient client, string indexName)
     {
+        var index = await client.DescribeIndexAsync(indexName);
+        await TryDeleteIndex(client, index);
+    }
+
+    public static async Task TryDeleteIndex(PineconeClient client, Index index)
+    {
+        var indexName = index.Name;
         var timeWaited = 0;
         while (await IndexExistsAsync(client, indexName) && timeWaited < 120)
         {
-            Console.WriteLine(
-                $"Waiting for index {indexName} to be ready to delete. Waited {timeWaited} seconds..."
-            );
-            timeWaited += 5;
-            await Task.Delay(5000);
+            // Turn off deletion protection in case it's on
+            if (index.DeletionProtection == DeletionProtection.Enabled)
+            {
+                try
+                {
+                    Console.WriteLine(
+                        $"Attempting turn off deletion protection of index {indexName}"
+                    );
+                    await TurnOffDelectionProtection(client, index);
+                    Console.WriteLine($"Turned off deletion protection of index {indexName}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(
+                        $"Unable to turn of deletion protection of index {indexName}: {e.Message}"
+                    );
+                    timeWaited += 5;
+                    await Task.Delay(5000);
+                    continue;
+                }
+            }
             try
             {
                 Console.WriteLine($"Attempting delete of index {indexName}");
@@ -219,12 +242,25 @@ public static class Helpers
             {
                 Console.WriteLine($"Unable to delete index {indexName}: {e.Message}");
             }
+            Console.WriteLine(
+                $"Waiting for index {indexName} to be ready to delete. Waited {timeWaited} seconds..."
+            );
+            timeWaited += 5;
+            await Task.Delay(5000);
         }
 
         if (timeWaited >= 120)
         {
             throw new Exception($"Index {indexName} could not be deleted after 120 seconds");
         }
+    }
+
+    public static async Task TurnOffDelectionProtection(PineconeClient client, Index index)
+    {
+        await client.ConfigureIndexAsync(
+            index.Name,
+            new ConfigureIndexRequest { DeletionProtection = DeletionProtection.Disabled }
+        );
     }
 
     public static async Task TryDeleteCollection(PineconeClient client, string collectionName)
@@ -261,7 +297,7 @@ public static class Helpers
         var indexes = await client.ListIndexesAsync();
         foreach (var index in indexes.Indexes ?? [])
         {
-            await TryDeleteIndex(client, index.Name);
+            await TryDeleteIndex(client, index);
         }
         var collections = await client.ListCollectionsAsync();
         foreach (var collection in collections.Collections ?? [])

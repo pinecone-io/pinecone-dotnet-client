@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 
 #nullable enable
 
@@ -17,4 +18,9 @@ public record ConfigureIndexRequestSpecPod
     /// </summary>
     [JsonPropertyName("pod_type")]
     public string? PodType { get; set; }
+
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 }

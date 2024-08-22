@@ -1,16 +1,21 @@
 using NUnit.Framework;
-using Pinecone.Core;
+using Pinecone;
 using WireMock.Logging;
 using WireMock.Server;
 using WireMock.Settings;
 
+#nullable enable
+
 namespace Pinecone.Test.Unit.MockServer;
 
 [SetUpFixture]
-public class GlobalTestSetup
+public class BaseMockServerTest
 {
-    public static WireMockServer Server { get; private set; } = null!;
-    public static PineconeClient Client { get; private set; } = null!;
+    protected static WireMockServer Server { get; set; } = null!;
+
+    protected static BasePinecone Client { get; set; } = null!;
+
+    protected static RequestOptions RequestOptions { get; set; } = null!;
 
     [OneTimeSetUp]
     public void GlobalSetup()
@@ -21,7 +26,9 @@ public class GlobalTestSetup
         );
 
         // Initialize the Client
-        Client = new PineconeClient("API_KEY", new ClientOptions { BaseUrl = Server.Urls[0] });
+        Client = new BasePinecone("API_KEY");
+
+        RequestOptions = new RequestOptions { BaseUrl = Server.Urls[0] };
     }
 
     [OneTimeTearDown]

@@ -2,7 +2,7 @@ using System;
 
 #nullable enable
 
-namespace Pinecone.Core;
+namespace Pinecone;
 
 /// <summary>
 /// Base exception class for all exceptions thrown by the SDK.

@@ -24,7 +24,7 @@ public record ScoredVector
     /// This is the vector data, if it is requested.
     /// </summary>
     [JsonPropertyName("values")]
-    public IEnumerable<float>? Values { get; set; }
+    public ReadOnlyMemory<float>? Values { get; set; }
 
     /// <summary>
     /// This is the sparse data, if it is requested.
@@ -38,20 +38,50 @@ public record ScoredVector
     [JsonPropertyName("metadata")]
     public Metadata? Metadata { get; set; }
 
-    #region Mappers
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 
-    public static ScoredVector FromProto(Proto.ScoredVector proto)
+    /// <summary>
+    /// Maps the ScoredVector type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.ScoredVector ToProto()
+    {
+        var result = new Proto.ScoredVector();
+        result.Id = Id;
+        if (Score != null)
+        {
+            result.Score = Score ?? 0.0f;
+        }
+        if (Values != null && !Values.Value.IsEmpty)
+        {
+            result.Values.AddRange(Values.Value.ToArray());
+        }
+        if (SparseValues != null)
+        {
+            result.SparseValues = SparseValues.ToProto();
+        }
+        if (Metadata != null)
+        {
+            result.Metadata = Metadata.ToProto();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new ScoredVector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static ScoredVector FromProto(Proto.ScoredVector value)
     {
         return new ScoredVector
         {
-            Id = proto.Id,
-            Score = proto.Score,
-            Values = proto.Values?.ToList(),
+            Id = value.Id,
+            Score = value.Score,
+            Values = value.Values?.ToArray(),
             SparseValues =
-                proto.SparseValues != null ? SparseValues.FromProto(proto.SparseValues) : null,
-            Metadata = proto.Metadata != null ? Metadata.FromProto(proto.Metadata) : null,
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
         };
     }
-
-    #endregion
 }

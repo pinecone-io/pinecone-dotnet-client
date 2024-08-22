@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -14,22 +14,29 @@ public record Usage
     [JsonPropertyName("readUnits")]
     public uint? ReadUnits { get; set; }
 
-    #region Mappers
-
-    public Proto.Usage ToProto()
+    public override string ToString()
     {
-        var usage = new Proto.Usage();
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the Usage type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.Usage ToProto()
+    {
+        var result = new Proto.Usage();
         if (ReadUnits != null)
         {
-            usage.ReadUnits = ReadUnits ?? 0;
+            result.ReadUnits = ReadUnits ?? 0;
         }
-        return usage;
+        return result;
     }
 
-    public static Usage FromProto(Proto.Usage proto)
+    /// <summary>
+    /// Returns a new Usage type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Usage FromProto(Proto.Usage value)
     {
-        return new Usage { ReadUnits = proto.ReadUnits };
+        return new Usage { ReadUnits = value.ReadUnits };
     }
-
-    #endregion
 }

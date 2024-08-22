@@ -4,15 +4,11 @@ namespace Pinecone;
 
 public class PineconeClient : BasePinecone
 {
-    private readonly string _apiKey;
+    private readonly string? _apiKey;
 
     public PineconeClient(string? apiKey = "", ClientOptions? clientOptions = null)
-        : base(apiKey, clientOptions)
+        : base(apiKey, PrepareClientOptions(apiKey, clientOptions))
     {
-        apiKey ??= GetFromEnvironmentOrThrow(
-            "PINECONE_API_KEY",
-            "Please pass in apiKey or set the environment variable PINECONE_API_KEY."
-        );
         _apiKey = apiKey;
     }
 
@@ -35,26 +31,54 @@ public class PineconeClient : BasePinecone
         {
             throw e.InnerException ?? e;
         }
-        clientOptions ??= new ClientOptions();
+
+        clientOptions = PrepareClientOptions(_apiKey, clientOptions);
         var client = new RawClient(
-            new Dictionary<string, string>
-            {
-                { "Api-Key", _apiKey },
-                { "X-Pinecone-API-Version", "2024-07" },
-                { "X-Fern-Language", "C#" },
-                { "X-Fern-SDK-Name", "Pinecone" },
-                { "X-Fern-SDK-Version", "0.0.98" },
-            },
-            new Dictionary<string, Func<string>>(),
             new ClientOptions
             {
                 BaseUrl = NormalizeHost(host),
                 HttpClient = clientOptions.HttpClient,
                 MaxRetries = clientOptions.MaxRetries,
-                Timeout = clientOptions.Timeout
+                Timeout = clientOptions.Timeout,
+                GrpcOptions = clientOptions.GrpcOptions,
+                Headers = clientOptions.Headers,
             }
         );
         return new IndexClient(client);
+    }
+
+    private static ClientOptions PrepareClientOptions(
+        string? apiKey = "",
+        ClientOptions? clientOptions = null
+    )
+    {
+        apiKey ??= GetFromEnvironmentOrThrow(
+            "PINECONE_API_KEY",
+            "Please pass in apiKey or set the environment variable PINECONE_API_KEY."
+        );
+        var defaultHeaders = new Headers()
+        {
+            ["Api-Key"] = apiKey,
+            ["X-Pinecone-API-Version"] = "2024-07",
+            ["X-Fern-Language"] = "C#",
+            ["X-Fern-SDK-Name"] = "Pinecone",
+            ["X-Fern-SDK-Version"] = "1.0.0-rc0",
+            ["User-Agent"] = "lang=C#; version=1.0.0-rc0"
+        };
+        clientOptions ??= new ClientOptions();
+        foreach (var header in defaultHeaders)
+        {
+            if (!clientOptions.Headers.ContainsKey(header.Key))
+            {
+                clientOptions.Headers[header.Key] = header.Value;
+            }
+        }
+        if (clientOptions.SourceTag != null)
+        {
+            clientOptions.Headers["User-Agent"] =
+                $"lang=C#; version=1.0.0-rc0; source_tag={clientOptions.SourceTag}";
+        }
+        return clientOptions;
     }
 
     private string NormalizeHost(string host)

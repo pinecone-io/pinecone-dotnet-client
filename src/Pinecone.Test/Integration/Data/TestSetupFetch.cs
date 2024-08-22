@@ -11,9 +11,9 @@ public class TestSetupFetch : BaseTest
     [TestCase(false)]
     public async Task TestFetchMultipleById(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.FetchAsync(
+        var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1", "2", "4" }, Namespace = targetNamespace }
         );
 
@@ -38,17 +38,16 @@ public class TestSetupFetch : BaseTest
         );
         Assert.That(results.Vectors["4"].Metadata["runtime"], Is.EqualTo(new MetadataValue(120)));
 
-        Assert.That(results.Vectors["1"].Values, Is.Not.Null);
-        Assert.That(results.Vectors["1"].Values.Count(), Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
     [TestCase(false)]
     public async Task TestFetchSingleById(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.FetchAsync(
+        var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1" }, Namespace = targetNamespace }
         );
 
@@ -57,17 +56,16 @@ public class TestSetupFetch : BaseTest
 
         Assert.That(results.Vectors["1"].Id, Is.EqualTo("1"));
         Assert.That(results.Vectors["1"].Metadata, Is.Null);
-        Assert.That(results.Vectors["1"].Values, Is.Not.Null);
-        Assert.That(results.Vectors["1"].Values.Count(), Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
     [TestCase(false)]
     public async Task TestFetchNonexistentId(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.FetchAsync(
+        var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "100" }, Namespace = targetNamespace }
         );
 
@@ -80,7 +78,7 @@ public class TestSetupFetch : BaseTest
     {
         var targetNamespace = "nonexistent-namespace";
 
-        var results = await _indexClient.FetchAsync(
+        var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1" }, Namespace = targetNamespace }
         );
 
@@ -92,22 +90,22 @@ public class TestSetupFetch : BaseTest
     [TestCase(false)]
     public void TestFetchWithEmptyListOfIds(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var exception = Assert.ThrowsAsync<RpcException>(async () =>
+        var exception = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.FetchAsync(
+            await IndexClient.FetchAsync(
                 new FetchRequest { Ids = Array.Empty<string>(), Namespace = targetNamespace }
             );
         });
 
-        Assert.That(exception.StatusCode, Is.EqualTo(StatusCode.InvalidArgument));
+        Assert.That(exception.StatusCode, Is.EqualTo(3));
     }
 
     [Test]
     public async Task TestFetchUnspecifiedNamespace()
     {
-        var results = await _indexClient.FetchAsync(new FetchRequest { Ids = new[] { "1", "4" } });
+        var results = await IndexClient.FetchAsync(new FetchRequest { Ids = new[] { "1", "4" } });
 
         Assert.That(results.Namespace, Is.EqualTo(""));
         Assert.That(results.Vectors?["1"].Id, Is.EqualTo("1"));

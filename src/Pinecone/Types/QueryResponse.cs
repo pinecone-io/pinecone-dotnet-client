@@ -1,5 +1,5 @@
-using System.Net.Sockets;
 using System.Text.Json.Serialization;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -32,18 +32,47 @@ public record QueryResponse
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
 
-    #region Mappers
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
+    }
 
-    public static QueryResponse FromProto(Proto.QueryResponse proto)
+    /// <summary>
+    /// Maps the QueryResponse type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.QueryResponse ToProto()
+    {
+        var result = new Proto.QueryResponse();
+        if (Results != null && Results.Any())
+        {
+            result.Results.AddRange(Results.Select(elem => elem.ToProto()));
+        }
+        if (Matches != null && Matches.Any())
+        {
+            result.Matches.AddRange(Matches.Select(elem => elem.ToProto()));
+        }
+        if (Namespace != null)
+        {
+            result.Namespace = Namespace ?? "";
+        }
+        if (Usage != null)
+        {
+            result.Usage = Usage.ToProto();
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a new QueryResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static QueryResponse FromProto(Proto.QueryResponse value)
     {
         return new QueryResponse
         {
-            Results = proto.Results?.Select(SingleQueryResults.FromProto),
-            Matches = proto.Matches?.Select(ScoredVector.FromProto),
-            Namespace = proto.Namespace,
-            Usage = proto.Usage != null ? Usage.FromProto(proto.Usage) : null
+            Results = value.Results?.Select(SingleQueryResults.FromProto),
+            Matches = value.Matches?.Select(ScoredVector.FromProto),
+            Namespace = value.Namespace,
+            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
         };
     }
-
-    #endregion
 }

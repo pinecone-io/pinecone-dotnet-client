@@ -8,9 +8,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilter(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -30,9 +30,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterGt(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -56,9 +56,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterGte(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -83,9 +83,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterLt(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -108,9 +108,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterLte(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -134,9 +134,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterIn(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -171,9 +171,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [Ignore("Seems like a bug in the server")]
     public async Task TestQueryByIdWithFilterNin(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -208,9 +208,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [TestCase(false)]
     public async Task TestQueryByIdWithFilterEq(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",
@@ -234,9 +234,9 @@ public class TestSetupQueryWithFilter : BaseTest
     [Ignore("Seems like a bug in the server")]
     public async Task TestQueryByIdWithFilterNe(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await _indexClient.QueryAsync(
+        var results = await IndexClient.QueryAsync(
             new QueryRequest
             {
                 Id = "1",

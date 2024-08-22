@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Pinecone;
 using Pinecone.Core;
 
 #nullable enable
@@ -32,5 +31,5 @@ public enum IndexModelStatusState
     Terminating,
 
     [EnumMember(Value = "Ready")]
-    Ready
+    Ready,
 }

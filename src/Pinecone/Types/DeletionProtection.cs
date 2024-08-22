@@ -1,6 +1,5 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Pinecone;
 using Pinecone.Core;
 
 #nullable enable
@@ -14,5 +13,5 @@ public enum DeletionProtection
     Disabled,
 
     [EnumMember(Value = "enabled")]
-    Enabled
+    Enabled,
 }

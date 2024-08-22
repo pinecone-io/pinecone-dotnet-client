@@ -22,8 +22,7 @@ public class AdditionalPropertiesTest
   ""extra"": ""value""
 }
 ";
-        
-        
+
         var expectedJson =
             @"
         {

@@ -9,11 +9,11 @@ public class TestSetupQueryErrorCases : BaseTest
     [TestCase(false)]
     public void TestQueryWithInvalidVector(bool useNondefaultNamespace)
     {
-        var targetNamespace = useNondefaultNamespace ? _namespace : "";
+        var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var ex = Assert.ThrowsAsync<RpcException>(async () =>
+        var ex = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.QueryAsync(
+            await IndexClient.QueryAsync(
                 new QueryRequest
                 {
                     Vector = new float[] { 1, 2, 3 }, // Invalid vector size
@@ -23,9 +23,6 @@ public class TestSetupQueryErrorCases : BaseTest
             );
         });
 
-        Assert.That(
-            ex.Message.Contains("vector", StringComparison.CurrentCultureIgnoreCase),
-            Is.True
-        );
+        Assert.That(ex.StatusCode, Is.EqualTo(3));
     }
 }

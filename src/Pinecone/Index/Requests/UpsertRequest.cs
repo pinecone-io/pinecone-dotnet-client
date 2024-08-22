@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Google.Protobuf.Reflection;
+using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
 #nullable enable
@@ -20,21 +20,25 @@ public record UpsertRequest
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
 
-    #region Mappers
-
-    public Proto.UpsertRequest ToProto()
+    public override string ToString()
     {
-        var upsertRequest = new Proto.UpsertRequest();
+        return JsonUtils.Serialize(this);
+    }
+
+    /// <summary>
+    /// Maps the UpsertRequest type into its Protobuf-equivalent representation.
+    /// </summary>
+    internal Proto.UpsertRequest ToProto()
+    {
+        var result = new Proto.UpsertRequest();
         if (Vectors.Any())
         {
-            upsertRequest.Vectors.AddRange(Vectors.Select(vector => vector.ToProto()));
+            result.Vectors.AddRange(Vectors.Select(elem => elem.ToProto()));
         }
         if (Namespace != null)
         {
-            upsertRequest.Namespace = Namespace ?? "";
+            result.Namespace = Namespace ?? "";
         }
-        return upsertRequest;
+        return result;
     }
-
-    #endregion
 }

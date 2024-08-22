@@ -5,14 +5,14 @@ using Pinecone.Core;
 
 #nullable enable
 
-namespace Pinecone.Core;
+namespace Pinecone;
 
 public partial class ClientOptions
 {
     /// <summary>
     /// The Base URL for the API.
     /// </summary>
-    public string BaseUrl { get; init; } = BasePineconeEnvironment.DEFAULT;
+    public string BaseUrl { get; init; } = BasePineconeEnvironment.Default;
 
     /// <summary>
     /// The http client used to make requests.
@@ -33,4 +33,9 @@ public partial class ClientOptions
     /// The options used for gRPC client endpoints.
     /// </summary>
     public GrpcChannelOptions? GrpcOptions { get; init; }
+
+    /// <summary>
+    /// The http headers sent with the request.
+    /// </summary>
+    internal Headers Headers { get; init; } = new();
 }
