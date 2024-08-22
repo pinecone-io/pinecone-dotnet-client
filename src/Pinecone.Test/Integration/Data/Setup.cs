@@ -3,9 +3,8 @@ using NUnit.Framework;
 namespace Pinecone.Test.Integration.Data;
 
 [SetUpFixture]
-public static class Setup
+public class Setup
 {
-    public static string ApiKey { get; private set; } = null!;
     public static PineconeClient Client { get; private set; } = null!;
     public static string IndexHost { get; private set; } = null!;
     public static string IndexName { get; private set; } = null!;
@@ -14,40 +13,33 @@ public static class Setup
     public static string Namespace { get; private set; } = null!;
     public static ServerlessIndexSpec Spec { get; private set; } = null!;
     public static IndexClient IndexClient { get; private set; } = null!;
-    private static bool _isInitialized = false;
-    private static readonly object Lock = new();
 
-    public static void Initialize()
+    [OneTimeSetUp]
+    public async Task GlobalSetup()
     {
-        if (_isInitialized)
-            return;
-
-        lock (Lock)
+        Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
+        Metric = CreateIndexRequestMetric.Cosine;
+        Spec = new ServerlessIndexSpec
         {
-            if (_isInitialized)
-                return;
-
-            ApiKey = Helpers.GetEnvironmentVar("PINECONE_API_KEY");
-            Client = new PineconeClient(ApiKey);
-            Metric = CreateIndexRequestMetric.Cosine;
-            Spec = new ServerlessIndexSpec
+            Serverless = new ServerlessSpec
             {
-                Serverless = new ServerlessSpec
-                {
-                    Cloud = ServerlessSpecCloud.Aws,
-                    Region = "us-east-1"
-                }
-            };
-            IndexName = "dataplane-" + Helpers.RandomString(20);
-            Namespace = Helpers.RandomString(10);
-            ListNamespace = Helpers.RandomString(10);
+                Cloud = ServerlessSpecCloud.Aws,
+                Region = "us-east-1"
+            }
+        };
+        IndexName = "dataplane-" + Helpers.RandomString(20);
+        Namespace = Helpers.RandomString(10);
+        ListNamespace = Helpers.RandomString(10);
 
-            IndexHost = Task.Run(() => SetupIndex(IndexName, Metric, Spec)).Result;
-            IndexClient = Client.Index(host: IndexHost);
-            Task.Run(SeedData).Wait();
+        IndexHost = await SetupIndex(IndexName, Metric, Spec);
+        IndexClient = Client.Index(host: IndexHost);
+        await SeedData();
+    }
 
-            _isInitialized = true;
-        }
+    [OneTimeTearDown]
+    public async Task GlobalCleanup()
+    {
+        await Helpers.Cleanup(Client);
     }
 
     private static async Task<string> SetupIndex(
@@ -88,13 +80,5 @@ public static class Setup
 
         Console.WriteLine("Seeding data in namespace \"\"");
         await Seed.SetupData(IndexClient, "", true);
-
-        Console.WriteLine("Waiting a bit more to ensure freshness");
-    }
-
-    [OneTimeTearDown]
-    public static async Task GlobalCleanup()
-    {
-        await Helpers.Cleanup(Client);
     }
 }

@@ -13,7 +13,7 @@ public class TestSetupUpsertErrors : BaseTest
 
         var e = Assert.Throws<PineconeApiException>(() =>
         {
-            pinecone.Index(_indexName);
+            pinecone.Index(IndexName);
         });
         Assert.That(e.StatusCode, Is.EqualTo(401));
     }
@@ -21,9 +21,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenDimensionMismatchObjects()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -39,9 +39,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenDimensionMismatchTuples()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -57,9 +57,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenDimensionMismatchDicts()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        var e = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -75,9 +75,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenSparseValuesIndicesValuesMismatchObjects()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -97,9 +97,9 @@ public class TestSetupUpsertErrors : BaseTest
             );
         });
 
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -123,9 +123,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenSparseValuesInTuples()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -157,9 +157,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenSparseValuesIndicesValuesMismatchDicts()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -179,9 +179,9 @@ public class TestSetupUpsertErrors : BaseTest
             );
         });
 
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -205,9 +205,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenValuesMissingObjects()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -223,9 +223,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenValuesMissingTuples()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -241,9 +241,9 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenValuesMissingDicts()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     Vectors = new List<Vector>
@@ -259,18 +259,18 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenVectorsEmpty()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() });
+            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() });
         });
     }
 
     [Test]
     public void TestUpsertFailsWhenVectorsMissing()
     {
-        Assert.ThrowsAsync<RpcException>(async () =>
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await _indexClient.UpsertAsync(
+            await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
                     // Missing the Vectors field entirely
