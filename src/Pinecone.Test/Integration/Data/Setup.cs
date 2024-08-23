@@ -47,21 +47,19 @@ public class Setup
     private static async Task<string> SetupIndex(
         string indexName,
         CreateIndexRequestMetric metric,
-        dynamic spec
+        ServerlessIndexSpec spec
     )
     {
         Console.WriteLine("Creating index with name: " + indexName);
-        var indexes = await Client.ListIndexesAsync();
-        if (indexes.Indexes != null && indexes.Indexes.All(index => index.Name != indexName))
-            await Client.CreateIndexAsync(
-                new CreateIndexRequest
-                {
-                    Name = indexName,
-                    Dimension = 2,
-                    Metric = metric,
-                    Spec = spec
-                }
-            );
+        await Client.CreateIndexAsync(
+            new CreateIndexRequest
+            {
+                Name = indexName,
+                Dimension = 2,
+                Metric = metric,
+                Spec = spec
+            }
+        );
 
         var description = await Client.DescribeIndexAsync(indexName);
         return description.Host;
