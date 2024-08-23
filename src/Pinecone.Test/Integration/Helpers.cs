@@ -34,11 +34,12 @@ public static class Helpers
             desc = await client.DescribeCollectionAsync(collectionName);
             collectionReady = desc.Status;
         }
-
         if (timeWaited >= 180)
         {
             throw new Exception($"Collection {collectionName} is not ready after 180 seconds");
         }
+        // extra wait to ensure true readiness
+        await Task.Delay(20000);
     }
 
     public static async Task CreatePodIndexAndWaitUntilReady(
@@ -86,6 +87,8 @@ public static class Helpers
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
+        // extra wait to ensure true readiness
+        await Task.Delay(20000);
     }
 
     private static CreateIndexRequest CreateIndexParams(
