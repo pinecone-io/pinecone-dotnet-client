@@ -131,7 +131,8 @@ public class TestSetupUpsert : BaseTest
     private async Task<IndexClient> CreateIndexForTest()
     {
         var indexName = Helpers.GenerateIndexName("upsert-testing");
-        await Client.CreateIndexAsync(new CreateIndexRequest
+        await Client.CreateIndexAsync(
+            new CreateIndexRequest
             {
                 Name = indexName,
                 Dimension = 2,

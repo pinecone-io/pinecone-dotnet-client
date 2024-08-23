@@ -78,17 +78,16 @@ public static class Helpers
             }
             catch (NotFoundError)
             {
-                Console.WriteLine(
-                    "Index not found yet."
-                );
+                Console.WriteLine("Index not found yet.");
             }
         }
+        Console.WriteLine($"Index {indexName} has a {indexReady} status!");
         if (timeWaited > 120)
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
         // extra wait to ensure true readiness
-        await Task.Delay(60000);
+        await Task.Delay(30000);
         return index.Host;
     }
 
