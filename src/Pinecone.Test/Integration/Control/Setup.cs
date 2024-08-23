@@ -11,6 +11,7 @@ namespace Pinecone.Test.Integration.Control
         public static int Dimension { get; private set; }
         public static CreateIndexRequestMetric Metric { get; private set; }
         public static string CollectionName { get; private set; } = null!;
+        public static string Host { get; private set; } = null!;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()
@@ -22,7 +23,7 @@ namespace Pinecone.Test.Integration.Control
             Metric = CreateIndexRequestMetric.Cosine;
             IndexName = Helpers.GenerateIndexName("global-index");
 
-            await Helpers.CreatePodIndexAndWaitUntilReady(
+            Host = await Helpers.CreatePodIndexAndWaitUntilReady(
                 Client,
                 IndexName,
                 PineconeEnvironment,
@@ -53,7 +54,7 @@ namespace Pinecone.Test.Integration.Control
                 })
                 .ToList();
 
-            var index = Client.Index(IndexName);
+            var index = Client.Index(Host);
             await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 
             await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);

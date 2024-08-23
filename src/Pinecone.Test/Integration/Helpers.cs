@@ -42,7 +42,7 @@ public static class Helpers
         await Task.Delay(20000);
     }
 
-    public static async Task CreatePodIndexAndWaitUntilReady(
+    public static async Task<string> CreatePodIndexAndWaitUntilReady(
         PineconeClient client,
         string indexName,
         string environment,
@@ -88,7 +88,8 @@ public static class Helpers
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
         // extra wait to ensure true readiness
-        await Task.Delay(20000);
+        await Task.Delay(30000);
+        return index.Host;
     }
 
     private static CreateIndexRequest CreateIndexParams(
