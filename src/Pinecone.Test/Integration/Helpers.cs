@@ -81,13 +81,13 @@ public static class Helpers
                 Console.WriteLine("Index not found yet.");
             }
         }
-        Console.WriteLine($"Index {indexName} has a {indexReady} status!");
+        Console.WriteLine($"Index {indexName} has a {indexReady} ready status!");
         if (timeWaited > 120)
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
         // extra wait to ensure true readiness
-        await Task.Delay(60000);
+        await Task.Delay(120000);
         return index.Host;
     }
 
