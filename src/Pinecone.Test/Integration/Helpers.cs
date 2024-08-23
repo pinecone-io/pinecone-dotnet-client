@@ -67,7 +67,7 @@ public static class Helpers
         while (!indexReady && timeWaited < 120)
         {
             Console.WriteLine(
-                $"Waiting for index {index} to be ready. Waited {timeWaited} seconds..."
+                $"Waiting for index {indexName} to be ready. Waited {timeWaited} seconds..."
             );
             await Task.Delay(5000);
             timeWaited += 5;
