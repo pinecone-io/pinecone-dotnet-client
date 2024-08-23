@@ -63,7 +63,7 @@ public class PineconeClient : BasePinecone
             ["X-Fern-Language"] = "C#",
             ["X-Fern-SDK-Name"] = "Pinecone",
             ["X-Fern-SDK-Version"] = "1.0.0-rc0",
-            ["User-Agent"] = "lang=C#; version=1.0.0-rc0"
+            ["User-Agent"] = "lang=C#; version=1.0.0-rc.1"
         };
         clientOptions ??= new ClientOptions();
         foreach (var header in defaultHeaders)
@@ -76,7 +76,7 @@ public class PineconeClient : BasePinecone
         if (clientOptions.SourceTag != null)
         {
             clientOptions.Headers["User-Agent"] =
-                $"lang=C#; version=1.0.0-rc0; source_tag={clientOptions.SourceTag}";
+                $"lang=C#; version=1.0.0-rc.1; source_tag={clientOptions.SourceTag}";
         }
         return clientOptions;
     }
