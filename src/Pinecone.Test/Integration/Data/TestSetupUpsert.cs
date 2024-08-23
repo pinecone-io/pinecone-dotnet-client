@@ -146,6 +146,7 @@ public class TestSetupUpsert : BaseTest
                 }
             }
         );
+        await Task.Delay(5000);
         return Client.Index(indexName);
     }
 }
