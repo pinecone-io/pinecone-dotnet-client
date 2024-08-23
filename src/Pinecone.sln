@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone", "Pinecone\Pinecone.csproj", "{5D8A8E89-E61F-4F43-B9B9-D83AFCED484C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone", "Pinecone\Pinecone.csproj", "{C776C3E1-0B72-4E96-93A3-7442673B0872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Test", "Pinecone.Test\Pinecone.Test.csproj", "{E9369916-A94D-4B89-8596-73B3A737D60C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Test", "Pinecone.Test\Pinecone.Test.csproj", "{B04E2F42-8CB1-4597-B854-7BC87B2A7106}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5D8A8E89-E61F-4F43-B9B9-D83AFCED484C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D8A8E89-E61F-4F43-B9B9-D83AFCED484C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D8A8E89-E61F-4F43-B9B9-D83AFCED484C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D8A8E89-E61F-4F43-B9B9-D83AFCED484C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9369916-A94D-4B89-8596-73B3A737D60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9369916-A94D-4B89-8596-73B3A737D60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9369916-A94D-4B89-8596-73B3A737D60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9369916-A94D-4B89-8596-73B3A737D60C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
