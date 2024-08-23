@@ -54,12 +54,11 @@ namespace Pinecone.Test.Integration.Control
                 })
                 .ToList();
 
-            var index = Client.Index(host: Host);
+            Console.WriteLine($"Attempting to upsert vectors to index {IndexName}");
+            var index = Client.Index(IndexName);
             await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 
-            Console.WriteLine(
-                $"Attempting to create collection with name {collectionName} from index {IndexName}"
-            );
+            Console.WriteLine($"Attempting to create collection with name {collectionName} from index {IndexName}");
             await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);
             Console.WriteLine($"Collection {collectionName} created successfully!");
 
