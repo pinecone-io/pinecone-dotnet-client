@@ -46,44 +46,43 @@ jobs:
         run: |
           dotnet test src --filter "FullyQualifiedName~Pinecone.Test.Unit"
 
-  # TODO: Uncomment to make integration tests live  
-  # integration-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v3
-
-  #     - uses: actions/checkout@master
-
-  #     - name: Setup .NET
-  #       uses: actions/setup-dotnet@v1
-  #       with:
-  #         dotnet-version: 8.x
-
-  #     - name: Install tools
-  #       run: |
-  #         dotnet tool restore
-
-  #     - name: Run Integration Tests
-  #       env:
-  #         PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
-  #       run: |
-          # dotnet test src --filter "FullyQualifiedName~Pinecone.Test.Integration"
- 
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout repo
+       uses: actions/checkout@v3
+    
+     - uses: actions/checkout@master
+    
+     - name: Setup .NET
+       uses: actions/setup-dotnet@v1
+       with:
+         dotnet-version: 8.x
+    
+     - name: Install tools
+       run: |
+         dotnet tool restore
+    
+     - name: Run Integration Tests
+       env:
+         PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+       run: |
+         dotnet test src --filter "FullyQualifiedName~Pinecone.Test.Integration"
+  
   publish:
     needs: [compile]
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
-
+  
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-
+  
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 8.x
-
+  
       - name: Publish
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
