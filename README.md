@@ -75,7 +75,7 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
        Serverless = new ServerlessSpec
        {
            Cloud = ServerlessSpecCloud.Aws,
-           Region = "us-east-1"
+           Region = "us-east-1",
        }
    },
    DeletionProtection = DeletionProtection.Enabled
@@ -104,7 +104,7 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
            PodType = "p1.x1",
            Pods = 1,
            Replicas = 1,
-           Shards = 1
+           Shards = 1,
        }
    },
    DeletionProtection = DeletionProtection.Enabled
@@ -163,7 +163,7 @@ var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", new Conf
        Pod = new ConfigureIndexRequestSpecPod
        {
            Replicas = 2,
-           PodType = "p1.x1"
+           PodType = "p1.x1",
        }
    }
 });
@@ -206,7 +206,7 @@ float[][] values =
 [
     [1.0f, 2.0f, 3.0f],
     [4.0f, 5.0f, 6.0f],
-    [7.0f, 8.0f, 9.0f]
+    [7.0f, 8.0f, 9.0f],
 ];
 
 // List of sparse indices to be upserted
@@ -214,7 +214,7 @@ uint[][] sparseIndices =
 [
     [1, 2, 3],
     [4, 5, 6],
-    [7, 8, 9]
+    [7, 8, 9],
 ];
 
 // List of sparse values to be upserted
@@ -222,7 +222,7 @@ float[][] sparseValues =
 [
     [1000f, 2000f, 3000f],
     [4000f, 5000f, 6000f],
-    [7000f, 8000f, 9000f]
+    [7000f, 8000f, 9000f],
 ];
 
 // Metadata to be upserted
@@ -230,7 +230,7 @@ var metadataStructArray = new[]
 {
     new Metadata { ["genre"] = "action", ["year"] = 2019 },
     new Metadata { ["genre"] = "thriller", ["year"] = 2020 },
-    new Metadata { ["genre"] = "comedy", ["year"] = 2021 }
+    new Metadata { ["genre"] = "comedy", ["year"] = 2021 },
 };
 
 var vectors = new List<Vector>();
@@ -244,9 +244,9 @@ for (var i = 0; i <= 2; i++)
             SparseValues = new SparseValues
             {
                 Indices = sparseIndices[i],
-                Values = sparseValues[i]
+                Values = sparseValues[i],
             },
-            Metadata = metadataStructArray[i]
+            Metadata = metadataStructArray[i],
         }
     );
 }
@@ -273,12 +273,12 @@ var queryResponse = await index.QueryAsync(
        TopK = 10,
        IncludeValues = true,
        IncludeMetadata = true,
-       Filter = new Metadata
+       Filter = new Metadata,
        {
            ["genre"] =
                new Metadata
                {
-                   ["$in"] = new[] { "comedy", "documentary", "drama" }
+                   ["$in"] = new[] { "comedy", "documentary", "drama" },
                }
        }
    });
@@ -299,10 +299,10 @@ var queryResponse = await index.QueryAsync(
    {
        TopK = 10,
        Vector = [0.1f, 0.2f, 0.3f],
-       SparseVector = new SparseValues
+       SparseVector = new SparseValues,
        {
            Indices = [10, 45, 16],
-           Values = [0.5f, 0.5f, 0.2f]
+           Values = [0.5f, 0.5f, 0.2f],
        }
    }
 );
@@ -322,7 +322,7 @@ var index = pinecone.Index("example-index");
 var deleteResponse = await index.DeleteAsync(new DeleteRequest
 {
    Ids = new[] { "v1" },
-   Namespace = "example-namespace"
+   Namespace = "example-namespace",
 });
 ```
 
@@ -394,7 +394,7 @@ var updateResponse = await index.UpdateAsync(new UpdateRequest
    Id = "vec1",
    Values = new[] { 0.1f, 0.2f, 0.3f, 0.4f },
    SetMetadata = new Metadata { ["genre"] = "drama" },
-   Namespace = "example-namespace"
+   Namespace = "example-namespace",
 });
 ```
 
