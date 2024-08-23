@@ -70,8 +70,17 @@ public static class Helpers
             );
             await Task.Delay(5000);
             timeWaited += 5;
-            var status = (await client.DescribeIndexAsync(indexName)).Status;
-            indexReady = status.Ready;
+            try
+            {
+                var status = (await client.DescribeIndexAsync(indexName)).Status;
+                indexReady = status.Ready;
+            }
+            catch (NotFoundError)
+            {
+                Console.WriteLine(
+                    "Index not found yet."
+                );
+            }
         }
         if (timeWaited > 120)
         {

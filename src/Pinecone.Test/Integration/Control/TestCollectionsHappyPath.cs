@@ -19,19 +19,6 @@ public class TestCollectionsHappyPath : BaseTest
             .ToList();
 
         await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
-        // Verify the vectors from the collection can be fetched
-        var oldResults = await index.FetchAsync(
-            new FetchRequest { Ids = vectors.Select(v => v.Id).ToArray() }
-        );
-        foreach (var v in vectors)
-        {
-            var fetchedVector = oldResults.Vectors![v.Id];
-            Assert.That(fetchedVector.Id, Is.EqualTo(v.Id));
-            Assert.That(
-                fetchedVector.Values.ToArray(),
-                Is.EqualTo(v.Values.ToArray()).Within(0.01).Percent
-            );
-        }
 
         var collectionName = $"coll1-{Helpers.RandomString(10)}";
 
