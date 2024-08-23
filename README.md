@@ -273,7 +273,7 @@ var queryResponse = await index.QueryAsync(
        TopK = 10,
        IncludeValues = true,
        IncludeMetadata = true,
-       Filter = new Metadata,
+       Filter = new Metadata
        {
            ["genre"] =
                new Metadata
@@ -299,7 +299,7 @@ var queryResponse = await index.QueryAsync(
    {
        TopK = 10,
        Vector = [0.1f, 0.2f, 0.3f],
-       SparseVector = new SparseValues,
+       SparseVector = new SparseValues
        {
            Indices = [10, 45, 16],
            Values = [0.5f, 0.5f, 0.2f],
