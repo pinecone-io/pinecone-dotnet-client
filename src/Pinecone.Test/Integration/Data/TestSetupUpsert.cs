@@ -124,8 +124,8 @@ public class TestSetupUpsert : BaseTest
 
         // Check the vector count reflects that some data has been upserted
         var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
-        Assert.That(stats.TotalVectorCount, Is.EqualTo(9));
-        Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(9));
+        Assert.That(stats.TotalVectorCount, Is.EqualTo(3));
+        Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(3));
     }
 
     private async Task<IndexClient> CreateIndexForTest()

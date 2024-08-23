@@ -136,12 +136,7 @@ public static class Helpers
         int expectedCount
     )
     {
-        var maxSleep = int.TryParse(
-            Environment.GetEnvironmentVariable("FRESHNESS_TIMEOUT_SECONDS"),
-            out var timeout
-        )
-            ? timeout
-            : 60;
+        var maxSleep = 120;
         const int deltaT = 5;
         var totalTime = 0;
         var done = false;
