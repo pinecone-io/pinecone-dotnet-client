@@ -15,6 +15,7 @@ namespace Pinecone.Test.Integration.Control
         [OneTimeSetUp]
         public async Task GlobalSetup()
         {
+            Console.WriteLine("Initializing control plane integration tests...");
             Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
@@ -31,6 +32,7 @@ namespace Pinecone.Test.Integration.Control
 
             CollectionName = $"reused-coll-{Helpers.RandomString(10)}";
             await CreateReusableCollection(CollectionName, Dimension);
+            Console.WriteLine("Control plane integration test intialization complete.");
         }
 
         [OneTimeTearDown]

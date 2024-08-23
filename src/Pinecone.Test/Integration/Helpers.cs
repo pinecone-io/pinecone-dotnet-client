@@ -24,7 +24,7 @@ public static class Helpers
         var timeWaited = 0;
         var desc = await client.DescribeCollectionAsync(collectionName);
         var collectionReady = desc.Status;
-        while (collectionReady != CollectionModelStatus.Ready && timeWaited < 120)
+        while (collectionReady != CollectionModelStatus.Ready && timeWaited < 180)
         {
             Console.WriteLine(
                 $"Waiting for collection {collectionName} to be ready. Waited {timeWaited} seconds..."
@@ -35,9 +35,9 @@ public static class Helpers
             collectionReady = desc.Status;
         }
 
-        if (timeWaited >= 120)
+        if (timeWaited >= 180)
         {
-            throw new Exception($"Collection {collectionName} is not ready after 120 seconds");
+            throw new Exception($"Collection {collectionName} is not ready after 180 seconds");
         }
     }
 

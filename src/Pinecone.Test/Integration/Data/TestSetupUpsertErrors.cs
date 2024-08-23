@@ -10,55 +10,28 @@ public class TestSetupUpsertErrors : BaseTest
     public void TestUpsertFailsWhenApiKeyInvalid()
     {
         var pinecone = new PineconeClient(Helpers.FakeApiKey());
-
-        var e = Assert.Throws<PineconeApiException>(() =>
-        {
-            pinecone.Index(IndexName);
-        });
-        Assert.That(e.StatusCode, Is.EqualTo(401));
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenDimensionMismatchObjects()
-    {
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
-                        new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
-                    }
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenDimensionMismatchTuples()
-    {
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
-                        new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
-                    }
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenDimensionMismatchDicts()
-    {
         var e = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
+            var index = pinecone.Index(null, IndexHost);
+            await index.UpsertAsync(
+                new UpsertRequest
+                {
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
+                        new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
+                    }
+                }
+            );
+        });
+        Assert.That(e.StatusCode, Is.EqualTo(7));
+    }
+
+    [Test]
+    public void TestUpsertFailsWhenDimensionMismatch()
+    {
+        Assert.ThrowsAsync<PineconeApiException>(async () =>
+        {
             await IndexClient.UpsertAsync(
                 new UpsertRequest
                 {
@@ -73,7 +46,7 @@ public class TestSetupUpsertErrors : BaseTest
     }
 
     [Test]
-    public void TestUpsertFailsWhenSparseValuesIndicesValuesMismatchObjects()
+    public void TestUpsertFailsWhenSparseValuesIndicesValuesMismatch()
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
@@ -155,91 +128,7 @@ public class TestSetupUpsertErrors : BaseTest
     }
 
     [Test]
-    public void TestUpsertFailsWhenSparseValuesIndicesValuesMismatchDicts()
-    {
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new()
-                        {
-                            Id = "1",
-                            Values = Helpers.EmbeddingValues(2),
-                            SparseValues = new SparseValues
-                            {
-                                Indices = new List<uint> { 0 },
-                                Values = Helpers.EmbeddingValues(2)
-                            }
-                        }
-                    }
-                }
-            );
-        });
-
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new()
-                        {
-                            Id = "1",
-                            Values = Helpers.EmbeddingValues(2),
-                            SparseValues = new SparseValues
-                            {
-                                Indices = new List<uint> { 0, 1 },
-                                Values = Helpers.EmbeddingValues(1)
-                            }
-                        }
-                    }
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenValuesMissingObjects()
-    {
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new() { Id = "1" },
-                        new() { Id = "2" }
-                    }
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenValuesMissingTuples()
-    {
-        Assert.ThrowsAsync<PineconeApiException>(async () =>
-        {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
-                    {
-                        new() { Id = "1" },
-                        new() { Id = "2" }
-                    }
-                }
-            );
-        });
-    }
-
-    [Test]
-    public void TestUpsertFailsWhenValuesMissingDicts()
+    public void TestUpsertFailsWhenValuesMissing()
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
