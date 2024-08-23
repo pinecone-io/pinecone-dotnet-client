@@ -7,4 +7,5 @@ src/Pinecone.Test/Integration
 
 # The following file should always be .fernignore'd.
 
+CONTRIBUTING.md
 README.md
