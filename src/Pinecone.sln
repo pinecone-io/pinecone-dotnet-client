@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone", "Pinecone\Pinecone.csproj", "{C776C3E1-0B72-4E96-93A3-7442673B0872}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone", "Pinecone\Pinecone.csproj", "{6B53E172-BCCE-4AEB-975C-2BD111501FA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Test", "Pinecone.Test\Pinecone.Test.csproj", "{B04E2F42-8CB1-4597-B854-7BC87B2A7106}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinecone.Test", "Pinecone.Test\Pinecone.Test.csproj", "{CA413B7F-2189-4B5F-975D-4848FE5C8ED9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,13 +16,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C776C3E1-0B72-4E96-93A3-7442673B0872}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B04E2F42-8CB1-4597-B854-7BC87B2A7106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B53E172-BCCE-4AEB-975C-2BD111501FA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B53E172-BCCE-4AEB-975C-2BD111501FA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B53E172-BCCE-4AEB-975C-2BD111501FA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B53E172-BCCE-4AEB-975C-2BD111501FA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA413B7F-2189-4B5F-975D-4848FE5C8ED9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA413B7F-2189-4B5F-975D-4848FE5C8ED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA413B7F-2189-4B5F-975D-4848FE5C8ED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA413B7F-2189-4B5F-975D-4848FE5C8ED9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
