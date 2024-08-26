@@ -17,6 +17,7 @@ public class Setup
     [OneTimeSetUp]
     public async Task GlobalSetup()
     {
+        Console.WriteLine("Initializing data plane integration tests...");
         Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
         Metric = CreateIndexRequestMetric.Cosine;
         Spec = new ServerlessIndexSpec
@@ -34,6 +35,7 @@ public class Setup
         IndexHost = await SetupIndex(IndexName, Metric, Spec);
         IndexClient = Client.Index(host: IndexHost);
         await SeedData();
+        Console.WriteLine("Data plane integration test initialization complete.");
     }
 
     [OneTimeTearDown]
@@ -45,21 +47,19 @@ public class Setup
     private static async Task<string> SetupIndex(
         string indexName,
         CreateIndexRequestMetric metric,
-        dynamic spec
+        ServerlessIndexSpec spec
     )
     {
         Console.WriteLine("Creating index with name: " + indexName);
-        var indexes = await Client.ListIndexesAsync();
-        if (indexes.Indexes != null && indexes.Indexes.All(index => index.Name != indexName))
-            await Client.CreateIndexAsync(
-                new CreateIndexRequest
-                {
-                    Name = indexName,
-                    Dimension = 2,
-                    Metric = metric,
-                    Spec = spec
-                }
-            );
+        await Client.CreateIndexAsync(
+            new CreateIndexRequest
+            {
+                Name = indexName,
+                Dimension = 2,
+                Metric = metric,
+                Spec = spec
+            }
+        );
 
         var description = await Client.DescribeIndexAsync(indexName);
         return description.Host;

@@ -11,17 +11,19 @@ namespace Pinecone.Test.Integration.Control
         public static int Dimension { get; private set; }
         public static CreateIndexRequestMetric Metric { get; private set; }
         public static string CollectionName { get; private set; } = null!;
+        public static string Host { get; private set; } = null!;
 
         [OneTimeSetUp]
         public async Task GlobalSetup()
         {
+            Console.WriteLine("Initializing control plane integration tests...");
             Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
             Metric = CreateIndexRequestMetric.Cosine;
             IndexName = Helpers.GenerateIndexName("global-index");
 
-            await Helpers.CreatePodIndexAndWaitUntilReady(
+            Host = await Helpers.CreatePodIndexAndWaitUntilReady(
                 Client,
                 IndexName,
                 PineconeEnvironment,
@@ -31,6 +33,7 @@ namespace Pinecone.Test.Integration.Control
 
             CollectionName = $"reused-coll-{Helpers.RandomString(10)}";
             await CreateReusableCollection(CollectionName, Dimension);
+            Console.WriteLine("Control plane integration test intialization complete.");
         }
 
         [OneTimeTearDown]
@@ -51,10 +54,13 @@ namespace Pinecone.Test.Integration.Control
                 })
                 .ToList();
 
+            Console.WriteLine($"Attempting to upsert vectors to index {IndexName}");
             var index = Client.Index(IndexName);
             await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 
+            Console.WriteLine($"Attempting to create collection with name {collectionName} from index {IndexName}");
             await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);
+            Console.WriteLine($"Collection {collectionName} created successfully!");
 
             return collectionName;
         }

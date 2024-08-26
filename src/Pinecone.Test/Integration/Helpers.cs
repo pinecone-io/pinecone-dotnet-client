@@ -24,7 +24,7 @@ public static class Helpers
         var timeWaited = 0;
         var desc = await client.DescribeCollectionAsync(collectionName);
         var collectionReady = desc.Status;
-        while (collectionReady != CollectionModelStatus.Ready && timeWaited < 120)
+        while (collectionReady != CollectionModelStatus.Ready && timeWaited < 180)
         {
             Console.WriteLine(
                 $"Waiting for collection {collectionName} to be ready. Waited {timeWaited} seconds..."
@@ -34,14 +34,15 @@ public static class Helpers
             desc = await client.DescribeCollectionAsync(collectionName);
             collectionReady = desc.Status;
         }
-
-        if (timeWaited >= 120)
+        if (timeWaited >= 180)
         {
-            throw new Exception($"Collection {collectionName} is not ready after 120 seconds");
+            throw new Exception($"Collection {collectionName} is not ready after 180 seconds");
         }
+        // extra wait to ensure true readiness
+        await Task.Delay(20000);
     }
 
-    public static async Task CreatePodIndexAndWaitUntilReady(
+    public static async Task<string> CreatePodIndexAndWaitUntilReady(
         PineconeClient client,
         string indexName,
         string environment,
@@ -66,17 +67,28 @@ public static class Helpers
         while (!indexReady && timeWaited < 120)
         {
             Console.WriteLine(
-                $"Waiting for index {index} to be ready. Waited {timeWaited} seconds..."
+                $"Waiting for index {indexName} to be ready. Waited {timeWaited} seconds..."
             );
             await Task.Delay(5000);
             timeWaited += 5;
-            var status = (await client.DescribeIndexAsync(indexName)).Status;
-            indexReady = status.Ready;
+            try
+            {
+                var status = (await client.DescribeIndexAsync(indexName)).Status;
+                indexReady = status.Ready;
+            }
+            catch (NotFoundError)
+            {
+                Console.WriteLine("Index not found yet.");
+            }
         }
+        Console.WriteLine($"Index {indexName} has a {indexReady} ready status!");
         if (timeWaited > 120)
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
+        // extra wait to ensure true readiness
+        await Task.Delay(120000);
+        return index.Host;
     }
 
     private static CreateIndexRequest CreateIndexParams(
@@ -124,12 +136,7 @@ public static class Helpers
         int expectedCount
     )
     {
-        var maxSleep = int.TryParse(
-            Environment.GetEnvironmentVariable("FRESHNESS_TIMEOUT_SECONDS"),
-            out var timeout
-        )
-            ? timeout
-            : 60;
+        var maxSleep = 120;
         const int deltaT = 5;
         var totalTime = 0;
         var done = false;

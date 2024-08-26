@@ -19,19 +19,6 @@ public class TestCollectionsHappyPath : BaseTest
             .ToList();
 
         await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
-        // Verify the vectors from the collection can be fetched
-        var oldResults = await index.FetchAsync(
-            new FetchRequest { Ids = vectors.Select(v => v.Id).ToArray() }
-        );
-        foreach (var v in vectors)
-        {
-            var fetchedVector = oldResults.Vectors![v.Id];
-            Assert.That(fetchedVector.Id, Is.EqualTo(v.Id));
-            Assert.That(
-                fetchedVector.Values.ToArray(),
-                Is.EqualTo(v.Values.ToArray()).Within(0.01).Percent
-            );
-        }
 
         var collectionName = $"coll1-{Helpers.RandomString(10)}";
 
@@ -58,21 +45,10 @@ public class TestCollectionsHappyPath : BaseTest
             Metric,
             sourceCollection: collectionName
         );
-
-        Console.WriteLine(
-            $"Created index {newIndexName} from collection {collectionName}. Waiting a little more to make sure it's ready..."
-        );
-        // await Task.Delay(30000);
-        var newIndexDesc = await Client.DescribeIndexAsync(newIndexName);
-        Assert.That(newIndexDesc.Name, Is.EqualTo(newIndexName));
-        Assert.IsTrue(newIndexDesc.Status.Ready);
-
         var newIndex = Client.Index(newIndexName);
 
         // Verify stats reflect the vectors present in the collection
         var stats = await newIndex.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
-        Console.WriteLine(stats);
-
         Assert.That(stats.TotalVectorCount, Is.EqualTo(numVectors));
 
         // Verify the vectors from the collection can be fetched

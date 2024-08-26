@@ -8,10 +8,11 @@ public class TestSetupUpsert : BaseTest
     [TestCase(false)]
     public async Task TestUpsertToNamespace(bool useNondefaultNamespace)
     {
+        var indexClient = await CreateIndexForTest();
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with tuples
-        await IndexClient.UpsertAsync(
+        await indexClient.UpsertAsync(
             new UpsertRequest
             {
                 Vectors = new List<Vector>
@@ -25,7 +26,7 @@ public class TestSetupUpsert : BaseTest
         );
 
         // Upsert with objects
-        await IndexClient.UpsertAsync(
+        await indexClient.UpsertAsync(
             new UpsertRequest
             {
                 Vectors = new List<Vector>
@@ -39,7 +40,7 @@ public class TestSetupUpsert : BaseTest
         );
 
         // Upsert with dictionary
-        await IndexClient.UpsertAsync(
+        await indexClient.UpsertAsync(
             new UpsertRequest
             {
                 Vectors = new List<Vector>
@@ -52,11 +53,11 @@ public class TestSetupUpsert : BaseTest
             }
         );
 
-        Helpers.PollStatsForNamespace(IndexClient, targetNamespace, 9);
+        Helpers.PollStatsForNamespace(indexClient, targetNamespace, 9);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await IndexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
-        Assert.That(stats.TotalVectorCount, Is.GreaterThanOrEqualTo(9));
+        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+        Assert.That(stats.TotalVectorCount, Is.EqualTo(9));
         Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(9));
     }
 
@@ -64,10 +65,11 @@ public class TestSetupUpsert : BaseTest
     [TestCase(false)]
     public async Task TestUpsertToNamespaceWithSparseEmbeddingValues(bool useNondefaultNamespace)
     {
+        var indexClient = await CreateIndexForTest();
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with sparse values object
-        await IndexClient.UpsertAsync(
+        await indexClient.UpsertAsync(
             new UpsertRequest
             {
                 Vectors = new List<Vector>
@@ -88,7 +90,7 @@ public class TestSetupUpsert : BaseTest
         );
 
         // Upsert with sparse values dictionary
-        await IndexClient.UpsertAsync(
+        await indexClient.UpsertAsync(
             new UpsertRequest
             {
                 Vectors = new List<Vector>
@@ -103,7 +105,7 @@ public class TestSetupUpsert : BaseTest
                             Values = Helpers.EmbeddingValues()
                         }
                     },
-                    new Vector
+                    new()
                     {
                         Id = "3",
                         Values = Helpers.EmbeddingValues(),
@@ -118,11 +120,34 @@ public class TestSetupUpsert : BaseTest
             }
         );
 
-        Helpers.PollStatsForNamespace(IndexClient, targetNamespace, 9);
+        Helpers.PollStatsForNamespace(indexClient, targetNamespace, 3);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await IndexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
-        Assert.That(stats.TotalVectorCount, Is.GreaterThanOrEqualTo(9));
-        Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(9));
+        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+        Assert.That(stats.TotalVectorCount, Is.EqualTo(3));
+        Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(3));
+    }
+
+    private async Task<IndexClient> CreateIndexForTest()
+    {
+        var indexName = Helpers.GenerateIndexName("upsert-testing");
+        await Client.CreateIndexAsync(
+            new CreateIndexRequest
+            {
+                Name = indexName,
+                Dimension = 2,
+                Metric = CreateIndexRequestMetric.Cosine,
+                Spec = new ServerlessIndexSpec
+                {
+                    Serverless = new ServerlessSpec
+                    {
+                        Cloud = ServerlessSpecCloud.Aws,
+                        Region = "us-east-1"
+                    }
+                }
+            }
+        );
+        await Task.Delay(5000);
+        return Client.Index(indexName);
     }
 }

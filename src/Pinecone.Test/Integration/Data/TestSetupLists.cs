@@ -17,12 +17,12 @@ public class TestSetupLists : BaseTest
             var listResult = await IndexClient.ListAsync(listRequest);
 
             Assert.That(listResult.Vectors, Is.Not.Null);
-            paginationToken = listResult.Pagination?.Next;
             if (listResult.Vectors?.Count() > 0)
             {
                 pageCount++;
+                pageSizes.Add(listResult.Vectors.Count());
             }
-            pageSizes.Add(listResult.Vectors.Count());
+            paginationToken = listResult.Pagination?.Next;
         } while (paginationToken != null);
 
         Assert.That(pageCount, Is.EqualTo(1));
@@ -32,8 +32,6 @@ public class TestSetupLists : BaseTest
     [Test]
     public async Task TestList()
     {
-        var pageCount = 0;
-
         var listRequest = new ListRequest
         {
             Prefix = "99",
@@ -43,8 +41,6 @@ public class TestSetupLists : BaseTest
         var listResult = await IndexClient.ListAsync(listRequest);
 
         Assert.That(listResult.Vectors, Is.Not.Null);
-        pageCount++;
-
         Assert.That(listResult.Vectors.Count(), Is.EqualTo(11));
         Assert.That(
             listResult.Vectors.Select(vector => vector.Id),
@@ -65,8 +61,6 @@ public class TestSetupLists : BaseTest
                 }
             )
         );
-
-        Assert.That(pageCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -85,11 +79,11 @@ public class TestSetupLists : BaseTest
             };
             var listResult = await IndexClient.ListAsync(listRequest);
 
-            paginationToken = listResult.Pagination?.Next;
             if (listResult.Vectors?.Count() > 0)
             {
                 pageCount++;
             }
+            paginationToken = listResult.Pagination?.Next;
         } while (paginationToken != null);
 
         Assert.That(pageCount, Is.EqualTo(0));
@@ -111,11 +105,11 @@ public class TestSetupLists : BaseTest
             };
             var listResult = await IndexClient.ListAsync(listRequest);
 
-            paginationToken = listResult.Pagination?.Next;
             if (listResult.Vectors?.Count() > 0)
             {
                 pageCount++;
             }
+            paginationToken = listResult.Pagination?.Next;
         } while (paginationToken != null);
 
         Assert.That(pageCount, Is.EqualTo(0));
@@ -141,12 +135,13 @@ public class TestSetupLists : BaseTest
             var listResult = await IndexClient.ListAsync(listRequest);
 
             Assert.That(listResult.Vectors, Is.Not.Null);
+            if (listResult.Vectors?.Count() > 0)
+            {
+                pageCount++;
+                pageSizes.Add(listResult.Vectors.Count());
+                pages.Add(listResult.Vectors.Select(vector => vector.Id)!);
+            }
             paginationToken = listResult.Pagination?.Next;
-            if (!(listResult.Vectors?.Count() > 0))
-                continue;
-            pageCount++;
-            pageSizes.Add(listResult.Vectors.Count());
-            pages.Add(listResult.Vectors.Select(vector => vector.Id)!);
         } while (paginationToken != null);
 
         Assert.That(pageCount, Is.EqualTo(3));
