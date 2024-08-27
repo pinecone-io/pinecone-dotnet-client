@@ -1,5 +1,8 @@
 # Pinecone .NET Library
 
+[![NuGet](https://img.shields.io/nuget/v/Pinecone.Client.svg)](https://www.nuget.org/packages/Pinecone.Client)
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://buildwithfern.com/?utm_campaign=pinecone-io/pinecone-dotnet-client&utm_medium=readme&utm_source=github)
+
 The official Pinecone .NET library supporting .NET Standard, .NET Core, and .NET Framework.
 
 ## Requirements
