@@ -114,6 +114,35 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 });
 ```
 
+#### Azure
+
+The SDK makes it easy to create indexes in a wide range of regions. For example, if you want to create the
+index in Azure, the example above can be adapted to use the following `ServerlessSpec`:
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
+{
+   Name = "example-index",
+   Dimension = 1538,
+   Metric = CreateIndexRequestMetric.Cosine,
+   Spec = new ServerlessIndexSpec
+   {
+       Serverless = new ServerlessSpec
+       {
+           Cloud = ServerlessSpecCloud.Azure,
+           Region = "eastus2",
+       }
+   },
+   DeletionProtection = DeletionProtection.Enabled
+});
+```
+
+The list of all available cloud regions can be found [here](https://docs.pinecone.io/troubleshooting/available-cloud-regions).
+
 ### List indexes
 
 The following example returns all indexes (and their corresponding metadata) in your project.
