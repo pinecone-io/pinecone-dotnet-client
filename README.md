@@ -77,8 +77,8 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
    {
        Serverless = new ServerlessSpec
        {
-           Cloud = ServerlessSpecCloud.Aws,
-           Region = "us-east-1",
+           Cloud = ServerlessSpecCloud.Azure,
+           Region = "eastus2",
        }
    },
    DeletionProtection = DeletionProtection.Enabled
@@ -103,7 +103,7 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
    {
        Pod = new PodSpec
        {
-           Environment = "us-east-1-aws",
+           Environment = "eastus-azure",
            PodType = "p1.x1",
            Pods = 1,
            Replicas = 1,
