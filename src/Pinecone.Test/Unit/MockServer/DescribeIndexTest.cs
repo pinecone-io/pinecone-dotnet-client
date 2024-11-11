@@ -16,26 +16,31 @@ public class DescribeIndexTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "name": "movie-recommendations",
-              "dimension": 1536,
+              "name": "name",
+              "dimension": 1,
               "metric": "cosine",
-              "host": "movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io",
+              "host": "host",
               "deletion_protection": "disabled",
+              "tags": {
+                "tags": "tags"
+              },
               "spec": {
                 "serverless": {
-                  "cloud": "aws",
-                  "region": "us-east-1"
+                  "cloud": "gcp",
+                  "region": "region"
                 }
               },
               "status": {
-                "ready": false,
+                "ready": true,
                 "state": "Initializing"
               }
             }
             """;
 
         Server
-            .Given(WireMock.RequestBuilders.Request.Create().WithPath("/indexes/string").UsingGet())
+            .Given(
+                WireMock.RequestBuilders.Request.Create().WithPath("/indexes/index_name").UsingGet()
+            )
             .RespondWith(
                 WireMock
                     .ResponseBuilders.Response.Create()
@@ -43,7 +48,7 @@ public class DescribeIndexTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.DescribeIndexAsync("string", RequestOptions);
+        var response = await Client.DescribeIndexAsync("index_name", RequestOptions);
         JToken
             .Parse(mockResponse)
             .Should()
@@ -60,56 +65,10 @@ public class DescribeIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io",
               "deletion_protection": "disabled",
-              "spec": {
-                "pod": {
-                  "environment": "us-east-1-aws",
-                  "replicas": 1,
-                  "shards": 1,
-                  "pod_type": "p1.x1",
-                  "pods": 1,
-                  "metadata_config": {
-                    "indexed": [
-                      "genre",
-                      "title",
-                      "imdb_rating"
-                    ]
-                  },
-                  "source_collection": "movie-embeddings"
-                }
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
               },
-              "status": {
-                "ready": false,
-                "state": "Initializing"
-              }
-            }
-            """;
-
-        Server
-            .Given(WireMock.RequestBuilders.Request.Create().WithPath("/indexes/string").UsingGet())
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.DescribeIndexAsync("string", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_3()
-    {
-        const string mockResponse = """
-            {
-              "name": "movie-recommendations",
-              "dimension": 1536,
-              "metric": "cosine",
-              "host": "movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io",
-              "deletion_protection": "disabled",
               "spec": {
                 "serverless": {
                   "cloud": "aws",
@@ -142,7 +101,7 @@ public class DescribeIndexTest : BaseMockServerTest
     }
 
     [Test]
-    public async Task MockServerTest_4()
+    public async Task MockServerTest_3()
     {
         const string mockResponse = """
             {
@@ -151,6 +110,10 @@ public class DescribeIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "pod": {
                   "environment": "us-east-1-aws",

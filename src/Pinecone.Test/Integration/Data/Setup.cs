@@ -18,15 +18,18 @@ public class Setup
     public async Task GlobalSetup()
     {
         Console.WriteLine("Initializing data plane integration tests...");
-        Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
+        Client = new PineconeClient(
+            apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
+            new ClientOptions { SourceTag = "test-tag" }
+        );
         Metric = CreateIndexRequestMetric.Cosine;
         Spec = new ServerlessIndexSpec
         {
             Serverless = new ServerlessSpec
             {
                 Cloud = ServerlessSpecCloud.Aws,
-                Region = "us-east-1"
-            }
+                Region = "us-east-1",
+            },
         };
         IndexName = "dataplane-" + Helpers.RandomString(20);
         Namespace = Helpers.RandomString(10);
@@ -57,7 +60,7 @@ public class Setup
                 Name = indexName,
                 Dimension = 2,
                 Metric = metric,
-                Spec = spec
+                Spec = spec,
             }
         );
 

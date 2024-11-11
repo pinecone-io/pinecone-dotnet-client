@@ -1,0 +1,468 @@
+imports:
+  root: __package__.yml
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    cancelBulkImport:
+      auth: true
+      display-name: Cancel an import
+      docs: >
+        The `cancel_import` operation cancels an import operation if it is not
+        yet finished. It has no effect if the operation is already finished. For
+        guidance and examples, see [Import
+        data](https://docs.pinecone.io/guides/data/import-data).
+      examples:
+        - path-parameters:
+            id: '101'
+          response:
+            body: {}
+      method: DELETE
+      path: /bulk/imports/{id}
+      path-parameters:
+        id: string
+      response:
+        docs: Operation cancelled successfully
+        type: root.CancelImportResponse
+    delete:
+      auth: false
+      docs: |-
+        Delete vectors
+
+         The `delete` operation deletes vectors, by id, from a single namespace.
+
+         For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
+      examples:
+        - request:
+            ids:
+              - v1
+              - v2
+              - v3
+            namespace: example
+          response:
+            body: {}
+      method: POST
+      path: /vectors/delete
+      request:
+        body:
+          properties:
+            deleteAll:
+              docs: >-
+                This indicates that all vectors in the index namespace should be
+                deleted.
+              type: optional<boolean>
+            filter:
+              docs: >-
+                If specified, the metadata filter here will be used to select
+                the vectors to delete. This is mutually exclusive
+                 with specifying ids to delete in the ids param or using `delete_all=True`.
+                 For guidance and examples, see [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+                 Serverless indexes do not support delete by metadata. Instead, you can use the `list` operation to fetch the vector IDs based on their common ID prefix and then delete the records by ID.
+              type: optional<root.Metadata>
+            ids:
+              docs: Vectors to delete.
+              type: optional<list<string>>
+            namespace:
+              docs: The namespace to delete vectors from, if applicable.
+              type: optional<string>
+        content-type: application/json
+        name: DeleteRequest
+      response:
+        docs: OK
+        type: root.DeleteResponse
+    describe_index_stats:
+      auth: false
+      docs: |-
+        Get index stats
+
+         The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+
+         Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
+
+         For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+      examples:
+        - request: {}
+          response:
+            body:
+              dimension: 3
+              indexFullness: 0.2
+              namespaces:
+                key:
+                  vectorCount: 25
+              totalVectorCount: 125
+      method: POST
+      path: /describe_index_stats
+      request:
+        body:
+          properties:
+            filter:
+              docs: >-
+                If this parameter is present, the operation only returns
+                statistics
+                 for vectors that satisfy the filter.
+                 See https://docs.pinecone.io/guides/data/filtering-with-metadata.
+              type: optional<root.Metadata>
+        content-type: application/json
+        name: DescribeIndexStatsRequest
+      response:
+        docs: OK
+        type: root.DescribeIndexStatsResponse
+    describeBulkImport:
+      auth: true
+      display-name: Describe an import
+      docs: >
+        The `describe_import` operation returns details of a specific import
+        operation. For guidance and examples,
+
+        see [Import data](https://docs.pinecone.io/guides/data/import-data).
+      examples:
+        - path-parameters:
+            id: '101'
+          response:
+            body:
+              createdAt: '2024-01-15T09:30:00Z'
+              error: error
+              finishedAt: '2024-01-15T09:30:00Z'
+              id: '101'
+              percentComplete: 42.2
+              recordsImported: 1000000
+              status: Pending
+              uri: uri
+      method: GET
+      path: /bulk/imports/{id}
+      path-parameters:
+        id: string
+      response:
+        docs: Details of the import operation
+        type: root.ImportModel
+    fetch:
+      auth: false
+      docs: |-
+        Fetch vectors
+
+         The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+
+         For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
+      examples:
+        - query-parameters:
+            ids: v1
+            namespace: example
+          response:
+            body:
+              namespace: example
+              usage:
+                readUnits: 2
+              vectors:
+                key:
+                  id: v1
+                  sparseValues:
+                    indices:
+                      - 1
+                    values:
+                      - 42.2
+                      - 50.5
+                      - 60.8
+                  values:
+                    - 0.1
+                    - 0.2
+                    - 0.3
+      method: GET
+      path: /vectors/fetch
+      request:
+        name: FetchRequest
+        query-parameters:
+          ids:
+            allow-multiple: true
+            docs: The vector IDs to fetch. Does not accept values containing spaces.
+            type: optional<string>
+          namespace: optional<string>
+      response:
+        docs: OK
+        type: root.FetchResponse
+    list:
+      auth: false
+      docs: |-
+        List vector IDs
+
+         The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+
+         `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+
+         For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
+
+         **Note:** `list` is supported only for serverless indexes.
+      examples:
+        - query-parameters:
+            limit: 50
+            namespace: example
+            paginationToken: eyJza2lwX3Bhc3QiOiIxMDEwMy0=
+          response:
+            body:
+              namespace: example
+              pagination:
+                next: nextPageToken
+              usage:
+                readUnits: 1
+              vectors:
+                - id: v1
+      method: GET
+      path: /vectors/list
+      request:
+        name: ListRequest
+        query-parameters:
+          limit:
+            docs: Max number of ids to return
+            type: optional<uint>
+          namespace: optional<string>
+          paginationToken:
+            docs: Pagination token to continue a previous listing operation
+            type: optional<string>
+          prefix:
+            docs: The vector IDs to fetch. Does not accept values containing spaces.
+            type: optional<string>
+      response:
+        docs: OK
+        type: root.ListResponse
+    listBulkImports:
+      auth: true
+      display-name: List imports
+      docs: >
+        The `list_imports` operation lists all recent and ongoing import
+        operations. For guidance and examples, see [Import
+        data](https://docs.pinecone.io/guides/data/import-data).
+      examples:
+        - response:
+            body:
+              data:
+                - createdAt: '2024-01-15T09:30:00Z'
+                  error: error
+                  finishedAt: '2024-01-15T09:30:00Z'
+                  id: '101'
+                  percentComplete: 42.2
+                  recordsImported: 1000000
+                  status: Pending
+                  uri: uri
+              pagination:
+                next: Tm90aGluZyB0byBzZWUgaGVyZQo=
+      method: GET
+      path: /bulk/imports
+      request:
+        name: ListBulkImportsRequest
+        query-parameters:
+          limit:
+            docs: Max number of operations to return per page.
+            type: optional<integer>
+          paginationToken:
+            docs: Pagination token to continue a previous listing operation.
+            type: optional<string>
+      response:
+        docs: A list of import operations
+        type: root.ListImportsResponse
+    query:
+      auth: false
+      docs: |-
+        Query vectors
+
+         The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+
+         For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
+      examples:
+        - request:
+            includeMetadata: true
+            includeValues: true
+            namespace: example
+            topK: 3
+          response:
+            body:
+              matches:
+                - id: v1
+                  score: 25.5
+                  sparseValues:
+                    indices:
+                      - 1
+                    values:
+                      - 42.2
+                      - 50.5
+                      - 60.8
+                  values:
+                    - 0.1
+                    - 0.2
+                    - 0.3
+              namespace: example
+              results:
+                - matches:
+                    - id: v1
+                  namespace: example
+              usage:
+                readUnits: 2
+      method: POST
+      path: /query
+      request:
+        body:
+          properties:
+            filter:
+              docs: >-
+                The filter to apply. You can use vector metadata to limit your
+                search. See [Filter with
+                metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+              type: optional<root.Metadata>
+            id:
+              docs: >-
+                The unique ID of the vector to be used as a query vector. Each
+                `query()` request can contain only one of the parameters
+                `queries`, `vector`, or  `id`.
+              type: optional<string>
+            includeMetadata:
+              docs: >-
+                Indicates whether metadata is included in the response as well
+                as the ids.
+              type: optional<boolean>
+            includeValues:
+              docs: Indicates whether vector values are included in the response.
+              type: optional<boolean>
+            namespace:
+              docs: The namespace to query.
+              type: optional<string>
+            queries:
+              docs: >-
+                DEPRECATED. The query vectors. Each `query()` request can
+                contain only one of the parameters `queries`, `vector`, or 
+                `id`.
+              type: optional<list<root.QueryVector>>
+            sparseVector:
+              docs: The query sparse values.
+              type: optional<root.SparseValues>
+            topK:
+              docs: The number of results to return for each query.
+              type: uint
+            vector:
+              docs: >-
+                The query vector. This should be the same length as the
+                dimension of the index being queried. Each `query()` request can
+                contain only one of the parameters `id` or `vector`.
+              type: optional<list<float>>
+        content-type: application/json
+        name: QueryRequest
+      response:
+        docs: OK
+        type: root.QueryResponse
+    startBulkImport:
+      auth: true
+      display-name: Start import
+      docs: >
+        The `start_import` operation starts an asynchronous import of vectors
+        from object storage into an index. For guidance and examples, see
+        [Import data](https://docs.pinecone.io/guides/data/import-data).
+      examples:
+        - request:
+            uri: uri
+          response:
+            body:
+              id: '101'
+      method: POST
+      path: /bulk/imports
+      request:
+        body:
+          properties:
+            errorMode: optional<root.ImportErrorMode>
+            integrationId:
+              docs: >-
+                The id of the storage integration that should be used to access
+                the data.
+              type: optional<string>
+              validation:
+                maxLength: 1000
+            uri:
+              docs: >-
+                The URI prefix under which the data to import is available. All
+                data within this prefix will be listed then imported into the
+                target index. Currently only `s3://` URIs are supported.
+              type: string
+              validation:
+                maxLength: 1500
+                minLength: 1
+        content-type: application/json
+        name: StartImportRequest
+      response:
+        docs: Successful import operation
+        type: root.StartImportResponse
+    update:
+      auth: false
+      docs: |-
+        Update a vector
+
+         The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+
+         For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
+      examples:
+        - request:
+            id: v1
+            namespace: example
+            values:
+              - 42.2
+              - 50.5
+              - 60.8
+          response:
+            body: {}
+      method: POST
+      path: /vectors/update
+      request:
+        body:
+          properties:
+            id:
+              docs: Vector's unique id.
+              type: string
+            namespace:
+              docs: The namespace containing the vector to update.
+              type: optional<string>
+            setMetadata:
+              docs: Metadata to set for the vector.
+              type: optional<root.Metadata>
+            sparseValues: optional<root.SparseValues>
+            values:
+              docs: Vector data.
+              type: optional<list<float>>
+        content-type: application/json
+        name: UpdateRequest
+      response:
+        docs: OK
+        type: root.UpdateResponse
+    upsert:
+      auth: false
+      docs: |-
+        Upsert vectors
+
+         The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+
+         For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+      examples:
+        - request:
+            vectors:
+              - id: v1
+                values:
+                  - 0.1
+                  - 0.2
+                  - 0.3
+          response:
+            body:
+              upsertedCount: 1
+      method: POST
+      path: /vectors/upsert
+      request:
+        body:
+          properties:
+            namespace:
+              docs: The namespace nwhere you upsert vectors.
+              type: optional<string>
+            vectors:
+              docs: >-
+                An array containing the vectors to upsert. Recommended batch
+                limit is 100 vectors.
+              type: list<root.Vector>
+        content-type: application/json
+        name: UpsertRequest
+      response:
+        docs: OK
+        type: root.UpsertResponse
+  source:
+    proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto

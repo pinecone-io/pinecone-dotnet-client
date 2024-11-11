@@ -13,6 +13,9 @@ public record ConfigureIndexRequest
     [JsonPropertyName("deletion_protection")]
     public DeletionProtection? DeletionProtection { get; set; }
 
+    [JsonPropertyName("tags")]
+    public Dictionary<string, string?>? Tags { get; set; }
+
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

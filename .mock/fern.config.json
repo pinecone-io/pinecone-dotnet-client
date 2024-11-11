@@ -1,4 +1,1 @@
-{
-  "organization" : "pinecone",
-  "version" : "0.39.15"
-}
+{"organization": "fern-test", "version": "*"}

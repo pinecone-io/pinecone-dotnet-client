@@ -14,13 +14,13 @@ public class DeleteCollectionTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/collections/string")
+                    .WithPath("/collections/collection_name")
                     .UsingDelete()
             )
             .RespondWith(WireMock.ResponseBuilders.Response.Create().WithStatusCode(200));
 
         Assert.DoesNotThrowAsync(
-            async () => await Client.DeleteCollectionAsync("string", RequestOptions)
+            async () => await Client.DeleteCollectionAsync("collection_name", RequestOptions)
         );
     }
 
