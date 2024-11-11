@@ -39,7 +39,7 @@ public class UnexpectedErrorTest
     }
 
     [Test]
-    public void ClientShouldSendUserAgent()
+    public void ShouldThrowPineconeApiException()
     {
         Server
             .Given(
