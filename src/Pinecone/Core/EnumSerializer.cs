@@ -4,13 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace Pinecone.Core;
 
-internal class StringEnumSerializer<TEnum> : JsonConverter<TEnum>
+internal class EnumSerializer<TEnum> : JsonConverter<TEnum>
     where TEnum : struct, System.Enum
 {
     private readonly Dictionary<TEnum, string> _enumToString = new();
     private readonly Dictionary<string, TEnum> _stringToEnum = new();
 
-    public StringEnumSerializer()
+    public EnumSerializer()
     {
         var type = typeof(TEnum);
         var values = Enum.GetValues(type);

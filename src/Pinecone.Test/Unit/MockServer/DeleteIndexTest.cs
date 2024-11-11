@@ -12,12 +12,15 @@ public class DeleteIndexTest : BaseMockServerTest
     {
         Server
             .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/indexes/string").UsingDelete()
+                WireMock
+                    .RequestBuilders.Request.Create()
+                    .WithPath("/indexes/index_name")
+                    .UsingDelete()
             )
             .RespondWith(WireMock.ResponseBuilders.Response.Create().WithStatusCode(200));
 
         Assert.DoesNotThrowAsync(
-            async () => await Client.DeleteIndexAsync("string", RequestOptions)
+            async () => await Client.DeleteIndexAsync("index_name", RequestOptions)
         );
     }
 

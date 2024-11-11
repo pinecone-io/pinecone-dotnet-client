@@ -35,8 +35,10 @@ public record Index
     [JsonPropertyName("deletion_protection")]
     public DeletionProtection? DeletionProtection { get; set; }
 
+    [JsonPropertyName("tags")]
+    public Dictionary<string, string?>? Tags { get; set; }
+
     [JsonPropertyName("spec")]
-    [JsonConverter(typeof(OneOfSerializer<OneOf<ServerlessIndexSpec, PodIndexSpec>>))]
     public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
 
     [JsonPropertyName("status")]

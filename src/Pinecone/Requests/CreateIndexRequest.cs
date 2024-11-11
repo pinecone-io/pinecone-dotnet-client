@@ -10,7 +10,6 @@ public record CreateIndexRequest
 {
     /// <summary>
     /// The name of the index. Resource name must be 1-45 characters long, start and end with an alphanumeric character, and consist only of lower case alphanumeric characters or '-'.
-    ///
     /// </summary>
     [JsonPropertyName("name")]
     public required string Name { get; set; }
@@ -30,8 +29,10 @@ public record CreateIndexRequest
     [JsonPropertyName("deletion_protection")]
     public DeletionProtection? DeletionProtection { get; set; }
 
+    [JsonPropertyName("tags")]
+    public Dictionary<string, string?>? Tags { get; set; }
+
     [JsonPropertyName("spec")]
-    [JsonConverter(typeof(OneOfSerializer<OneOf<ServerlessIndexSpec, PodIndexSpec>>))]
     public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
 
     public override string ToString()

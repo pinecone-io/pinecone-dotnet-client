@@ -456,6 +456,189 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 await pinecone.DeleteCollectionAsync("example-collection");
 ```
 
+## Inference
+
+### Embed
+
+The Pinecone SDK now supports creating embeddings via the [Inference API](https://docs.pinecone.io/guides/inference/understanding-inference).
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+// Prepare input sentences to be embedded
+List<EmbedRequestInputsItem> inputs =
+[
+    new()
+    {
+        Text = "The quick brown fox jumps over the lazy dog."
+    },
+    new()
+    {
+        Text = "Lorem ipsum"
+    }
+];
+
+// Specify the embedding model and parameters
+var embeddingModel = "multilingual-e5-large";
+
+// Generate embeddings for the input data
+var embeddings = await pinecone.Inference.EmbedAsync(new EmbedRequest()
+{
+    Model = embeddingModel,
+    Inputs = inputs,
+    Parameters = new EmbedRequestParameters()
+    {
+        InputType = "query",
+        Truncate = "END"
+    }
+});
+
+// Get embedded data
+var embeddedData = embeddings.Data;
+```
+
+### Rerank
+
+The following example shows how to rerank items according to their relevance to a query.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+// The model to use for reranking
+var model = "bge-reranker-v2-m3";
+
+// The query to rerank documents against
+var query = "The tech company Apple is known for its innovative products like the iPhone.";
+
+// Add the documents to rerank
+var documents = new List<Dictionary<string, string>>
+{
+    new()
+    {
+        ["id"] = "vec1",
+        ["my_field"] = "Apple is a popular fruit known for its sweetness and crisp texture."
+    },
+    new()
+    {
+        ["id"] = "vec2",
+        ["my_field"] = "Many people enjoy eating apples as a healthy snack."
+    },
+    new()
+    {
+        ["id"] = "vec3",
+        ["my_field"] =
+            "Apple Inc. has revolutionized the tech industry with its sleek designs and user-friendly interfaces."
+    },
+    new()
+    {
+        ["id"] = "vec4",
+        ["my_field"] = "An apple a day keeps the doctor away, as the saying goes."
+    }
+};
+
+// The fields to rank the documents by. If not provided, the default is "text"
+var rankFields = new List<string> { "my_field" };
+
+// The number of results to return sorted by relevance. Defaults to the number of inputs
+int topN = 2;
+
+// Whether to return the documents in the response
+bool returnDocuments = true;
+
+// Additional model-specific parameters for the reranker
+var parameters = new Dictionary<string, string>
+{
+    ["truncate"] = "END"
+};
+
+// Send ranking request
+var result = await pinecone.Inference.RerankAsync(
+    new RerankRequest
+    {
+        Model = model,
+        Query = query,
+        Documents = documents,
+        RankFields = rankFields,
+        TopN = topN,
+        Parameters = parameters
+    });
+
+// Get ranked data
+var data = result.Data;
+```
+
+
+## Imports
+### Start an import
+
+The following example initiates an asynchronous import of vectors from object storage into the index.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var index = pinecone.Index("PINECONE_INDEX_NAME");
+
+var uri = "s3://path/to/file.parquet";
+
+var response = await index.StartBulkImportAsync(new StartImportRequest
+{
+    Uri = uri,
+    IntegrationId = "123-456-789",
+    ErrorMode = new ImportErrorMode { OnError = ImportErrorModeOnError.Continue }
+});
+```
+
+### List imports
+
+The following example lists all recent and ongoing import operations for the specified index.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+var index = pinecone.Index("PINECONE_INDEX_NAME");
+
+var imports = await index.ListBulkImportsAsync(new ListBulkImportsRequest
+{
+    Limit = 100,
+    PaginationToken = "some-pagination-token"
+});
+```
+
+### Describe an import
+
+The following example retrieves detailed information about a specific import operation using its unique identifier.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+var index = pinecone.Index("PINECONE_INDEX_NAME");
+
+var importDetails = await index.DescribeBulkImportAsync("1");
+```
+
+### Cancel an import
+
+The following example attempts to cancel an ongoing import operation using its unique identifier.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+
+var index = pinecone.Index("PINECONE_INDEX_NAME");
+
+var cancelResponse = await index.CancelBulkImportAsync("2");
+```
+
 ## Advanced
 
 ### Control Plane Client Options
@@ -477,6 +660,32 @@ var pinecone = new PineconeClient("PINECONE_API_KEY", new ClientOptions
     HttpClient = ... // Override the Http Client
     BaseUrl = ... // Override the Base URL
 });
+```
+
+#### Configuring HTTP proxy for both control and data plane operations
+
+If your network setup requires you to interact with Pinecone via a proxy, you need to configure the HTTP client accordingly.
+
+```csharp
+using System.Net;
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY", new ClientOptions
+{
+    HttpClient = new HttpClient(new HttpClientHandler
+    {
+        Proxy = new WebProxy("PROXY_HOST:PROXY_PORT")
+    })
+});
+```
+
+If you're building your HTTP client using the [HTTP client factory](https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory#configure-the-httpmessagehandler), you can use the `ConfigurePrimaryHttpMessageHandler` method to configure the proxy.
+
+```csharp
+   .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+       {
+           Proxy = new WebProxy("PROXY_HOST:PROXY_PORT")
+       });
 ```
 
 ### Data Plane gRPC Options

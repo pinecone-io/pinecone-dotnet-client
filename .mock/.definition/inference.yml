@@ -1,0 +1,155 @@
+imports:
+  root: __package__.yml
+types:
+  EmbedRequestInputsItem:
+    properties:
+      text: optional<string>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  EmbedRequestParameters:
+    docs: Model-specific parameters.
+    properties:
+      input_type:
+        docs: Common property used to distinguish between types of data.
+        type: optional<string>
+      truncate:
+        default: END
+        docs: >
+          How to handle inputs longer than those supported by the model. If
+          `"END"`, truncate the input sequence at the token limit. If `"NONE"`,
+          return an error when the input exceeds the token limit. 
+        type: optional<string>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+docs: Model inference
+service:
+  auth: false
+  base-path: ''
+  display-name: Inference
+  endpoints:
+    embed:
+      auth: true
+      display-name: Embed data
+      docs: >-
+        Generate embeddings for input data.
+
+
+        For guidance and examples, see [Generate
+        embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
+      errors:
+        - root.BadRequestError
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - request:
+            inputs:
+              - {}
+            model: multilingual-e5-large
+          response:
+            body:
+              data:
+                - values:
+                    - 0.1
+                    - 0.2
+                    - 0.3
+              model: multilingual-e5-large
+              usage:
+                total_tokens: 205
+      method: POST
+      path: /embed
+      request:
+        body:
+          properties:
+            inputs:
+              docs: List of inputs to generate embeddings for.
+              type: list<EmbedRequestInputsItem>
+            model:
+              docs: >-
+                The
+                [model](https://docs.pinecone.io/guides/inference/understanding-inference#models)
+                to use for embedding generation.
+              type: string
+            parameters:
+              docs: Model-specific parameters.
+              type: optional<EmbedRequestParameters>
+        content-type: application/json
+        name: EmbedRequest
+      response:
+        docs: OK
+        type: root.EmbeddingsList
+    rerank:
+      auth: true
+      display-name: Rerank items
+      docs: >-
+        Rerank items according to their relevance to a query.
+
+
+        For guidance and examples, see [Rerank
+        documents](https://docs.pinecone.io/guides/inference/rerank).
+      errors:
+        - root.BadRequestError
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - request:
+            documents:
+              - id: '1'
+                text: Paris is the capital of France.
+                title: France
+                url: https://example.com
+            model: bge-reranker-v2-m3
+            query: What is the capital of France?
+          response:
+            body:
+              data:
+                - document:
+                    id: '1'
+                    text: Paris is the capital of France.
+                    title: France
+                    url: https://example.com
+                  index: 1
+                  score: 0.5
+              model: bge-reranker-v2-m3
+              usage:
+                rerank_units: 1
+      method: POST
+      path: /rerank
+      request:
+        body:
+          properties:
+            documents:
+              docs: The documents to rerank.
+              type: list<root.Document>
+            model:
+              docs: >-
+                The
+                [model](https://docs.pinecone.io/guides/inference/understanding-inference#models)
+                to use for reranking.
+              type: string
+            parameters:
+              docs: Additional model-specific parameters for the reranker.
+              type: optional<map<string, string>>
+            query:
+              docs: The query to rerank documents against.
+              type: string
+            rank_fields:
+              docs: >
+                The fields to rank the documents by. If not provided, the
+                default is `"text"`.
+              type: optional<list<string>>
+            return_documents:
+              default: true
+              docs: Whether to return the documents in the response.
+              type: optional<boolean>
+            top_n:
+              docs: >-
+                The number of results to return sorted by relevance. Defaults to
+                the number of inputs.
+              type: optional<integer>
+        content-type: application/json
+        name: RerankRequest
+      response:
+        docs: OK
+        type: root.RerankResult
+  source:
+    openapi: ../inference/openapi/openapi.yml

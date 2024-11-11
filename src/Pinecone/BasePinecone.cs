@@ -22,11 +22,10 @@ public partial class BasePinecone
             new Dictionary<string, string>()
             {
                 { "Api-Key", apiKey },
-                { "X-Pinecone-API-Version", "2024-07" },
+                { "X-Pinecone-API-Version", "2024-10" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "Pinecone.Client/1.0.0" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -39,9 +38,12 @@ public partial class BasePinecone
         }
         _client = new RawClient(clientOptions);
         Index = new IndexClient(_client);
+        Inference = new InferenceClient(_client);
     }
 
     public IndexClient Index { get; init; }
+
+    public InferenceClient Inference { get; init; }
 
     /// <summary>
     /// This operation returns a list of all indexes in a project.
@@ -166,6 +168,10 @@ public partial class BasePinecone
                     throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 401:
                     throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 402:
+                    throw new PaymentRequiredError(
+                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                    );
                 case 403:
                     throw new ForbiddenError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 404:
@@ -316,10 +322,9 @@ public partial class BasePinecone
     /// <summary>
     /// This operation configures an existing index.
     ///
-    /// For serverless indexes, you can configure only index deletion protection. For pod-based indexes, you can configure the pod size, number of replicas, and index deletion protection.
+    /// For serverless indexes, you can configure only index deletion protection and tags. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
     ///
-    /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection.
-    /// For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
+    /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection. For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
     /// </summary>
     /// <example>
     /// <code>
@@ -374,6 +379,10 @@ public partial class BasePinecone
                     throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 401:
                     throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 402:
+                    throw new PaymentRequiredError(
+                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                    );
                 case 403:
                     throw new ForbiddenError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 404:
@@ -509,6 +518,10 @@ public partial class BasePinecone
                     throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 401:
                     throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 402:
+                    throw new PaymentRequiredError(
+                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                    );
                 case 403:
                     throw new ForbiddenError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 409:

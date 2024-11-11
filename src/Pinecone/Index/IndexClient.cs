@@ -1,3 +1,5 @@
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using Grpc.Core;
 using Pinecone.Core;
@@ -20,6 +22,194 @@ public partial class IndexClient
         _client = client;
         _grpc = _client.Grpc;
         _vectorService = new VectorService.VectorServiceClient(_grpc.Channel);
+    }
+
+    /// <summary>
+    /// The `list_imports` operation lists all recent and ongoing import operations. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.ListBulkImportsAsync(new ListBulkImportsRequest());
+    /// </code>
+    /// </example>
+    public async Task<ListImportsResponse> ListBulkImportsAsync(
+        ListBulkImportsRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var _query = new Dictionary<string, object>();
+        if (request.Limit != null)
+        {
+            _query["limit"] = request.Limit.ToString();
+        }
+        if (request.PaginationToken != null)
+        {
+            _query["paginationToken"] = request.PaginationToken;
+        }
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Get,
+                Path = "bulk/imports",
+                Query = _query,
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<ListImportsResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        throw new PineconeApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// The `start_import` operation starts an asynchronous import of vectors from object storage into an index. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.StartBulkImportAsync(new StartImportRequest { Uri = "uri" });
+    /// </code>
+    /// </example>
+    public async Task<StartImportResponse> StartBulkImportAsync(
+        StartImportRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Post,
+                Path = "bulk/imports",
+                Body = request,
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<StartImportResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        throw new PineconeApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// The `describe_import` operation returns details of a specific import operation. For guidance and examples,
+    /// see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.DescribeBulkImportAsync("101");
+    /// </code>
+    /// </example>
+    public async Task<ImportModel> DescribeBulkImportAsync(
+        string id,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Get,
+                Path = $"bulk/imports/{id}",
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<ImportModel>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        throw new PineconeApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.Index.CancelBulkImportAsync("101");
+    /// </code>
+    /// </example>
+    public async Task<CancelImportResponse> CancelBulkImportAsync(
+        string id,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Delete,
+                Path = $"bulk/imports/{id}",
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<CancelImportResponse>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        throw new PineconeApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
     }
 
     /// <summary>
@@ -130,7 +320,7 @@ public partial class IndexClient
     /// await client.Index.DeleteAsync(
     ///     new DeleteRequest
     ///     {
-    ///         Ids = new List<string>() { "v1", "v2", "v3" },
+    ///         Ids = new List&lt;string&gt;() { "v1", "v2", "v3" },
     ///         Namespace = "example",
     ///     }
     /// );
@@ -326,7 +516,7 @@ public partial class IndexClient
     /// await client.Index.UpsertAsync(
     ///     new UpsertRequest
     ///     {
-    ///         Vectors = new List<Vector>()
+    ///         Vectors = new List&lt;Vector&gt;()
     ///         {
     ///             new Vector { Id = "v1", Values = new[] { 0.1f, 0.2f, 0.3f } },
     ///         },
