@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<IndexModelStatusState>))]
+[JsonConverter(typeof(EnumSerializer<IndexModelStatusState>))]
 public enum IndexModelStatusState
 {
     [EnumMember(Value = "Initializing")]

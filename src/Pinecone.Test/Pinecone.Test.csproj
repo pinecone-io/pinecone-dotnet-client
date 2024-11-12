@@ -20,7 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Pinecone\Pinecone.csproj" />
+        <ProjectReference Include="..\Pinecone\Pinecone.csproj" />
     </ItemGroup>
 
+    <Import Project="Pinecone.Test.Custom.props" Condition="Exists('Pinecone.Test.Custom.props')" />
 </Project>

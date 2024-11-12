@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<DeletionProtection>))]
+[JsonConverter(typeof(EnumSerializer<DeletionProtection>))]
 public enum DeletionProtection
 {
     [EnumMember(Value = "disabled")]

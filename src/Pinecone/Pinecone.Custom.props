@@ -1,0 +1,15 @@
+<Project>
+    <PropertyGroup>
+        <Title>Pinecone Client</Title>
+        <Authors>Pinecone.io</Authors>
+        <Company>Pinecone</Company>
+        <AssemblyName>Pinecone.Client</AssemblyName>
+        <AssemblyTitle>Pinecone Client</AssemblyTitle>
+        <PackageIcon>icon.png</PackageIcon>
+        <Description>The Pinecone .NET Client</Description>
+        <Copyright>Copyright © Pinecone Systems, Inc. 2024</Copyright>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\icon.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
+</Project>

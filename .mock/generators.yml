@@ -1,0 +1,49 @@
+api:
+  - path: ../control-plane/openapi/openapi.yml
+    overrides: ../control-plane/openapi/openapi-overrides.yml
+  - path: ../data-plane/openapi/openapi.yml
+    overrides: ../data-plane/openapi/openapi-overrides.yml
+  - path: ../inference/openapi/openapi.yml
+    overrides: ../inference/openapi/openapi-overrides.yml
+  - proto:
+      root: ../vector-service/proto
+      target: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+      overrides: ../vector-service/overrides.yml
+      local-generation: true
+  - path: openapi/openapi.yml
+
+default-group: local
+groups:
+  local:
+    generators:
+      - name: fernapi/fern-csharp-sdk
+        version: 1.8.5
+        output:
+          location: local-file-system
+          path: ../../../generated/pinecone-dotnet
+        config:
+          namespace: Pinecone
+          package-id: Pinecone.Client
+          base-api-exception-class-name: PineconeApiException
+          base-exception-class-name: PineconeException
+          client-class-name: BasePinecone
+          read-only-memory-types:
+            - float
+          generate-mock-server-tests: true
+
+  dotnet-sdk:
+    generators:
+      - name: fernapi/fern-csharp-sdk
+        version: 1.8.5
+        github:
+          repository: fern-demo/pinecone-csharp
+          mode: pull-request
+        config:
+          namespace: Pinecone
+          package-id: Pinecone.Client
+          base-api-exception-class-name: PineconeApiException
+          base-exception-class-name: PineconeException
+          client-class-name: BasePinecone
+          read-only-memory-types:
+            - float
+          generate-mock-server-tests: true

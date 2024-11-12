@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<ServerlessSpecCloud>))]
+[JsonConverter(typeof(EnumSerializer<ServerlessSpecCloud>))]
 public enum ServerlessSpecCloud
 {
     [EnumMember(Value = "gcp")]

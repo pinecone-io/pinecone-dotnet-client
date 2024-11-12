@@ -17,7 +17,10 @@ namespace Pinecone.Test.Integration.Control
         public async Task GlobalSetup()
         {
             Console.WriteLine("Initializing control plane integration tests...");
-            Client = new PineconeClient(apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"));
+            Client = new PineconeClient(
+                apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
+                new ClientOptions { SourceTag = "test-tag" }
+            );
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
             Metric = CreateIndexRequestMetric.Cosine;
@@ -50,7 +53,7 @@ namespace Pinecone.Test.Integration.Control
                 .Select(i => new Vector
                 {
                     Id = i.ToString(),
-                    Values = Helpers.EmbeddingValues(dimension)
+                    Values = Helpers.EmbeddingValues(dimension),
                 })
                 .ToList();
 
@@ -58,7 +61,9 @@ namespace Pinecone.Test.Integration.Control
             var index = Client.Index(IndexName);
             await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 
-            Console.WriteLine($"Attempting to create collection with name {collectionName} from index {IndexName}");
+            Console.WriteLine(
+                $"Attempting to create collection with name {collectionName} from index {IndexName}"
+            );
             await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);
             Console.WriteLine($"Collection {collectionName} created successfully!");
 
