@@ -8,7 +8,9 @@
         <NuGetAudit>false</NuGetAudit>
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <FileVersion>$(Version)</FileVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageProjectUrl>https://github.com/pinecone-io/pinecone-dotnet-client</PackageProjectUrl>
     </PropertyGroup>
@@ -69,5 +71,5 @@
         </AssemblyAttribute>
     </ItemGroup>
 
-    <Import Project="Pinecone.Custom.props" />
+    <Import Project="Pinecone.Custom.props" Condition="Exists('Pinecone.Custom.props')" />
 </Project>

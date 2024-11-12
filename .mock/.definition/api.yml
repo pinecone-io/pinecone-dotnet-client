@@ -1,4 +1,14 @@
-auth: ApiKeyAuth
+name: api
+error-discrimination:
+  strategy: status-code
+display-name: Pinecone Control Plane API
+default-environment: Default
+environments:
+  Default: https://api.pinecone.io
+headers:
+  X-Pinecone-API-Version:
+    name: version
+    type: literal<"2024-10">
 auth-schemes:
   ApiKeyAuth:
     env: PINECONE_API_KEY

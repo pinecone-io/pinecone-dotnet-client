@@ -19,12 +19,6 @@ public class RerankTest : BaseMockServerTest
             {
               "model": "model",
               "query": "query",
-              "top_n": 1,
-              "return_documents": true,
-              "rank_fields": [
-                "rank_fields",
-                "rank_fields"
-              ],
               "documents": [
                 {
                   "documents": "documents"
@@ -32,10 +26,7 @@ public class RerankTest : BaseMockServerTest
                 {
                   "documents": "documents"
                 }
-              ],
-              "parameters": {
-                "parameters": "parameters"
-              }
+              ]
             }
             """;
 
@@ -84,15 +75,15 @@ public class RerankTest : BaseMockServerTest
             {
                 Model = "model",
                 Query = "query",
-                TopN = 1,
-                ReturnDocuments = true,
-                RankFields = new List<string>() { "rank_fields", "rank_fields" },
+                TopN = null,
+                ReturnDocuments = null,
+                RankFields = null,
                 Documents = new List<Dictionary<string, string>>()
                 {
                     new Dictionary<string, string>() { { "documents", "documents" } },
                     new Dictionary<string, string>() { { "documents", "documents" } },
                 },
-                Parameters = new Dictionary<string, string>() { { "parameters", "parameters" } },
+                Parameters = null,
             },
             RequestOptions
         );

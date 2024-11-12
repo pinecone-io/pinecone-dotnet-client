@@ -18,17 +18,9 @@ public class EmbedTest : BaseMockServerTest
         const string requestJson = """
             {
               "model": "model",
-              "parameters": {
-                "input_type": "input_type",
-                "truncate": "truncate"
-              },
               "inputs": [
-                {
-                  "text": "text"
-                },
-                {
-                  "text": "text"
-                }
+                {},
+                {}
               ]
             }
             """;
@@ -75,15 +67,11 @@ public class EmbedTest : BaseMockServerTest
             new EmbedRequest
             {
                 Model = "model",
-                Parameters = new EmbedRequestParameters
-                {
-                    InputType = "input_type",
-                    Truncate = "truncate",
-                },
+                Parameters = null,
                 Inputs = new List<EmbedRequestInputsItem>()
                 {
-                    new EmbedRequestInputsItem { Text = "text" },
-                    new EmbedRequestInputsItem { Text = "text" },
+                    new EmbedRequestInputsItem { Text = null },
+                    new EmbedRequestInputsItem { Text = null },
                 },
             },
             RequestOptions

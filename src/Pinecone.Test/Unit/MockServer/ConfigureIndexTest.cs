@@ -16,18 +16,7 @@ public class ConfigureIndexTest : BaseMockServerTest
     public async Task MockServerTest_1()
     {
         const string requestJson = """
-            {
-              "spec": {
-                "pod": {
-                  "replicas": 1,
-                  "pod_type": "pod_type"
-                }
-              },
-              "deletion_protection": "disabled",
-              "tags": {
-                "tags": "tags"
-              }
-            }
+            {}
             """;
 
         const string mockResponse = """
@@ -72,12 +61,9 @@ public class ConfigureIndexTest : BaseMockServerTest
             "index_name",
             new ConfigureIndexRequest
             {
-                Spec = new ConfigureIndexRequestSpec
-                {
-                    Pod = new ConfigureIndexRequestSpecPod { Replicas = 1, PodType = "pod_type" },
-                },
-                DeletionProtection = DeletionProtection.Disabled,
-                Tags = new Dictionary<string, string?>() { { "tags", "tags" } },
+                Spec = null,
+                DeletionProtection = null,
+                Tags = null,
             },
             RequestOptions
         );

@@ -25,7 +25,7 @@ public partial class BasePinecone
                 { "X-Pinecone-API-Version", "2024-10" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
-                { "X-Fern-SDK-Version", Version.Current },
+                { "X-Fern-SDK-Version", Version.Current }
             }
         );
         clientOptions ??= new ClientOptions();

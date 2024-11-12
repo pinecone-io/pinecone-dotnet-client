@@ -19,11 +19,6 @@ public class CreateIndexTest : BaseMockServerTest
             {
               "name": "name",
               "dimension": 1,
-              "metric": "cosine",
-              "deletion_protection": "disabled",
-              "tags": {
-                "tags": "tags"
-              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -76,9 +71,9 @@ public class CreateIndexTest : BaseMockServerTest
             {
                 Name = "name",
                 Dimension = 1,
-                Metric = CreateIndexRequestMetric.Cosine,
-                DeletionProtection = DeletionProtection.Disabled,
-                Tags = new Dictionary<string, string?>() { { "tags", "tags" } },
+                Metric = null,
+                DeletionProtection = null,
+                Tags = null,
                 Spec = new ServerlessIndexSpec
                 {
                     Serverless = new ServerlessSpec
