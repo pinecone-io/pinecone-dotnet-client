@@ -3,9 +3,13 @@
 src/Pinecone/PineconeClient.cs
 src/Pinecone/Core/Public/SourceTagOption.cs
 src/Pinecone.Test/Integration
+src/Pinecone.Test/Unit/UserAgentTest.cs
+src/Pinecone.Test/Unit/UnexpectedErrorTest.cs
 .github/workflows/ci.yml
 
 # The following file should always be .fernignore'd.
 
 CONTRIBUTING.md
 README.md
+icon.png
+src/Pinecone/Pinecone.Custom.props

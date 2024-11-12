@@ -5,11 +5,13 @@ namespace Pinecone;
 public class PineconeClient : BasePinecone
 {
     private readonly string? _apiKey;
+    private readonly ClientOptions? _rootClientOptions;
 
     public PineconeClient(string? apiKey = "", ClientOptions? clientOptions = null)
         : base(apiKey, PrepareClientOptions(apiKey, clientOptions))
     {
         _apiKey = apiKey;
+        _rootClientOptions = clientOptions;
     }
 
     public new IndexClient Index(
@@ -32,7 +34,7 @@ public class PineconeClient : BasePinecone
             throw e.InnerException ?? e;
         }
 
-        clientOptions = PrepareClientOptions(_apiKey, clientOptions);
+        clientOptions = PrepareClientOptions(_apiKey, clientOptions ?? _rootClientOptions);
         var client = new RawClient(
             new ClientOptions
             {
@@ -42,6 +44,7 @@ public class PineconeClient : BasePinecone
                 Timeout = clientOptions.Timeout,
                 GrpcOptions = clientOptions.GrpcOptions,
                 Headers = clientOptions.Headers,
+                SourceTag = clientOptions.SourceTag,
             }
         );
         return new IndexClient(client);
@@ -59,11 +62,11 @@ public class PineconeClient : BasePinecone
         var defaultHeaders = new Headers()
         {
             ["Api-Key"] = apiKey,
-            ["X-Pinecone-API-Version"] = "2024-07",
+            ["X-Pinecone-API-Version"] = "2024-10",
             ["X-Fern-Language"] = "C#",
             ["X-Fern-SDK-Name"] = "Pinecone",
             ["X-Fern-SDK-Version"] = Version.Current,
-            ["User-Agent"] = $"lang=C#; version={Version.Current}"
+            ["User-Agent"] = $"lang=C#; version={Version.Current}",
         };
         clientOptions ??= new ClientOptions();
         foreach (var header in defaultHeaders)
