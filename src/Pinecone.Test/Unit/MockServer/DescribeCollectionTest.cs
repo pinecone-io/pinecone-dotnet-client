@@ -16,18 +16,21 @@ public class DescribeCollectionTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "name": "tiny-collection",
-              "size": 3126700,
-              "status": "Ready",
-              "dimension": 3,
-              "vector_count": 99,
-              "environment": "us-east1-gcp"
+              "name": "name",
+              "size": 1000000,
+              "status": "Initializing",
+              "dimension": 1,
+              "vector_count": 1,
+              "environment": "environment"
             }
             """;
 
         Server
             .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/collections/string").UsingGet()
+                WireMock
+                    .RequestBuilders.Request.Create()
+                    .WithPath("/collections/collection_name")
+                    .UsingGet()
             )
             .RespondWith(
                 WireMock
@@ -36,7 +39,7 @@ public class DescribeCollectionTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.DescribeCollectionAsync("string", RequestOptions);
+        var response = await Client.DescribeCollectionAsync("collection_name", RequestOptions);
         JToken
             .Parse(mockResponse)
             .Should()

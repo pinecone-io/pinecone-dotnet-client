@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<ErrorResponseErrorCode>))]
+[JsonConverter(typeof(EnumSerializer<ErrorResponseErrorCode>))]
 public enum ErrorResponseErrorCode
 {
     [EnumMember(Value = "OK")]
@@ -65,4 +65,7 @@ public enum ErrorResponseErrorCode
 
     [EnumMember(Value = "UNPROCESSABLE_ENTITY")]
     UnprocessableEntity,
+
+    [EnumMember(Value = "PAYMENT_REQUIRED")]
+    PaymentRequired,
 }

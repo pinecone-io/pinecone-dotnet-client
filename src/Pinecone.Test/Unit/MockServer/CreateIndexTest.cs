@@ -17,14 +17,12 @@ public class CreateIndexTest : BaseMockServerTest
     {
         const string requestJson = """
             {
-              "name": "movie-recommendations",
-              "dimension": 1536,
-              "metric": "cosine",
-              "deletion_protection": "enabled",
+              "name": "name",
+              "dimension": 1,
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
-                  "region": "us-east1"
+                  "region": "region"
                 }
               }
             }
@@ -32,20 +30,23 @@ public class CreateIndexTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "name": "example-index",
-              "dimension": 1536,
+              "name": "name",
+              "dimension": 1,
               "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
+              "host": "host",
               "deletion_protection": "disabled",
+              "tags": {
+                "tags": "tags"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
-                  "region": "us-east-1"
+                  "region": "region"
                 }
               },
               "status": {
                 "ready": true,
-                "state": "ScalingUpPodSize"
+                "state": "Initializing"
               }
             }
             """;
@@ -68,16 +69,17 @@ public class CreateIndexTest : BaseMockServerTest
         var response = await Client.CreateIndexAsync(
             new CreateIndexRequest
             {
-                Name = "movie-recommendations",
-                Dimension = 1536,
-                Metric = CreateIndexRequestMetric.Cosine,
-                DeletionProtection = DeletionProtection.Enabled,
+                Name = "name",
+                Dimension = 1,
+                Metric = null,
+                DeletionProtection = null,
+                Tags = null,
                 Spec = new ServerlessIndexSpec
                 {
                     Serverless = new ServerlessSpec
                     {
                         Cloud = ServerlessSpecCloud.Gcp,
-                        Region = "us-east1",
+                        Region = "region",
                     },
                 },
             },
@@ -114,6 +116,10 @@ public class CreateIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -176,83 +182,6 @@ public class CreateIndexTest : BaseMockServerTest
               "metric": "cosine",
               "deletion_protection": "enabled",
               "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "us-east1"
-                }
-              }
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "example-index",
-              "dimension": 1536,
-              "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
-              "deletion_protection": "disabled",
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "us-east-1"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "ScalingUpPodSize"
-              }
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes")
-                    .UsingPost()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.CreateIndexAsync(
-            new CreateIndexRequest
-            {
-                Name = "movie-recommendations",
-                Dimension = 1536,
-                Metric = CreateIndexRequestMetric.Cosine,
-                DeletionProtection = DeletionProtection.Enabled,
-                Spec = new ServerlessIndexSpec
-                {
-                    Serverless = new ServerlessSpec
-                    {
-                        Cloud = ServerlessSpecCloud.Gcp,
-                        Region = "us-east1",
-                    },
-                },
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_4()
-    {
-        const string requestJson = """
-            {
-              "name": "movie-recommendations",
-              "dimension": 1536,
-              "metric": "cosine",
-              "deletion_protection": "enabled",
-              "spec": {
                 "pod": {
                   "environment": "us-east-1-aws",
                   "replicas": 1,
@@ -279,6 +208,10 @@ public class CreateIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",

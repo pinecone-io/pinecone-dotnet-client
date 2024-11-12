@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<IndexModelMetric>))]
+[JsonConverter(typeof(EnumSerializer<IndexModelMetric>))]
 public enum IndexModelMetric
 {
     [EnumMember(Value = "cosine")]

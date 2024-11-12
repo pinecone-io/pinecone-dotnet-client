@@ -16,31 +16,28 @@ public class ConfigureIndexTest : BaseMockServerTest
     public async Task MockServerTest_1()
     {
         const string requestJson = """
-            {
-              "spec": {
-                "pod": {
-                  "pod_type": "p1.x2"
-                }
-              }
-            }
+            {}
             """;
 
         const string mockResponse = """
             {
-              "name": "example-index",
-              "dimension": 1536,
+              "name": "name",
+              "dimension": 1,
               "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
+              "host": "host",
               "deletion_protection": "disabled",
+              "tags": {
+                "tags": "tags"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
-                  "region": "us-east-1"
+                  "region": "region"
                 }
               },
               "status": {
                 "ready": true,
-                "state": "ScalingUpPodSize"
+                "state": "Initializing"
               }
             }
             """;
@@ -49,7 +46,7 @@ public class ConfigureIndexTest : BaseMockServerTest
             .Given(
                 WireMock
                     .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/string")
+                    .WithPath("/indexes/index_name")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -61,13 +58,12 @@ public class ConfigureIndexTest : BaseMockServerTest
             );
 
         var response = await Client.ConfigureIndexAsync(
-            "string",
+            "index_name",
             new ConfigureIndexRequest
             {
-                Spec = new ConfigureIndexRequestSpec
-                {
-                    Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
-                },
+                Spec = null,
+                DeletionProtection = null,
+                Tags = null,
             },
             RequestOptions
         );
@@ -97,201 +93,10 @@ public class ConfigureIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "us-east-1"
-                }
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
               },
-              "status": {
-                "ready": true,
-                "state": "ScalingUpPodSize"
-              }
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/string")
-                    .UsingPatch()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ConfigureIndexAsync(
-            "string",
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
-                {
-                    Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
-                },
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_3()
-    {
-        const string requestJson = """
-            {
-              "spec": {
-                "pod": {
-                  "pod_type": "p1.x2"
-                }
-              }
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "example-index",
-              "dimension": 1536,
-              "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
-              "deletion_protection": "disabled",
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "us-east-1"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "ScalingUpPodSize"
-              }
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/string")
-                    .UsingPatch()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ConfigureIndexAsync(
-            "string",
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
-                {
-                    Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
-                },
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_4()
-    {
-        const string requestJson = """
-            {
-              "spec": {
-                "pod": {
-                  "pod_type": "p1.x2"
-                }
-              }
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "example-index",
-              "dimension": 1536,
-              "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
-              "deletion_protection": "disabled",
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "us-east-1"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "ScalingUpPodSize"
-              }
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/string")
-                    .UsingPatch()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ConfigureIndexAsync(
-            "string",
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
-                {
-                    Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
-                },
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_5()
-    {
-        const string requestJson = """
-            {
-              "spec": {
-                "pod": {
-                  "pod_type": "p1.x2"
-                }
-              }
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "example-index",
-              "dimension": 1536,
-              "metric": "cosine",
-              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
-              "deletion_protection": "disabled",
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -338,7 +143,7 @@ public class ConfigureIndexTest : BaseMockServerTest
     }
 
     [Test]
-    public async Task MockServerTest_6()
+    public async Task MockServerTest_3()
     {
         const string requestJson = """
             {
@@ -357,6 +162,10 @@ public class ConfigureIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -403,7 +212,7 @@ public class ConfigureIndexTest : BaseMockServerTest
     }
 
     [Test]
-    public async Task MockServerTest_7()
+    public async Task MockServerTest_4()
     {
         const string requestJson = """
             {
@@ -423,6 +232,10 @@ public class ConfigureIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -469,7 +282,7 @@ public class ConfigureIndexTest : BaseMockServerTest
     }
 
     [Test]
-    public async Task MockServerTest_8()
+    public async Task MockServerTest_5()
     {
         const string requestJson = """
             {}
@@ -482,6 +295,10 @@ public class ConfigureIndexTest : BaseMockServerTest
               "metric": "cosine",
               "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
               "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -513,6 +330,71 @@ public class ConfigureIndexTest : BaseMockServerTest
         var response = await Client.ConfigureIndexAsync(
             "test-index",
             new ConfigureIndexRequest(),
+            RequestOptions
+        );
+        JToken
+            .Parse(mockResponse)
+            .Should()
+            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+    }
+
+    [Test]
+    public async Task MockServerTest_6()
+    {
+        const string requestJson = """
+            {
+              "tags": {
+                "tag0": "new-val",
+                "tag1": ""
+              }
+            }
+            """;
+
+        const string mockResponse = """
+            {
+              "name": "example-index",
+              "dimension": 1536,
+              "metric": "cosine",
+              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
+              "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
+              "spec": {
+                "serverless": {
+                  "cloud": "gcp",
+                  "region": "us-east-1"
+                }
+              },
+              "status": {
+                "ready": true,
+                "state": "ScalingUpPodSize"
+              }
+            }
+            """;
+
+        Server
+            .Given(
+                WireMock
+                    .RequestBuilders.Request.Create()
+                    .WithPath("/indexes/test-index")
+                    .UsingPatch()
+                    .WithBodyAsJson(requestJson)
+            )
+            .RespondWith(
+                WireMock
+                    .ResponseBuilders.Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody(mockResponse)
+            );
+
+        var response = await Client.ConfigureIndexAsync(
+            "test-index",
+            new ConfigureIndexRequest
+            {
+                Tags = new Dictionary<string, string?>() { { "tag0", "new-val" }, { "tag1", "" } },
+            },
             RequestOptions
         );
         JToken

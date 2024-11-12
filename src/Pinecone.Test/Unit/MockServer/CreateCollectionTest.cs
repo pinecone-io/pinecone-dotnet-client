@@ -17,19 +17,19 @@ public class CreateCollectionTest : BaseMockServerTest
     {
         const string requestJson = """
             {
-              "name": "example-collection",
-              "source": "example-source-index"
+              "name": "name",
+              "source": "source"
             }
             """;
 
         const string mockResponse = """
             {
-              "name": "example-collection",
-              "size": 10000000,
+              "name": "name",
+              "size": 1000000,
               "status": "Initializing",
-              "dimension": 1536,
-              "vector_count": 120000,
-              "environment": "us-east1-gcp"
+              "dimension": 1,
+              "vector_count": 1,
+              "environment": "environment"
             }
             """;
 
@@ -49,11 +49,7 @@ public class CreateCollectionTest : BaseMockServerTest
             );
 
         var response = await Client.CreateCollectionAsync(
-            new CreateCollectionRequest
-            {
-                Name = "example-collection",
-                Source = "example-source-index",
-            },
+            new CreateCollectionRequest { Name = "name", Source = "source" },
             RequestOptions
         );
         JToken

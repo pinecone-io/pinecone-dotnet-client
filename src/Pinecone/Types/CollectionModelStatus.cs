@@ -6,7 +6,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(StringEnumSerializer<CollectionModelStatus>))]
+[JsonConverter(typeof(EnumSerializer<CollectionModelStatus>))]
 public enum CollectionModelStatus
 {
     [EnumMember(Value = "Initializing")]

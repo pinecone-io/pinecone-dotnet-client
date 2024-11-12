@@ -32,6 +32,27 @@ errors:
             message: Metric must be cosine, euclidean, or dotproduct.
           status: 400
         name: Validation error on metric.
+      - value:
+          error:
+            code: INVALID_ARGUMENT
+            message: Bad request. The request body included invalid request parameters.
+          status: 400
+        name: Validation error
+  PaymentRequiredError:
+    status-code: 402
+    type: ErrorResponse
+    docs: >-
+      Payment required. Organization is on a paid plan and is delinquent on
+      payment.
+    examples:
+      - value:
+          error:
+            code: PAYMENT_REQUIRED
+            message: >-
+              Request failed. Pay all past due invoices to lift restrictions on
+              your account.
+          status: 402
+        name: Payment required
   ForbiddenError:
     status-code: 403
     type: ErrorResponse
@@ -126,6 +147,8 @@ service:
       method: GET
       auth: true
       docs: This operation returns a list of all indexes in a project.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       display-name: List indexes
       response:
         docs: >-
@@ -145,6 +168,9 @@ service:
                   metric: cosine
                   host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
                   deletion_protection: disabled
+                  tags:
+                    tag0: val0
+                    tag1: val1
                   spec:
                     pod:
                       environment: us-west1-gcp
@@ -166,6 +192,9 @@ service:
                   metric: dotproduct
                   host: image-search-a31f9c1.svc.us-east1-gcp.pinecone.io
                   deletion_protection: disabled
+                  tags:
+                    tag0: val0
+                    tag1: val1
                   spec:
                     serverless:
                       cloud: aws
@@ -182,6 +211,9 @@ service:
                   metric: cosine
                   host: movie-embeddings-c01b5b5.svc.us-east1-gcp.pinecone.io
                   deletion_protection: disabled
+                  tags:
+                    tag0: val0
+                    tag1: val1
                   spec:
                     serverless:
                       cloud: aws
@@ -198,6 +230,9 @@ service:
                   metric: cosine
                   host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
                   deletion_protection: disabled
+                  tags:
+                    tag0: val0
+                    tag1: val1
                   spec:
                     serverless:
                       cloud: gcp
@@ -216,6 +251,8 @@ service:
           
         For guidance and examples, see [Create an
         index](https://docs.pinecone.io/guides/indexes/create-an-index#create-a-serverless-index).
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       display-name: Create an index
       request:
         name: CreateIndexRequest
@@ -243,13 +280,16 @@ service:
                 use 'euclidean', 'cosine', or 'dotproduct'.
               default: cosine
             deletion_protection: optional<DeletionProtection>
+            tags: optional<IndexTags>
             spec: IndexSpec
+        content-type: application/json
       response:
         docs: The index has been successfully created.
         type: Index
       errors:
         - BadRequestError
         - UnauthorizedError
+        - PaymentRequiredError
         - ForbiddenError
         - NotFoundError
         - ConflictError
@@ -273,6 +313,9 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -306,6 +349,9 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -318,6 +364,8 @@ service:
       method: GET
       auth: true
       docs: Get a description of an index.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       path-parameters:
         index_name:
           type: string
@@ -341,6 +389,9 @@ service:
               metric: cosine
               host: movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: aws
@@ -358,6 +409,9 @@ service:
               metric: cosine
               host: movie-recommendations-c01b5b5.svc.us-east1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 pod:
                   environment: us-east-1-aws
@@ -379,6 +433,8 @@ service:
       method: DELETE
       auth: true
       docs: This operation deletes an existing index.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       path-parameters:
         index_name:
           type: string
@@ -400,19 +456,19 @@ service:
         This operation configures an existing index. 
 
 
-        For serverless indexes, you can configure only index deletion
-        protection. For pod-based indexes, you can configure the pod size,
-        number of replicas, and index deletion protection. 
+        For serverless indexes, you can configure only index deletion protection
+        and tags. For pod-based indexes, you can configure the pod size, number
+        of replicas, tags, and index deletion protection. 
 
 
         It is not possible to change the pod type of a pod-based index. However,
         you can create a collection from a pod-based index and then [create a
         new pod-based index with a different pod
         type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection)
-        from the collection.
-
-        For guidance and examples, see [Configure an
+        from the collection. For guidance and examples, see [Configure an
         index](http://docs.pinecone.io/guides/indexes/configure-an-index).
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       path-parameters:
         index_name:
           type: string
@@ -424,6 +480,8 @@ service:
           properties:
             spec: optional<ConfigureIndexRequestSpec>
             deletion_protection: optional<DeletionProtection>
+            tags: optional<IndexTags>
+        content-type: application/json
       response:
         docs: >-
           The request to configure the index has been accepted. Check the  index
@@ -432,6 +490,7 @@ service:
       errors:
         - BadRequestError
         - UnauthorizedError
+        - PaymentRequiredError
         - ForbiddenError
         - NotFoundError
         - UnprocessableEntityError
@@ -451,6 +510,9 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -472,6 +534,9 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -494,6 +559,9 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -512,6 +580,33 @@ service:
               metric: cosine
               host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
               deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
+              spec:
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+        - name: Update tag0 and delete tag1
+          path-parameters:
+            index_name: test-index
+          request:
+            tags:
+              tag0: new-val
+              tag1: ''
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
               spec:
                 serverless:
                   cloud: gcp
@@ -526,6 +621,8 @@ service:
       docs: |
         This operation returns a list of all collections in a project.
         Serverless indexes do not support collections.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       display-name: List collections
       response:
         docs: >-
@@ -576,6 +673,8 @@ service:
         This operation creates a Pinecone collection.
           
         Serverless indexes do not support collections.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       display-name: Create a collection
       request:
         name: CreateCollectionRequest
@@ -596,12 +695,14 @@ service:
               docs: >-
                 The name of the index to be used as the source for the
                 collection.
+        content-type: application/json
       response:
         docs: The collection has been successfully created.
         type: CollectionModel
       errors:
         - BadRequestError
         - UnauthorizedError
+        - PaymentRequiredError
         - ForbiddenError
         - ConflictError
         - UnprocessableEntityError
@@ -626,6 +727,8 @@ service:
       docs: |
         This operation gets a description of a collection.
         Serverless indexes do not support collections.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       path-parameters:
         collection_name:
           type: string
@@ -657,6 +760,8 @@ service:
       docs: |
         This operation deletes an existing collection.
         Serverless indexes do not support collections.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
       path-parameters:
         collection_name:
           type: string
@@ -670,7 +775,7 @@ service:
         - path-parameters:
             collection_name: test-collection
   source:
-    openapi: ../control-plane/openapi/openapi.yaml
+    openapi: ../control-plane/openapi/openapi.yml
 types:
   CreateIndexRequestMetric:
     enum:
@@ -682,7 +787,7 @@ types:
       'euclidean', 'cosine', or 'dotproduct'.
     default: cosine
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   ConfigureIndexRequestSpecPod:
     properties:
       replicas:
@@ -701,12 +806,80 @@ types:
           and one of `x1`, `x2`, `x4`, or `x8`.
         default: p1.x1
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   ConfigureIndexRequestSpec:
     properties:
       pod: ConfigureIndexRequestSpecPod
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
+  CollectionList:
+    docs: The list of collections that exist in the project.
+    properties:
+      collections: optional<list<CollectionModel>>
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexModelMetric:
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+    docs: >-
+      The distance metric to be used for similarity search. You can use
+      'euclidean', 'cosine', or 'dotproduct'.
+    default: cosine
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexModelStatusState:
+    enum:
+      - Initializing
+      - InitializationFailed
+      - ScalingUp
+      - ScalingDown
+      - ScalingUpPodSize
+      - ScalingDownPodSize
+      - Terminating
+      - Ready
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexModelStatus:
+    properties:
+      ready: boolean
+      state: IndexModelStatusState
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  Index:
+    docs: The IndexModel describes the configuration and status of a Pinecone index.
+    properties:
+      name:
+        type: string
+        docs: >
+          The name of the index. Resource name must be 1-45 characters long,
+          start and end with an alphanumeric character, and consist only of
+          lower case alphanumeric characters or '-'.
+        validation:
+          minLength: 1
+          maxLength: 45
+      dimension:
+        type: integer
+        docs: The dimensions of the vectors to be inserted in the index.
+        validation:
+          min: 1
+          max: 20000
+      metric:
+        type: IndexModelMetric
+        docs: >-
+          The distance metric to be used for similarity search. You can use
+          'euclidean', 'cosine', or 'dotproduct'.
+        default: cosine
+      host:
+        type: string
+        docs: The URL address where the index is hosted.
+      deletion_protection: optional<DeletionProtection>
+      tags: optional<IndexTags>
+      spec: IndexSpec
+      status: IndexModelStatus
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
   DeletionProtection:
     enum:
       - disabled
@@ -717,13 +890,7 @@ types:
       is enabled/disabled for the index.
     default: disabled
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  CollectionList:
-    docs: The list of collections that exist in the project.
-    properties:
-      collections: optional<list<CollectionModel>>
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   IndexSpec:
     discriminated: false
     docs: >
@@ -738,13 +905,37 @@ types:
       - ServerlessIndexSpec
       - PodIndexSpec
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
+  ServerlessSpecCloud:
+    enum:
+      - gcp
+      - aws
+      - azure
+    docs: The public cloud where you would like your index hosted.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  ServerlessSpec:
+    docs: Configuration needed to deploy a serverless index.
+    properties:
+      cloud:
+        type: ServerlessSpecCloud
+        docs: The public cloud where you would like your index hosted.
+      region:
+        type: string
+        docs: 'The region where you would like your index to be created. '
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
   IndexList:
     docs: The list of indexes that exist in the project.
     properties:
       indexes: optional<list<Index>>
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexTags:
+    type: optional<map<string, optional<string>>>
+    docs: >-
+      Custom user tags added to an index. Keys must be alphanumeric and 80
+      characters or less. Values must be 120 characters or less.
   CollectionModelStatus:
     enum:
       - Initializing
@@ -752,7 +943,7 @@ types:
       - Terminating
     docs: The status of the collection.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   CollectionModel:
     docs: >-
       The CollectionModel describes the configuration and status of a Pinecone
@@ -782,26 +973,7 @@ types:
         type: string
         docs: The environment where the collection is hosted.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  ServerlessSpecCloud:
-    enum:
-      - gcp
-      - aws
-      - azure
-    docs: The public cloud where you would like your index hosted.
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  ServerlessSpec:
-    docs: Configuration needed to deploy a serverless index.
-    properties:
-      cloud:
-        type: ServerlessSpecCloud
-        docs: The public cloud where you would like your index hosted.
-      region:
-        type: string
-        docs: 'The region where you would like your index to be created. '
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   PodSpecMetadataConfig:
     docs: >-
       Configuration for the behavior of Pinecone's internal metadata index. By
@@ -816,7 +988,7 @@ types:
           property to specify an array of metadata fields that should be
           indexed.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   PodSpec:
     docs: Configuration needed to deploy a pod-based index.
     properties:
@@ -865,7 +1037,7 @@ types:
         type: optional<string>
         docs: The name of the collection to be used as the source for the index.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../control-plane/openapi/openapi.yml
   ErrorResponseErrorCode:
     enum:
       - OK
@@ -887,8 +1059,9 @@ types:
       - DATA_LOSS
       - FORBIDDEN
       - UNPROCESSABLE_ENTITY
+      - PAYMENT_REQUIRED
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../inference/openapi/openapi.yml
   ErrorResponseError:
     docs: Detailed information about the error that occurred.
     properties:
@@ -900,7 +1073,7 @@ types:
           Additional information about the error. This field is not guaranteed
           to be present.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../inference/openapi/openapi.yml
   ErrorResponse:
     docs: The response shape used for all error responses.
     properties:
@@ -911,7 +1084,141 @@ types:
         type: ErrorResponseError
         docs: Detailed information about the error that occurred.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
+      openapi: ../inference/openapi/openapi.yml
+  ServerlessIndexSpec:
+    properties:
+      serverless: ServerlessSpec
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  PodIndexSpec:
+    properties:
+      pod: PodSpec
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexStatus: unknown
+  IndexStatusState: unknown
+  ImportErrorModeOnError:
+    enum:
+      - abort
+      - continue
+    docs: Indicates how to respond to errors during the import process.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  ImportErrorMode:
+    docs: Indicates how to respond to errors during the import process.
+    properties:
+      onError:
+        type: optional<ImportErrorModeOnError>
+        docs: Indicates how to respond to errors during the import process.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  StartImportResponse:
+    docs: The response for the `start_import` operation.
+    properties:
+      id:
+        type: optional<string>
+        docs: Unique identifier for the import operations.
+        validation:
+          minLength: 1
+          maxLength: 1000
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  CancelImportResponse:
+    docs: The response for the `cancel_import` operation.
+    properties: {}
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  ImportModelStatus:
+    enum:
+      - Pending
+      - InProgress
+      - Failed
+      - Completed
+      - Cancelled
+    docs: The status of the operation.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  ImportModel:
+    docs: The model for an import operation.
+    properties:
+      id:
+        type: optional<string>
+        docs: Unique identifier for the import operation.
+        validation:
+          minLength: 1
+          maxLength: 1000
+      uri:
+        type: optional<string>
+        docs: The URI from where the data is imported.
+      status:
+        type: optional<ImportModelStatus>
+        docs: The status of the operation.
+      createdAt:
+        type: optional<datetime>
+        docs: The start time of the import operation.
+      finishedAt:
+        type: optional<datetime>
+        docs: The end time of the import operation.
+      percentComplete:
+        type: optional<float>
+        docs: The progress made by the operation out of 100
+      recordsImported:
+        type: optional<long>
+        docs: The number of records successfully imported.
+      error:
+        type: optional<string>
+        docs: The error message if the import process failed.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  ListImportsResponse:
+    docs: The response for the `list_imports` operation.
+    properties:
+      data: optional<list<ImportModel>>
+      pagination: optional<Pagination>
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  Pagination:
+    properties:
+      next: optional<string>
+    source:
+      proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+  EmbeddingsListUsage:
+    docs: Usage statistics for the model inference.
+    properties:
+      total_tokens:
+        type: optional<integer>
+        docs: Total number of tokens consumed across all inputs.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  EmbeddingsList:
+    docs: Embeddings generated for the input
+    properties:
+      model:
+        type: string
+        docs: The model used to generate the embeddings
+      data:
+        docs: The embeddings generated for the inputs.
+        type: list<Embedding>
+      usage:
+        type: EmbeddingsListUsage
+        docs: Usage statistics for the model inference.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  RankedDocument:
+    docs: A ranked document with a relevance score and an index position.
+    properties:
+      index:
+        type: integer
+        docs: The index of the document
+      score:
+        type: double
+        docs: 'The relevance score of the document normalized between 0 and 1. '
+      document: optional<Document>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  Document:
+    type: map<string, string>
+    docs: Document for reranking
   Embedding:
     docs: Embedding of a single input
     properties:
@@ -919,80 +1226,27 @@ types:
         type: optional<list<double>>
         docs: The embedding values.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  IndexModelMetric:
-    enum:
-      - cosine
-      - euclidean
-      - dotproduct
-    docs: >-
-      The distance metric to be used for similarity search. You can use
-      'euclidean', 'cosine', or 'dotproduct'.
-    default: cosine
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  IndexModelStatusState:
-    enum:
-      - Initializing
-      - InitializationFailed
-      - ScalingUp
-      - ScalingDown
-      - ScalingUpPodSize
-      - ScalingDownPodSize
-      - Terminating
-      - Ready
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  IndexModelStatus:
+      openapi: ../inference/openapi/openapi.yml
+  RerankResultUsage:
+    docs: Usage statistics for the model inference.
     properties:
-      ready: boolean
-      state: IndexModelStatusState
+      rerank_units: optional<integer>
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  Index:
-    docs: The IndexModel describes the configuration and status of a Pinecone index.
+      openapi: ../inference/openapi/openapi.yml
+  RerankResult:
+    docs: The result of a reranking request.
     properties:
-      name:
+      model:
         type: string
-        docs: >
-          The name of the index. Resource name must be 1-45 characters long,
-          start and end with an alphanumeric character, and consist only of
-          lower case alphanumeric characters or '-'.
-        validation:
-          minLength: 1
-          maxLength: 45
-      dimension:
-        type: integer
-        docs: The dimensions of the vectors to be inserted in the index.
-        validation:
-          min: 1
-          max: 20000
-      metric:
-        type: IndexModelMetric
-        docs: >-
-          The distance metric to be used for similarity search. You can use
-          'euclidean', 'cosine', or 'dotproduct'.
-        default: cosine
-      host:
-        type: string
-        docs: The URL address where the index is hosted.
-      deletion_protection: optional<DeletionProtection>
-      spec: IndexSpec
-      status: IndexModelStatus
+        docs: The model used to rerank documents.
+      data:
+        docs: The reranked documents.
+        type: list<RankedDocument>
+      usage:
+        type: RerankResultUsage
+        docs: Usage statistics for the model inference.
     source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  ServerlessIndexSpec:
-    properties:
-      serverless: ServerlessSpec
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  PodIndexSpec:
-    properties:
-      pod: PodSpec
-    source:
-      openapi: ../control-plane/openapi/openapi.yaml
-  IndexStatus: unknown
-  IndexStatusState: unknown
+      openapi: ../inference/openapi/openapi.yml
   DeleteResponse:
     docs: The response for the `Delete` operation.
     properties: {}
@@ -1073,11 +1327,6 @@ types:
           The number of vectors stored in this namespace. Note that updates to
           this field may lag behind updates to the
            underlying index and corresponding query results, etc.
-    source:
-      proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
-  Pagination:
-    properties:
-      next: optional<string>
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
   QueryResponse:
