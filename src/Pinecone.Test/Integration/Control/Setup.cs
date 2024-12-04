@@ -19,7 +19,11 @@ namespace Pinecone.Test.Integration.Control
             Console.WriteLine("Initializing control plane integration tests...");
             Client = new PineconeClient(
                 apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
-                new ClientOptions { SourceTag = "test-tag" }
+                new ClientOptions
+                {
+                    SourceTag = "test-tag", 
+                    BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
+                }
             );
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
