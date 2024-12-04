@@ -1,4 +1,3 @@
-using System;
 using Grpc.Core;
 using Grpc.Net.Client;
 
@@ -21,10 +20,7 @@ internal class RawGrpcClient
         _clientOptions = clientOptions;
 
         var grpcOptions = PrepareGrpcChannelOptions();
-        Channel =
-            grpcOptions != null
-                ? GrpcChannel.ForAddress(_clientOptions.BaseUrl, grpcOptions)
-                : GrpcChannel.ForAddress(_clientOptions.BaseUrl);
+        Channel = GrpcChannel.ForAddress(_clientOptions.BaseUrl, grpcOptions);
     }
 
     /// <summary>
@@ -65,13 +61,9 @@ internal class RawGrpcClient
         }
     }
 
-    private GrpcChannelOptions? PrepareGrpcChannelOptions()
+    private GrpcChannelOptions PrepareGrpcChannelOptions()
     {
-        var grpcChannelOptions = _clientOptions.GrpcOptions;
-        if (grpcChannelOptions == null)
-        {
-            return null;
-        }
+        var grpcChannelOptions = _clientOptions.GrpcOptions ?? new GrpcChannelOptions();
         grpcChannelOptions.HttpClient ??= _clientOptions.HttpClient;
         grpcChannelOptions.MaxRetryAttempts ??= _clientOptions.MaxRetries;
         return grpcChannelOptions;

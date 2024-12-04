@@ -38,7 +38,7 @@ public class PineconeClient : BasePinecone
         var client = new RawClient(
             new ClientOptions
             {
-                BaseUrl = NormalizeHost(host),
+                BaseUrl = NormalizeHost(host, clientOptions.IsTlsEnabled),
                 HttpClient = clientOptions.HttpClient,
                 MaxRetries = clientOptions.MaxRetries,
                 Timeout = clientOptions.Timeout,
@@ -76,22 +76,18 @@ public class PineconeClient : BasePinecone
                 clientOptions.Headers[header.Key] = header.Value;
             }
         }
+
         if (clientOptions.SourceTag != null)
         {
             clientOptions.Headers["User-Agent"] =
                 $"lang=C#; version={Version.Current}; source_tag={clientOptions.SourceTag}";
         }
+
         return clientOptions;
     }
 
-    private string NormalizeHost(string host)
-    {
-        if (host.StartsWith("https://") || host.StartsWith("http://"))
-        {
-            return host;
-        }
-        return "https://" + host;
-    }
+    private static string NormalizeHost(string host, bool isTlsEnabled)
+        => $"{(isTlsEnabled ? "https" : "http")}://{host}";
 
     private static string GetFromEnvironmentOrThrow(string env, string message)
     {

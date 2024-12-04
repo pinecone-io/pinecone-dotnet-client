@@ -649,6 +649,7 @@ Control Plane endpoints are accessed via standard HTTP requests. You can configu
 - **Timeout**: The time limit for each request before it times out. Default is `30 seconds`.
 - **BaseUrl**: The base URL for all requests.
 - **HttpClient**: The HTTP client to be used for all requests.
+- **IsTlsEnabled**: The client will use HTTPS if set to `true`, HTTP if set to false. Default is `true`.
 
 Example usage:
 
@@ -657,8 +658,9 @@ var pinecone = new PineconeClient("PINECONE_API_KEY", new ClientOptions
 {
     MaxRetries = 3,
     Timeout = TimeSpan.FromSeconds(60),
-    HttpClient = ... // Override the Http Client
-    BaseUrl = ... // Override the Base URL
+    HttpClient = ..., // Override the Http Client
+    BaseUrl = ..., // Override the Base URL
+    IsTlsEnabled = true
 });
 ```
 
