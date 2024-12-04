@@ -22,11 +22,7 @@ namespace Pinecone.Test.Integration.Control
                 new ClientOptions
                 {
                     SourceTag = "test-tag", 
-                    BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default),
-                    HttpClient = new HttpClient(new HttpClientHandler()
-                    {
-                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                    })
+                    BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
                 }
             );
             PineconeEnvironment = "us-west1-gcp";
