@@ -11,18 +11,8 @@ headers:
     type: literal<"2024-10">
 auth-schemes:
   ApiKeyAuth:
-    env: PINECONE_API_KEY
     header: Api-Key
     name: apiKey
     type: string
-default-environment: Default
-display-name: Pinecone Control Plane API
-environments:
-  Default: https://api.pinecone.io
-error-discrimination:
-  strategy: status-code
-headers:
-  X-Pinecone-API-Version:
-    name: version
-    type: literal<"2024-10">
-name: api
+    env: PINECONE_API_KEY
+auth: ApiKeyAuth

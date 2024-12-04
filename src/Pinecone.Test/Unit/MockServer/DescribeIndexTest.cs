@@ -16,8 +16,8 @@ public class DescribeIndexTest : BaseMockServerTest
     {
         const string mockResponse = """
             {
-              "name": "name",
-              "dimension": 1,
+              "name": "x",
+              "dimension": 20000,
               "metric": "cosine",
               "host": "host",
               "deletion_protection": "disabled",

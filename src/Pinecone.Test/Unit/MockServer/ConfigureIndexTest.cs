@@ -21,8 +21,8 @@ public class ConfigureIndexTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "name": "name",
-              "dimension": 1,
+              "name": "x",
+              "dimension": 20000,
               "metric": "cosine",
               "host": "host",
               "deletion_protection": "disabled",
@@ -47,6 +47,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/index_name")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -115,6 +116,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/test-index")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -184,6 +186,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/test-index")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -254,6 +257,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/test-index")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -317,6 +321,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/test-index")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )
@@ -379,6 +384,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes/test-index")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPatch()
                     .WithBodyAsJson(requestJson)
             )

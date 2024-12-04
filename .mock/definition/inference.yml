@@ -10,15 +10,17 @@ types:
         docs: >
           How to handle inputs longer than those supported by the model. If
           `"END"`, truncate the input sequence at the token limit. If `"NONE"`,
-          return an error when the input exceeds the token limit.
+          return an error when the input exceeds the token limit. 
         default: END
     source:
       openapi: ../inference/openapi/openapi.yml
+    inline: true
   EmbedRequestInputsItem:
     properties:
       text: optional<string>
     source:
       openapi: ../inference/openapi/openapi.yml
+    inline: true
 imports:
   root: __package__.yml
 service:

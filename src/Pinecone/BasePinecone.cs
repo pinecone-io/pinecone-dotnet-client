@@ -25,7 +25,8 @@ public partial class BasePinecone
                 { "X-Pinecone-API-Version", "2024-10" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
-                { "X-Fern-SDK-Version", Version.Current }
+                { "X-Fern-SDK-Version", Version.Current },
+                { "User-Agent", "Pinecone.Client/2.1.0" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -143,6 +144,7 @@ public partial class BasePinecone
                 Method = HttpMethod.Post,
                 Path = "indexes",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken
@@ -354,6 +356,7 @@ public partial class BasePinecone
                 Method = HttpMethodExtensions.Patch,
                 Path = $"indexes/{indexName}",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken
@@ -493,6 +496,7 @@ public partial class BasePinecone
                 Method = HttpMethod.Post,
                 Path = "collections",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken
