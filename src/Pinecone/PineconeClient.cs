@@ -87,7 +87,14 @@ public class PineconeClient : BasePinecone
     }
 
     private static string NormalizeHost(string host, bool isTlsEnabled)
-        => $"{(isTlsEnabled ? "https" : "http")}://{host}";
+    {
+        if(host.StartsWith("http://") || host.StartsWith("https://"))
+        {
+            return host;
+        }
+        
+        return $"{(isTlsEnabled ? "https" : "http")}://{host}";
+    }
 
     private static string GetFromEnvironmentOrThrow(string env, string message)
     {

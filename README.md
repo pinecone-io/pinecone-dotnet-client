@@ -649,7 +649,7 @@ Control Plane endpoints are accessed via standard HTTP requests. You can configu
 - **Timeout**: The time limit for each request before it times out. Default is `30 seconds`.
 - **BaseUrl**: The base URL for all requests.
 - **HttpClient**: The HTTP client to be used for all requests.
-- **IsTlsEnabled**: The client will use HTTPS if set to `true`, HTTP if set to false. Default is `true`.
+- **IsTlsEnabled**: The client will default to using HTTPS if `true`, and to HTTP if `false`. Default is `true`.
 
 Example usage:
 
