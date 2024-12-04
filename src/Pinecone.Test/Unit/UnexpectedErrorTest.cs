@@ -36,6 +36,7 @@ public class UnexpectedErrorTest
     public void Teardown()
     {
         Server.Stop();
+        Server.Dispose();
     }
 
     [Test]

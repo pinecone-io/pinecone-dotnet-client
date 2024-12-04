@@ -20,7 +20,7 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(1));
         Assert.That(results.Matches!.First().Id, Is.EqualTo("4"));
@@ -45,11 +45,11 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(2));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "4"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "6"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "4"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "6"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -71,12 +71,12 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(3));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "4"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "5"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "6"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "4"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "5"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "6"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -98,10 +98,10 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(1));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "5"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "5"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -123,11 +123,11 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(2));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "4"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "5"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "4"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "5"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -160,10 +160,10 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(1));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "6"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "6"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -197,11 +197,11 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(2));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "4"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "5"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "4"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "5"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -223,10 +223,10 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(1));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "4"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "4"), Is.Not.Null);
     }
 
     [TestCase(true)]
@@ -249,10 +249,10 @@ public class TestSetupQueryWithFilter : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Matches!.Count, Is.EqualTo(2));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "5"));
-        Assert.IsNotNull(results.Matches!.FirstOrDefault(m => m.Id == "6"));
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "5"), Is.Not.Null);
+        Assert.That(results.Matches!.FirstOrDefault(m => m.Id == "6"), Is.Not.Null);
     }
 }
