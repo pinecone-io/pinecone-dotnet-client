@@ -20,7 +20,11 @@ public class Setup
         Console.WriteLine("Initializing data plane integration tests...");
         Client = new PineconeClient(
             apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
-            new ClientOptions { SourceTag = "test-tag" }
+            new ClientOptions
+            {
+                SourceTag = "test-tag",
+                BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
+            }
         );
         Metric = CreateIndexRequestMetric.Cosine;
         Spec = new ServerlessIndexSpec
