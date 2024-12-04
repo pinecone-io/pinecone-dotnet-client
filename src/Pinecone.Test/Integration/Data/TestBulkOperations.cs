@@ -130,7 +130,7 @@ public class TestBulkOperations : BaseTest
                 Uri = null!
             }));
 
-        TestContext.WriteLine("Exception body: " + exception.Body);
+        TestContext.Out.WriteLine("Exception body: " + exception.Body);
 
         Assert.That(exception, Is.Not.Null);
         Assert.Multiple(() =>

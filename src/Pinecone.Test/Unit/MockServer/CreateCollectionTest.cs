@@ -17,7 +17,7 @@ public class CreateCollectionTest : BaseMockServerTest
     {
         const string requestJson = """
             {
-              "name": "name",
+              "name": "x",
               "source": "source"
             }
             """;
@@ -27,7 +27,7 @@ public class CreateCollectionTest : BaseMockServerTest
               "name": "name",
               "size": 1000000,
               "status": "Initializing",
-              "dimension": 1,
+              "dimension": 20000,
               "vector_count": 1,
               "environment": "environment"
             }
@@ -38,6 +38,7 @@ public class CreateCollectionTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/collections")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
@@ -49,7 +50,7 @@ public class CreateCollectionTest : BaseMockServerTest
             );
 
         var response = await Client.CreateCollectionAsync(
-            new CreateCollectionRequest { Name = "name", Source = "source" },
+            new CreateCollectionRequest { Name = "x", Source = "source" },
             RequestOptions
         );
         JToken
@@ -84,6 +85,7 @@ public class CreateCollectionTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/collections")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )

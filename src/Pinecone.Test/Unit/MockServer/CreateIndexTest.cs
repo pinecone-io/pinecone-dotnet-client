@@ -17,8 +17,8 @@ public class CreateIndexTest : BaseMockServerTest
     {
         const string requestJson = """
             {
-              "name": "name",
-              "dimension": 1,
+              "name": "x",
+              "dimension": 20000,
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -30,8 +30,8 @@ public class CreateIndexTest : BaseMockServerTest
 
         const string mockResponse = """
             {
-              "name": "name",
-              "dimension": 1,
+              "name": "x",
+              "dimension": 20000,
               "metric": "cosine",
               "host": "host",
               "deletion_protection": "disabled",
@@ -56,6 +56,7 @@ public class CreateIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
@@ -69,8 +70,8 @@ public class CreateIndexTest : BaseMockServerTest
         var response = await Client.CreateIndexAsync(
             new CreateIndexRequest
             {
-                Name = "name",
-                Dimension = 1,
+                Name = "x",
+                Dimension = 20000,
                 Metric = null,
                 DeletionProtection = null,
                 Tags = null,
@@ -138,6 +139,7 @@ public class CreateIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
@@ -230,6 +232,7 @@ public class CreateIndexTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/indexes")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )

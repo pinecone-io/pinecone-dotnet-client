@@ -19,7 +19,7 @@ public class DescribeCollectionTest : BaseMockServerTest
               "name": "name",
               "size": 1000000,
               "status": "Initializing",
-              "dimension": 1,
+              "dimension": 20000,
               "vector_count": 1,
               "environment": "environment"
             }

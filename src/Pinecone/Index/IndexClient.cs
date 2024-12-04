@@ -99,6 +99,7 @@ public partial class IndexClient
                 Method = HttpMethod.Post,
                 Path = "bulk/imports",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken

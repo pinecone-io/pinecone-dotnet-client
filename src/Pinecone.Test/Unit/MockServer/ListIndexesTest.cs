@@ -18,8 +18,8 @@ public class ListIndexesTest : BaseMockServerTest
             {
               "indexes": [
                 {
-                  "name": "name",
-                  "dimension": 1,
+                  "name": "x",
+                  "dimension": 20000,
                   "metric": "cosine",
                   "host": "host",
                   "deletion_protection": "disabled",
@@ -38,8 +38,8 @@ public class ListIndexesTest : BaseMockServerTest
                   }
                 },
                 {
-                  "name": "name",
-                  "dimension": 1,
+                  "name": "x",
+                  "dimension": 20000,
                   "metric": "cosine",
                   "host": "host",
                   "deletion_protection": "disabled",

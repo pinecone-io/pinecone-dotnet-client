@@ -30,9 +30,9 @@ public class TestCollectionsHappyPath : BaseTest
         Assert.That(desc.Status, Is.EqualTo(CollectionModelStatus.Ready));
         Assert.That(desc.Environment, Is.EqualTo(Environment));
         Assert.That(desc.Dimension, Is.EqualTo(Dimension));
-        Assert.Greater(desc.VectorCount, 0);
-        Assert.IsNotNull(desc.Size);
-        Assert.Greater(desc.Size, 0);
+        Assert.That(desc.VectorCount, Is.GreaterThan(0));
+        Assert.That(desc.Size, Is.Not.Null);
+        Assert.That(desc.Size, Is.GreaterThan(0));
 
         // Create index from collection
         var newIndexName = $"index-from-collection-{collectionName}";

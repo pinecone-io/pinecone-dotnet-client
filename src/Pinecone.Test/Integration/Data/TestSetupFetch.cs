@@ -109,7 +109,7 @@ public class TestSetupFetch : BaseTest
 
         Assert.That(results.Namespace, Is.EqualTo(""));
         Assert.That(results.Vectors?["1"].Id, Is.EqualTo("1"));
-        Assert.IsNotNull(results.Vectors["1"].Values);
-        Assert.IsNotNull(results.Vectors["4"].Metadata);
+        Assert.That(results.Vectors?["1"].Values, Is.Not.Null);
+        Assert.That(results.Vectors?["4"].Metadata, Is.Not.Null);
     }
 }

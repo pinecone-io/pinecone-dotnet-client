@@ -34,7 +34,7 @@ public class TestDeletionProtection : BaseTest
             exceptionThrown = true;
         }
 
-        Assert.IsTrue(exceptionThrown);
+        Assert.That(exceptionThrown, Is.True);
 
         // Disable deletion protection
         await Client.ConfigureIndexAsync(

@@ -45,6 +45,7 @@ public partial class InferenceClient
                 Method = HttpMethod.Post,
                 Path = "embed",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken
@@ -126,6 +127,7 @@ public partial class InferenceClient
                 Method = HttpMethod.Post,
                 Path = "rerank",
                 Body = request,
+                ContentType = "application/json",
                 Options = options,
             },
             cancellationToken

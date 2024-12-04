@@ -53,6 +53,7 @@ public class EmbedTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/embed")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
@@ -117,6 +118,7 @@ public class EmbedTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/embed")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )

@@ -21,17 +21,17 @@ public class TestSetupQuery : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
 
-        Assert.IsNotNull(results.Usage);
-        Assert.IsNotNull(results.Usage.ReadUnits);
-        Assert.Greater(results.Usage.ReadUnits, 0);
+        Assert.That(results.Usage, Is.Not.Null);
+        Assert.That(results.Usage.ReadUnits, Is.Not.Null);
+        Assert.That(results.Usage.ReadUnits, Is.GreaterThan(0));
 
         // By default, does not include values or metadata
         var recordWithMetadata = results.Matches!.FirstOrDefault(match => match.Id == "4");
-        Assert.IsNotNull(recordWithMetadata);
-        Assert.IsNull(recordWithMetadata.Metadata);
+        Assert.That(recordWithMetadata, Is.Not.Null);
+        Assert.That(recordWithMetadata.Metadata, Is.Null);
         Assert.That(recordWithMetadata.Values?.IsEmpty, Is.True);
     }
 
@@ -50,7 +50,7 @@ public class TestSetupQuery : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
     }
 
@@ -70,10 +70,10 @@ public class TestSetupQuery : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
-        Assert.IsNotEmpty(results.Matches!);
-        Assert.IsNotNull(results.Matches!.First().Values);
+        Assert.That(results.Matches!, Is.Not.Empty);
+        Assert.That(results.Matches!.First().Values, Is.Not.Null);
         Assert.That(results.Matches!.First().Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
@@ -93,13 +93,13 @@ public class TestSetupQuery : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
 
         var matchesWithMetadata = results.Matches!.Where(match => match.Metadata != null).ToList();
         Assert.That(matchesWithMetadata.Count, Is.EqualTo(3));
         var matchWithGenre = matchesWithMetadata.FirstOrDefault(match => match.Id == "4");
-        Assert.IsNotNull(matchWithGenre);
+        Assert.That(matchWithGenre, Is.Not.Null);
         Assert.That(matchWithGenre.Metadata!["genre"], Is.EqualTo(new MetadataValue("action")));
     }
 
@@ -120,13 +120,13 @@ public class TestSetupQuery : BaseTest
             }
         );
 
-        Assert.IsInstanceOf<QueryResponse>(results);
+        Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
 
         var matchesWithMetadata = results.Matches!.Where(match => match.Metadata != null).ToList();
         Assert.That(matchesWithMetadata.Count, Is.EqualTo(3));
         var matchWithGenre = matchesWithMetadata.FirstOrDefault(match => match.Id == "4");
-        Assert.IsNotNull(matchWithGenre);
+        Assert.That(matchWithGenre, Is.Not.Null);
         Assert.That(matchWithGenre.Metadata!["genre"], Is.EqualTo(new MetadataValue("action")));
         Assert.That(results.Matches!.First().Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }

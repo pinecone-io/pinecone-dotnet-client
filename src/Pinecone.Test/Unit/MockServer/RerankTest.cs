@@ -60,6 +60,7 @@ public class RerankTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/rerank")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
@@ -137,6 +138,7 @@ public class RerankTest : BaseMockServerTest
                 WireMock
                     .RequestBuilders.Request.Create()
                     .WithPath("/rerank")
+                    .WithHeader("Content-Type", "application/json")
                     .UsingPost()
                     .WithBodyAsJson(requestJson)
             )
