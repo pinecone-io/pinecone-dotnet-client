@@ -62,7 +62,7 @@ public class PineconeClient : BasePinecone
         var defaultHeaders = new Headers()
         {
             ["Api-Key"] = apiKey,
-            ["X-Pinecone-API-Version"] = "2024-10",
+            ["X-Pinecone-API-Version"] = "2025-01",
             ["X-Fern-Language"] = "C#",
             ["X-Fern-SDK-Name"] = "Pinecone",
             ["X-Fern-SDK-Version"] = Version.Current,
@@ -92,7 +92,7 @@ public class PineconeClient : BasePinecone
         {
             return host;
         }
-        
+
         return $"{(isTlsEnabled ? "https" : "http")}://{host}";
     }
 

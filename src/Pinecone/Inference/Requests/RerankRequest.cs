@@ -8,7 +8,7 @@ namespace Pinecone;
 public record RerankRequest
 {
     /// <summary>
-    /// The [model](https://docs.pinecone.io/guides/inference/understanding-inference#models) to use for reranking.
+    /// The [model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) to use for reranking.
     /// </summary>
     [JsonPropertyName("model")]
     public required string Model { get; set; }
@@ -41,14 +41,13 @@ public record RerankRequest
     /// The documents to rerank.
     /// </summary>
     [JsonPropertyName("documents")]
-    public IEnumerable<Dictionary<string, string>> Documents { get; set; } =
-        new List<Dictionary<string, string>>();
+    public IEnumerable<object> Documents { get; set; } = new List<object>();
 
     /// <summary>
-    /// Additional model-specific parameters for the reranker.
+    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public Dictionary<string, string>? Parameters { get; set; }
+    public object? Parameters { get; set; }
 
     public override string ToString()
     {

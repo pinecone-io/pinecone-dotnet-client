@@ -9,10 +9,10 @@ namespace Pinecone;
 public record QueryVector
 {
     /// <summary>
-    /// The query vector values. This should be the same length as the dimension of the index being queried.
+    /// The query vector. This should be the same length as the dimension of the index being queried. Each `query()` request can contain only one of the parameters `id` or `vector`.
     /// </summary>
     [JsonPropertyName("values")]
-    public ReadOnlyMemory<float> Values { get; set; }
+    public ReadOnlyMemory<float>? Values { get; set; }
 
     /// <summary>
     /// The query sparse values.
@@ -49,9 +49,9 @@ public record QueryVector
     internal Proto.QueryVector ToProto()
     {
         var result = new Proto.QueryVector();
-        if (!Values.IsEmpty)
+        if (Values != null && !Values.Value.IsEmpty)
         {
-            result.Values.AddRange(Values.ToArray());
+            result.Values.AddRange(Values.Value.ToArray());
         }
         if (SparseValues != null)
         {
@@ -79,7 +79,7 @@ public record QueryVector
     {
         return new QueryVector
         {
-            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
+            Values = value.Values?.ToArray(),
             SparseValues =
                 value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
             TopK = value.TopK,

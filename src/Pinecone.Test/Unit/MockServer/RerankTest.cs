@@ -21,10 +21,14 @@ public class RerankTest : BaseMockServerTest
               "query": "query",
               "documents": [
                 {
-                  "documents": "documents"
+                  "documents": {
+                    "key": "value"
+                  }
                 },
                 {
-                  "documents": "documents"
+                  "documents": {
+                    "key": "value"
+                  }
                 }
               ]
             }
@@ -38,14 +42,18 @@ public class RerankTest : BaseMockServerTest
                   "index": 1,
                   "score": 1.1,
                   "document": {
-                    "document": "document"
+                    "document": {
+                      "key": "value"
+                    }
                   }
                 },
                 {
                   "index": 1,
                   "score": 1.1,
                   "document": {
-                    "document": "document"
+                    "document": {
+                      "key": "value"
+                    }
                   }
                 }
               ],
@@ -79,10 +87,22 @@ public class RerankTest : BaseMockServerTest
                 TopN = null,
                 ReturnDocuments = null,
                 RankFields = null,
-                Documents = new List<Dictionary<string, string>>()
+                Documents = new List<object>()
                 {
-                    new Dictionary<string, string>() { { "documents", "documents" } },
-                    new Dictionary<string, string>() { { "documents", "documents" } },
+                    new Dictionary<string, object>()
+                    {
+                        {
+                            "documents",
+                            new Dictionary<object, object?>() { { "key", "value" } }
+                        },
+                    },
+                    new Dictionary<string, object>()
+                    {
+                        {
+                            "documents",
+                            new Dictionary<object, object?>() { { "key", "value" } }
+                        },
+                    },
                 },
                 Parameters = null,
             },
@@ -154,9 +174,9 @@ public class RerankTest : BaseMockServerTest
             {
                 Model = "bge-reranker-v2-m3",
                 Query = "What is the capital of France?",
-                Documents = new List<Dictionary<string, string>>()
+                Documents = new List<object>()
                 {
-                    new Dictionary<string, string>()
+                    new Dictionary<string, object>()
                     {
                         { "id", "1" },
                         { "text", "Paris is the capital of France." },

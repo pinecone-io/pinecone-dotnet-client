@@ -3,6 +3,7 @@ using NUnit.Framework;
 namespace Pinecone.Test.Integration.Control
 {
     [SetUpFixture]
+    [Parallelizable(ParallelScope.Children)]
     public class Setup
     {
         public static PineconeClient Client { get; private set; } = null!;
@@ -16,14 +17,10 @@ namespace Pinecone.Test.Integration.Control
         [OneTimeSetUp]
         public async Task GlobalSetup()
         {
-            Console.WriteLine("Initializing control plane integration tests...");
+            await TestContext.Out.WriteLineAsync("Initializing control plane integration tests...");
             Client = new PineconeClient(
                 apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
-                new ClientOptions
-                {
-                    SourceTag = "test-tag", 
-                    BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
-                }
+                new ClientOptions { SourceTag = "test-tag" }
             );
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
@@ -40,7 +37,7 @@ namespace Pinecone.Test.Integration.Control
 
             CollectionName = $"reused-coll-{Helpers.RandomString(10)}";
             await CreateReusableCollection(CollectionName, Dimension);
-            Console.WriteLine("Control plane integration test intialization complete.");
+            await TestContext.Out.WriteLineAsync("Control plane integration test intialization complete.");
         }
 
         [OneTimeTearDown]
@@ -61,15 +58,15 @@ namespace Pinecone.Test.Integration.Control
                 })
                 .ToList();
 
-            Console.WriteLine($"Attempting to upsert vectors to index {IndexName}");
+            await TestContext.Out.WriteLineAsync($"Attempting to upsert vectors to index {IndexName}");
             var index = Client.Index(IndexName);
             await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Attempting to create collection with name {collectionName} from index {IndexName}"
             );
             await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);
-            Console.WriteLine($"Collection {collectionName} created successfully!");
+            await TestContext.Out.WriteLineAsync($"Collection {collectionName} created successfully!");
 
             return collectionName;
         }

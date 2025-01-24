@@ -15,7 +15,7 @@ public record UpsertRequest
     public IEnumerable<Vector> Vectors { get; set; } = new List<Vector>();
 
     /// <summary>
-    /// The namespace nwhere you upsert vectors.
+    /// The namespace where you upsert vectors.
     /// </summary>
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }

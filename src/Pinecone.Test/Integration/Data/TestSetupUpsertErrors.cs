@@ -9,10 +9,7 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenApiKeyInvalid()
     {
-        var pinecone = new PineconeClient(Helpers.FakeApiKey(), new ClientOptions
-        {
-            BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
-        });
+        var pinecone = new PineconeClient(Helpers.FakeApiKey());
         var e = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
             var index = pinecone.Index(null, IndexHost);

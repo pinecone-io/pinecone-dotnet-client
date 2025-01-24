@@ -20,7 +20,7 @@ public class TestDeletionProtection : BaseTest
         );
 
         var desc = await Client.DescribeIndexAsync(indexName);
-        Console.WriteLine(desc.DeletionProtection);
+        TestContext.Out.WriteLine(desc.DeletionProtection);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Attempt to delete the index should raise an exception

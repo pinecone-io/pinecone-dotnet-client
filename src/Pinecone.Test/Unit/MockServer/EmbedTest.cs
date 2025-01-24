@@ -28,14 +28,17 @@ public class EmbedTest : BaseMockServerTest
         const string mockResponse = """
             {
               "model": "model",
+              "vector_type": "vector_type",
               "data": [
                 {
+                  "vector_type": "dense",
                   "values": [
                     1.1,
                     1.1
                   ]
                 },
                 {
+                  "vector_type": "dense",
                   "values": [
                     1.1,
                     1.1
@@ -98,12 +101,18 @@ public class EmbedTest : BaseMockServerTest
         const string mockResponse = """
             {
               "model": "multilingual-e5-large",
+              "vector_type": "sparse",
               "data": [
                 {
-                  "values": [
-                    0.1,
-                    0.2,
-                    0.3
+                  "vector_type": "sparse",
+                  "sparse_values": [
+                    1.1
+                  ],
+                  "sparse_indices": [
+                    1
+                  ],
+                  "sparse_tokens": [
+                    "sparse_tokens"
                   ]
                 }
               ],

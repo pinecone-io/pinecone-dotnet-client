@@ -36,7 +36,7 @@ public class TestCollectionsHappyPath : BaseTest
 
         // Create index from collection
         var newIndexName = $"index-from-collection-{collectionName}";
-        Console.WriteLine($"Creating index {newIndexName} from collection {collectionName}...");
+        await TestContext.Out.WriteLineAsync($"Creating index {newIndexName} from collection {collectionName}...");
         await Helpers.CreatePodIndexAndWaitUntilReady(
             Client,
             newIndexName,
@@ -60,8 +60,8 @@ public class TestCollectionsHappyPath : BaseTest
             var fetchedVector = results.Vectors![v.Id];
             Assert.That(fetchedVector.Id, Is.EqualTo(v.Id));
             Assert.That(
-                fetchedVector.Values.ToArray(),
-                Is.EqualTo(v.Values.ToArray()).Within(0.01).Percent
+                fetchedVector.Values!.Value.ToArray(),
+                Is.EqualTo(v.Values!.Value.ToArray()).Within(0.01).Percent
             );
         }
     }

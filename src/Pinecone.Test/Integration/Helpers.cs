@@ -1,3 +1,5 @@
+using NUnit.Framework;
+
 namespace Pinecone.Test.Integration;
 
 public static class Helpers
@@ -26,7 +28,7 @@ public static class Helpers
         var collectionReady = desc.Status;
         while (collectionReady != CollectionModelStatus.Ready && timeWaited < 180)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for collection {collectionName} to be ready. Waited {timeWaited} seconds..."
             );
             await Task.Delay(5000);
@@ -66,7 +68,7 @@ public static class Helpers
         var timeWaited = 0;
         while (!indexReady && timeWaited < 120)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for index {indexName} to be ready. Waited {timeWaited} seconds..."
             );
             await Task.Delay(5000);
@@ -78,10 +80,10 @@ public static class Helpers
             }
             catch (NotFoundError)
             {
-                Console.WriteLine("Index not found yet.");
+                await TestContext.Out.WriteLineAsync("Index not found yet.");
             }
         }
-        Console.WriteLine($"Index {indexName} has a {indexReady} ready status!");
+        await TestContext.Out.WriteLineAsync($"Index {indexName} has a {indexReady} ready status!");
         if (timeWaited > 120)
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
@@ -130,20 +132,20 @@ public static class Helpers
             ?? throw new Exception($"Expected environment variable {name} is not set");
     }
 
-    public static void PollStatsForNamespace(
+    public static async Task PollStatsForNamespaceAsync(
         IndexClient idx,
         string namespaceName,
         int expectedCount
     )
     {
         var maxSleep = 120;
-        const int deltaT = 5;
+        const int deltaT = 1;
         var totalTime = 0;
         var done = false;
 
         while (!done)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for namespace \"{namespaceName}\" to have vectors. Total time waited: {totalTime} seconds"
             );
 
@@ -165,7 +167,7 @@ public static class Helpers
             else
             {
                 totalTime += deltaT;
-                Thread.Sleep(deltaT * 1000);
+                await Task.Delay(deltaT * 1000);
             }
         }
     }
@@ -222,15 +224,15 @@ public static class Helpers
             {
                 try
                 {
-                    Console.WriteLine(
+                    await TestContext.Out.WriteLineAsync(
                         $"Attempting turn off deletion protection of index {indexName}"
                     );
                     await TurnOffDelectionProtection(client, index);
-                    Console.WriteLine($"Turned off deletion protection of index {indexName}");
+                    await TestContext.Out.WriteLineAsync($"Turned off deletion protection of index {indexName}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(
+                    await TestContext.Out.WriteLineAsync(
                         $"Unable to turn of deletion protection of index {indexName}: {e.Message}"
                     );
                     timeWaited += 5;
@@ -240,16 +242,16 @@ public static class Helpers
             }
             try
             {
-                Console.WriteLine($"Attempting delete of index {indexName}");
+                await TestContext.Out.WriteLineAsync($"Attempting delete of index {indexName}");
                 await client.DeleteIndexAsync(indexName);
-                Console.WriteLine($"Deleted index {indexName}");
+                await TestContext.Out.WriteLineAsync($"Deleted index {indexName}");
                 break;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to delete index {indexName}: {e.Message}");
+                await TestContext.Out.WriteLineAsync($"Unable to delete index {indexName}: {e.Message}");
             }
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for index {indexName} to be ready to delete. Waited {timeWaited} seconds..."
             );
             timeWaited += 5;
@@ -275,21 +277,21 @@ public static class Helpers
         var timeWaited = 0;
         while (timeWaited < 120)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for collection {collectionName} to be ready to delete. Waited {timeWaited} seconds..."
             );
             timeWaited += 5;
             await Task.Delay(5000);
             try
             {
-                Console.WriteLine($"Attempting delete of collection {collectionName}");
+                await TestContext.Out.WriteLineAsync($"Attempting delete of collection {collectionName}");
                 await client.DeleteCollectionAsync(collectionName);
-                Console.WriteLine($"Deleted collection {collectionName}");
+                await TestContext.Out.WriteLineAsync($"Deleted collection {collectionName}");
                 break;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to delete collection {collectionName}: {e.Message}");
+                await TestContext.Out.WriteLineAsync($"Unable to delete collection {collectionName}: {e.Message}");
             }
         }
 

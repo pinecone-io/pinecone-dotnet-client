@@ -25,7 +25,11 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `list_imports` operation lists all recent and ongoing import operations. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// The `list_imports` operation lists all recent and ongoing import operations.
+    ///
+    /// By default, `list_imports` returns up to 100 imports per page. If the `limit` parameter is set, `list` returns up to that number of imports instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of imports. When the response does not include a `pagination_token`, there are no more imports to return.
+    ///
+    /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -41,7 +45,7 @@ public partial class IndexClient
         var _query = new Dictionary<string, object>();
         if (request.Limit != null)
         {
-            _query["limit"] = request.Limit.ToString();
+            _query["limit"] = request.Limit.Value.ToString();
         }
         if (request.PaginationToken != null)
         {
@@ -79,7 +83,9 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `start_import` operation starts an asynchronous import of vectors from object storage into an index. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// The `start_import` operation starts an asynchronous import of vectors from object storage into an index.
+    ///
+    /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -125,8 +131,9 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `describe_import` operation returns details of a specific import operation. For guidance and examples,
-    /// see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// The `describe_import` operation returns details of a specific import operation.
+    ///
+    /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -170,7 +177,9 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+    /// The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished.
+    ///
+    /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -216,11 +225,9 @@ public partial class IndexClient
     /// <summary>
     /// Get index stats
     ///
-    /// The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+    ///  The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
     ///
-    /// Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
-    ///
-    /// For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+    ///  Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
     /// </summary>
     /// <example>
     /// <code>
@@ -261,9 +268,9 @@ public partial class IndexClient
     /// <summary>
     /// Query vectors
     ///
-    /// The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+    ///  The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
     ///
-    /// For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
+    ///  For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -312,9 +319,9 @@ public partial class IndexClient
     /// <summary>
     /// Delete vectors
     ///
-    /// The `delete` operation deletes vectors, by id, from a single namespace.
+    ///  The `delete` operation deletes vectors, by id, from a single namespace.
     ///
-    /// For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
+    ///  For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -361,9 +368,9 @@ public partial class IndexClient
     /// <summary>
     /// Fetch vectors
     ///
-    /// The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+    ///  The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
     ///
-    /// For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
+    ///  For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -404,13 +411,13 @@ public partial class IndexClient
     /// <summary>
     /// List vector IDs
     ///
-    /// The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+    ///  The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
     ///
-    /// `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+    ///  `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
     ///
-    /// For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
+    ///  For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
     ///
-    /// **Note:** `list` is supported only for serverless indexes.
+    ///  **Note:** `list` is supported only for serverless indexes.
     /// </summary>
     /// <example>
     /// <code>
@@ -458,9 +465,9 @@ public partial class IndexClient
     /// <summary>
     /// Update a vector
     ///
-    /// The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+    ///  The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
     ///
-    /// For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
+    ///  For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
     /// </summary>
     /// <example>
     /// <code>
@@ -508,9 +515,9 @@ public partial class IndexClient
     /// <summary>
     /// Upsert vectors
     ///
-    /// The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+    ///  The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
     ///
-    /// For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+    ///  For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
     /// </summary>
     /// <example>
     /// <code>

@@ -3,6 +3,7 @@ using Pinecone.Test.Integration.Data;
 
 namespace Pinecone.Test.Integration;
 
+[Parallelizable(ParallelScope.Children)]
 public class BaseTest
 {
     protected PineconeClient Client => Setup.Client;

@@ -51,7 +51,8 @@ public class UserAgentTest
                                "status": {
                                  "ready": true,
                                  "state": "Initializing"
-                               }
+                               },
+                               "vector_type": "dense"
                              }
                              """;
 
@@ -100,7 +101,8 @@ public class UserAgentTest
                                       "status": {
                                         "ready": true,
                                         "state": "Initializing"
-                                      }
+                                      },
+                                      "vector_type": "dense"
                                     }
                                     """;
 

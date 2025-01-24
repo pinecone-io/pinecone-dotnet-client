@@ -29,12 +29,6 @@ errors:
       - value:
           error:
             code: INVALID_ARGUMENT
-            message: Metric must be cosine, euclidean, or dotproduct.
-          status: 400
-        name: Validation error on metric.
-      - value:
-          error:
-            code: INVALID_ARGUMENT
             message: Bad request. The request body included invalid request parameters.
           status: 400
         name: Validation error
@@ -62,6 +56,14 @@ errors:
           error:
             code: FORBIDDEN
             message: Increase your quota or upgrade to create more indexes.
+          status: 403
+        name: Forbidden
+      - value:
+          error:
+            code: FORBIDDEN
+            message: >-
+              Deletion protection is enabled for this index. Disable deletion
+              protection before retrying.
           status: 403
         name: Forbidden
       - value:
@@ -112,6 +114,12 @@ errors:
             message: Resource already exists.
           status: 409
         name: Collection name needs to be unique.
+      - value:
+          error:
+            code: ALREADY_EXISTS
+            message: Resource already exists.
+          status: 409
+        name: Index name needs to be unique
   UnprocessableEntityError:
     status-code: 422
     type: ErrorResponse
@@ -171,6 +179,17 @@ service:
                   tags:
                     tag0: val0
                     tag1: val1
+                  embed:
+                    model: multilingual-e5-large
+                    metric: cosine
+                    dimension: 1536
+                    field_map:
+                      text: your-text-field
+                    read_parameters:
+                      input_type: query
+                      truncate: NONE
+                    write_parameters:
+                      input_type: passage
                   spec:
                     pod:
                       environment: us-west1-gcp
@@ -187,6 +206,7 @@ service:
                   status:
                     ready: true
                     state: Ready
+                  vector_type: dense
                 - name: image-search
                   dimension: 200
                   metric: dotproduct
@@ -195,6 +215,17 @@ service:
                   tags:
                     tag0: val0
                     tag1: val1
+                  embed:
+                    model: multilingual-e5-large
+                    metric: cosine
+                    dimension: 1536
+                    field_map:
+                      text: your-text-field
+                    read_parameters:
+                      input_type: query
+                      truncate: NONE
+                    write_parameters:
+                      input_type: passage
                   spec:
                     serverless:
                       cloud: aws
@@ -202,6 +233,34 @@ service:
                   status:
                     ready: false
                     state: Initializing
+                  vector_type: dense
+                - name: sparse-index
+                  dimension: 1536
+                  metric: dotproduct
+                  host: sparse-index-1a2b3c4d.svc.us-east1-gcp.pinecone.io
+                  deletion_protection: disabled
+                  tags:
+                    tag0: val0
+                    tag1: val1
+                  embed:
+                    model: multilingual-e5-large
+                    metric: cosine
+                    dimension: 1536
+                    field_map:
+                      text: your-text-field
+                    read_parameters:
+                      input_type: query
+                      truncate: NONE
+                    write_parameters:
+                      input_type: passage
+                  spec:
+                    serverless:
+                      cloud: aws
+                      region: us-east-1
+                  status:
+                    ready: true
+                    state: Ready
+                  vector_type: sparse
         - name: A list containing one serverless index.
           response:
             body:
@@ -214,6 +273,17 @@ service:
                   tags:
                     tag0: val0
                     tag1: val1
+                  embed:
+                    model: multilingual-e5-large
+                    metric: cosine
+                    dimension: 1536
+                    field_map:
+                      text: your-text-field
+                    read_parameters:
+                      input_type: query
+                      truncate: NONE
+                    write_parameters:
+                      input_type: passage
                   spec:
                     serverless:
                       cloud: aws
@@ -221,6 +291,7 @@ service:
                   status:
                     ready: false
                     state: Initializing
+                  vector_type: dense
         - name: No indexes created yet.
           response:
             body:
@@ -233,6 +304,17 @@ service:
                   tags:
                     tag0: val0
                     tag1: val1
+                  embed:
+                    model: multilingual-e5-large
+                    metric: cosine
+                    dimension: 1536
+                    field_map:
+                      text: your-text-field
+                    read_parameters:
+                      input_type: query
+                      truncate: NONE
+                    write_parameters:
+                      input_type: passage
                   spec:
                     serverless:
                       cloud: gcp
@@ -240,6 +322,7 @@ service:
                   status:
                     ready: true
                     state: ScalingUpPodSize
+                  vector_type: vector_type
     create_index:
       path: /indexes
       method: POST
@@ -268,7 +351,7 @@ service:
                 minLength: 1
                 maxLength: 45
             dimension:
-              type: integer
+              type: optional<integer>
               docs: The dimensions of the vectors to be inserted in the index.
               validation:
                 min: 1
@@ -277,11 +360,19 @@ service:
               type: optional<CreateIndexRequestMetric>
               docs: >-
                 The distance metric to be used for similarity search. You can
-                use 'euclidean', 'cosine', or 'dotproduct'.
-              default: cosine
+                use 'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type'
+                is 'sparse', the metric must be 'dotproduct'. If the
+                `vector_type` is `dense`, the metric defaults to 'cosine'.
             deletion_protection: optional<DeletionProtection>
             tags: optional<IndexTags>
             spec: IndexSpec
+            vector_type:
+              type: optional<string>
+              docs: >-
+                The index vector type. You can use 'dense' or 'sparse'. If
+                'dense', the vector dimension must be specified.  If 'sparse',
+                the vector dimension should not be specified.
+              default: dense
         content-type: application/json
       response:
         docs: The index has been successfully created.
@@ -316,6 +407,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -323,6 +426,47 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
+        - name: Creating a sparse serverless index
+          request:
+            name: sparse-index
+            metric: dotproduct
+            deletion_protection: enabled
+            spec:
+              serverless:
+                cloud: gcp
+                region: us-east1
+            vector_type: sparse
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
+              spec:
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+              vector_type: vector_type
         - name: Creating a pod-based index
           request:
             name: movie-recommendations
@@ -352,6 +496,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -359,6 +515,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
     describe_index:
       path: /indexes/{index_name}
       method: GET
@@ -392,6 +549,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: aws
@@ -399,6 +568,7 @@ service:
               status:
                 ready: false
                 state: Initializing
+              vector_type: dense
         - name: A pod-based index
           path-parameters:
             index_name: test-index
@@ -412,6 +582,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 pod:
                   environment: us-east-1-aws
@@ -428,6 +610,7 @@ service:
               status:
                 ready: false
                 state: Initializing
+              vector_type: dense
     delete_index:
       path: /indexes/{index_name}
       method: DELETE
@@ -442,6 +625,7 @@ service:
       display-name: Delete an index
       errors:
         - UnauthorizedError
+        - ForbiddenError
         - NotFoundError
         - PreconditionFailedError
         - InternalServerError
@@ -456,9 +640,10 @@ service:
         This operation configures an existing index. 
 
 
-        For serverless indexes, you can configure only index deletion protection
-        and tags. For pod-based indexes, you can configure the pod size, number
-        of replicas, tags, and index deletion protection. 
+        For serverless indexes, you can configure index deletion protection,
+        tags, and integrated inference embedding settings for the index. For
+        pod-based indexes, you can configure the pod size, number of replicas,
+        tags, and index deletion protection.
 
 
         It is not possible to change the pod type of a pod-based index. However,
@@ -481,6 +666,25 @@ service:
             spec: optional<ConfigureIndexRequestSpec>
             deletion_protection: optional<DeletionProtection>
             tags: optional<IndexTags>
+            embed:
+              type: optional<ConfigureIndexRequestEmbed>
+              docs: >-
+                Configure the integrated inference embedding settings for this
+                index.
+
+
+                You can convert an existing index to an integrated index by
+                specifying the embedding model and field_map. The index vector
+                type and dimension must match the model vector type and
+                dimension, and the index similarity metric must be supported by
+                the model. Refer to the [model
+                guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+                for available models and model details.
+
+
+                You can later change the embedding configuration to update the
+                field map, read parameters, or write parameters. Once set, the
+                model cannot be changed.
         content-type: application/json
       response:
         docs: >-
@@ -513,6 +717,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -520,6 +736,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
         - name: Horizontal scaling with replicas
           path-parameters:
             index_name: test-index
@@ -537,6 +754,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -544,6 +773,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
         - name: Scaling both pod size and number of replicas
           path-parameters:
             index_name: test-index
@@ -562,6 +792,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -569,6 +811,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
         - name: Disable deletion protection for the index
           path-parameters:
             index_name: test-index
@@ -583,6 +826,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -590,6 +845,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
         - name: Update tag0 and delete tag1
           path-parameters:
             index_name: test-index
@@ -607,6 +863,18 @@ service:
               tags:
                 tag0: val0
                 tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
               spec:
                 serverless:
                   cloud: gcp
@@ -614,6 +882,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
+              vector_type: vector_type
     list_collections:
       path: /collections
       method: GET
@@ -720,6 +989,110 @@ service:
               dimension: 1536
               vector_count: 120000
               environment: us-east1-gcp
+    create_index_for_model:
+      path: /indexes/create-for-model
+      method: POST
+      auth: true
+      docs: >-
+        This operation creates a serverless integrated inference index for a
+        specific embedding model.
+
+
+        Refer to the [model
+        guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+        for available models and model details.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      display-name: Create an index for an embedding model
+      request:
+        name: CreateIndexForModelRequest
+        body:
+          properties:
+            name:
+              type: string
+              docs: >
+                The name of the index. Resource name must be 1-45 characters
+                long, start and end with an alphanumeric character, and consist
+                only of lower case alphanumeric characters or '-'.
+              validation:
+                minLength: 1
+                maxLength: 45
+            cloud:
+              type: CreateIndexForModelRequestCloud
+              docs: The public cloud where you would like your index hosted.
+            region:
+              type: string
+              docs: The region where you would like your index to be created.
+            deletion_protection: optional<DeletionProtection>
+            tags: optional<IndexTags>
+            embed:
+              type: CreateIndexForModelRequestEmbed
+              docs: >-
+                Specify the integrated inference embedding configuration for the
+                index.
+
+
+                Once set the model cannot be changed, but you can later update
+                the embedding configuration for an integrated inference index
+                including field map, read parameters, or write parameters.
+
+
+                Refer to the [model
+                guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+                for available models and model details.
+        content-type: application/json
+      response:
+        docs: The index has successfully been created for the embedding model.
+        type: Index
+      errors:
+        - BadRequestError
+        - UnauthorizedError
+        - NotFoundError
+        - ConflictError
+        - UnprocessableEntityError
+        - InternalServerError
+      examples:
+        - name: Creating a serverless index for the specified model
+          request:
+            name: multilingual-e5-large-index
+            cloud: gcp
+            region: us-east1
+            deletion_protection: enabled
+            embed:
+              model: multilingual-e5-large
+              metric: cosine
+              field_map:
+                text: your-text-field
+          response:
+            body:
+              name: example-index
+              dimension: 1536
+              metric: cosine
+              host: semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io
+              deletion_protection: disabled
+              tags:
+                tag0: val0
+                tag1: val1
+              embed:
+                model: multilingual-e5-large
+                metric: cosine
+                dimension: 1536
+                vector_type: vector_type
+                field_map:
+                  text: your-text-field
+                read_parameters:
+                  input_type: query
+                  truncate: NONE
+                write_parameters:
+                  input_type: passage
+              spec:
+                serverless:
+                  cloud: gcp
+                  region: us-east-1
+              status:
+                ready: true
+                state: ScalingUpPodSize
+              vector_type: vector_type
     describe_collection:
       path: /collections/{collection_name}
       method: GET
@@ -784,8 +1157,10 @@ types:
       - dotproduct
     docs: >-
       The distance metric to be used for similarity search. You can use
-      'euclidean', 'cosine', or 'dotproduct'.
-    default: cosine
+      'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse',
+      the metric must be 'dotproduct'. If the `vector_type` is `dense`, the
+      metric defaults to 'cosine'.
+    inline: true
     source:
       openapi: ../control-plane/openapi/openapi.yml
   ConfigureIndexRequestSpecPod:
@@ -814,12 +1189,211 @@ types:
     source:
       openapi: ../control-plane/openapi/openapi.yml
     inline: true
+  ConfigureIndexRequestEmbed:
+    docs: >-
+      Configure the integrated inference embedding settings for this index.
+
+
+      You can convert an existing index to an integrated index by specifying the
+      embedding model and field_map. The index vector type and dimension must
+      match the model vector type and dimension, and the index similarity metric
+      must be supported by the model. Refer to the [model
+      guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+      for available models and model details.
+
+
+      You can later change the embedding configuration to update the field map,
+      read parameters, or write parameters. Once set, the model cannot be
+      changed.
+    properties:
+      model:
+        type: optional<string>
+        docs: >-
+          The name of the embedding model to use with the index. The index
+          dimension and model dimension must match, and the index similarity
+          metric must be supported by the model. The index embedding model
+          cannot be changed once set.
+      field_map:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Identifies the name of the text field from your document model that
+          will be embedded.
+      read_parameters:
+        type: optional<map<string, unknown>>
+        docs: The read parameters for the embedding model.
+      write_parameters:
+        type: optional<map<string, unknown>>
+        docs: The write parameters for the embedding model.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+    inline: true
+  CreateIndexForModelRequestCloud:
+    enum:
+      - gcp
+      - aws
+      - azure
+    docs: The public cloud where you would like your index hosted.
+    inline: true
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  CreateIndexForModelRequestEmbedMetric:
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+    docs: >-
+      The distance metric to be used for similarity search. You can use
+      'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric will
+      be defaulted according to the model. Cannot be updated once set.
+    inline: true
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  CreateIndexForModelRequestEmbed:
+    docs: >-
+      Specify the integrated inference embedding configuration for the index.
+
+
+      Once set the model cannot be changed, but you can later update the
+      embedding configuration for an integrated inference index including field
+      map, read parameters, or write parameters.
+
+
+      Refer to the [model
+      guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+      for available models and model details.
+    properties:
+      model:
+        type: string
+        docs: The name of the embedding model to use for the index.
+      metric:
+        type: optional<CreateIndexForModelRequestEmbedMetric>
+        docs: >-
+          The distance metric to be used for similarity search. You can use
+          'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric
+          will be defaulted according to the model. Cannot be updated once set.
+      field_map:
+        type: map<string, unknown>
+        docs: >-
+          Identifies the name of the text field from your document model that
+          will be embedded.
+      read_parameters:
+        type: optional<map<string, unknown>>
+        docs: The read parameters for the embedding model.
+      write_parameters:
+        type: optional<map<string, unknown>>
+        docs: The write parameters for the embedding model.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+    inline: true
+  IndexTags:
+    type: map<string, string>
+    docs: >-
+      Custom user tags added to an index. Keys must be 80 characters or less.
+      Values must be 120 characters or less. Keys must be alphanumeric, '_', or
+      '-'.  Values must be alphanumeric, ';', '@', '_', '-', '.', '+', or ' '.
+      To unset a key, set the value to be an empty string.
+  IndexSpec:
+    discriminated: false
+    docs: >
+      The spec object defines how the index should be deployed.
+
+
+      For serverless indexes, you define only the cloud and region where the
+      index should be hosted. For pod-based indexes, you define the environment
+      where the index should be hosted, the pod type and size to use, and other
+      index characteristics.
+    union:
+      - ServerlessIndexSpec
+      - PodIndexSpec
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  ServerlessSpecCloud:
+    enum:
+      - gcp
+      - aws
+      - azure
+    docs: The public cloud where you would like your index hosted.
+    inline: true
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  ServerlessSpec:
+    docs: Configuration needed to deploy a serverless index.
+    properties:
+      cloud:
+        type: ServerlessSpecCloud
+        docs: The public cloud where you would like your index hosted.
+      region:
+        type: string
+        docs: The region where you would like your index to be created.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
   CollectionList:
     docs: The list of collections that exist in the project.
     properties:
       collections: optional<list<CollectionModel>>
     source:
       openapi: ../control-plane/openapi/openapi.yml
+  ModelIndexEmbedMetric:
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+    docs: >-
+      The distance metric to be used for similarity search. You can use
+      'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric will
+      be defaulted according to the model. Cannot be updated once set.
+    inline: true
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  ModelIndexEmbed:
+    docs: The embedding model and document fields mapped to embedding inputs.
+    properties:
+      model:
+        type: string
+        docs: The name of the embedding model used to create the index.
+      metric:
+        type: optional<ModelIndexEmbedMetric>
+        docs: >-
+          The distance metric to be used for similarity search. You can use
+          'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric
+          will be defaulted according to the model. Cannot be updated once set.
+      dimension:
+        type: optional<integer>
+        docs: The dimensions of the vectors to be inserted in the index.
+        validation:
+          min: 1
+          max: 20000
+      vector_type:
+        type: optional<string>
+        docs: >-
+          The index vector type. You can use 'dense' or 'sparse'. If 'dense',
+          the vector dimension must be specified.  If 'sparse', the vector
+          dimension should not be specified.
+        default: dense
+      field_map:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Identifies the name of the text field from your document model that is
+          embedded.
+      read_parameters:
+        type: optional<map<string, unknown>>
+        docs: The read parameters for the embedding model.
+      write_parameters:
+        type: optional<map<string, unknown>>
+        docs: The write parameters for the embedding model.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  ErrorResponse:
+    docs: The response shape used for all error responses.
+    properties:
+      status:
+        type: integer
+        docs: The HTTP status code of the error.
+      error:
+        type: ErrorResponseError
+        docs: Detailed information about the error that occurred.
+    source:
+      openapi: ../metrics/openapi/openapi.yml
   IndexModelMetric:
     enum:
       - cosine
@@ -827,8 +1401,10 @@ types:
       - dotproduct
     docs: >-
       The distance metric to be used for similarity search. You can use
-      'euclidean', 'cosine', or 'dotproduct'.
-    default: cosine
+      'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse',
+      the metric must be 'dotproduct'. If the `vector_type` is `dense`, the
+      metric defaults to 'cosine'.
+    inline: true
     source:
       openapi: ../control-plane/openapi/openapi.yml
   IndexModelStatusState:
@@ -841,6 +1417,7 @@ types:
       - ScalingDownPodSize
       - Terminating
       - Ready
+    inline: true
     source:
       openapi: ../control-plane/openapi/openapi.yml
   IndexModelStatus:
@@ -863,7 +1440,7 @@ types:
           minLength: 1
           maxLength: 45
       dimension:
-        type: integer
+        type: optional<integer>
         docs: The dimensions of the vectors to be inserted in the index.
         validation:
           min: 1
@@ -872,15 +1449,95 @@ types:
         type: IndexModelMetric
         docs: >-
           The distance metric to be used for similarity search. You can use
-          'euclidean', 'cosine', or 'dotproduct'.
-        default: cosine
+          'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is
+          'sparse', the metric must be 'dotproduct'. If the `vector_type` is
+          `dense`, the metric defaults to 'cosine'.
       host:
         type: string
         docs: The URL address where the index is hosted.
       deletion_protection: optional<DeletionProtection>
       tags: optional<IndexTags>
+      embed: optional<ModelIndexEmbed>
       spec: IndexSpec
       status: IndexModelStatus
+      vector_type:
+        type: string
+        docs: >-
+          The index vector type. You can use 'dense' or 'sparse'. If 'dense',
+          the vector dimension must be specified.  If 'sparse', the vector
+          dimension should not be specified.
+        default: dense
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  IndexList:
+    docs: The list of indexes that exist in the project.
+    properties:
+      indexes: optional<list<Index>>
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+  PodSpecMetadataConfig:
+    docs: >-
+      Configuration for the behavior of Pinecone's internal metadata index. By
+      default, all metadata is indexed; when `metadata_config` is present, only
+      specified metadata fields are indexed. These configurations are only valid
+      for use with pod-based indexes.
+    properties:
+      indexed:
+        type: optional<list<string>>
+        docs: >-
+          By default, all metadata is indexed; to change this behavior, use this
+          property to specify an array of metadata fields that should be
+          indexed.
+    source:
+      openapi: ../control-plane/openapi/openapi.yml
+    inline: true
+  PodSpec:
+    docs: Configuration needed to deploy a pod-based index.
+    properties:
+      environment:
+        type: string
+        docs: The environment where the index is hosted.
+      replicas:
+        type: optional<integer>
+        docs: >-
+          The number of replicas. Replicas duplicate your index. They provide
+          higher availability and throughput. Replicas can be scaled up or down
+          as your needs change.
+        default: 1
+        validation:
+          min: 1
+      shards:
+        type: optional<integer>
+        docs: >-
+          The number of shards. Shards split your data across multiple pods so
+          you can fit more data into an index.
+        default: 1
+        validation:
+          min: 1
+      pod_type:
+        type: string
+        docs: >-
+          The type of pod to use. One of `s1`, `p1`, or `p2` appended with `.`
+          and one of `x1`, `x2`, `x4`, or `x8`.
+        default: p1.x1
+      pods:
+        type: optional<integer>
+        docs: >-
+          The number of pods to be used in the index. This should be equal to
+          `shards` x `replicas`.'
+        default: 1
+        validation:
+          min: 1
+      metadata_config:
+        type: optional<PodSpecMetadataConfig>
+        docs: >-
+          Configuration for the behavior of Pinecone's internal metadata index.
+          By default, all metadata is indexed; when `metadata_config` is
+          present, only specified metadata fields are indexed. These
+          configurations are only valid for use with pod-based indexes.
+      source_collection:
+        type: optional<string>
+        docs: The name of the collection to be used as the source for the index.
     source:
       openapi: ../control-plane/openapi/openapi.yml
   DeletionProtection:
@@ -894,57 +1551,13 @@ types:
     default: disabled
     source:
       openapi: ../control-plane/openapi/openapi.yml
-  IndexSpec:
-    discriminated: false
-    docs: >
-      The spec object defines how the index should be deployed.
-
-
-      For serverless indexes, you define only the cloud and region where the
-      index should be hosted. For pod-based indexes, you define the environment
-      where the index should be hosted, the pod type and size to use, and other
-      index characteristics.
-    union:
-      - ServerlessIndexSpec
-      - PodIndexSpec
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  ServerlessSpecCloud:
-    enum:
-      - gcp
-      - aws
-      - azure
-    docs: The public cloud where you would like your index hosted.
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  ServerlessSpec:
-    docs: Configuration needed to deploy a serverless index.
-    properties:
-      cloud:
-        type: ServerlessSpecCloud
-        docs: The public cloud where you would like your index hosted.
-      region:
-        type: string
-        docs: 'The region where you would like your index to be created. '
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  IndexList:
-    docs: The list of indexes that exist in the project.
-    properties:
-      indexes: optional<list<Index>>
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  IndexTags:
-    type: optional<map<string, optional<string>>>
-    docs: >-
-      Custom user tags added to an index. Keys must be alphanumeric and 80
-      characters or less. Values must be 120 characters or less.
   CollectionModelStatus:
     enum:
       - Initializing
       - Ready
       - Terminating
     docs: The status of the collection.
+    inline: true
     source:
       openapi: ../control-plane/openapi/openapi.yml
   CollectionModel:
@@ -977,71 +1590,18 @@ types:
         docs: The environment where the collection is hosted.
     source:
       openapi: ../control-plane/openapi/openapi.yml
-  PodSpecMetadataConfig:
-    docs: >-
-      Configuration for the behavior of Pinecone's internal metadata index. By
-      default, all metadata is indexed; when `metadata_config` is present, only
-      specified metadata fields are indexed. These configurations are only valid
-      for use with pod-based indexes.
+  ServerlessIndexSpec:
     properties:
-      indexed:
-        type: optional<list<string>>
-        docs: >-
-          By default, all metadata is indexed; to change this behavior, use this
-          property to specify an array of metadata fields that should be
-          indexed.
+      serverless: ServerlessSpec
     source:
       openapi: ../control-plane/openapi/openapi.yml
-    inline: true
-  PodSpec:
-    docs: Configuration needed to deploy a pod-based index.
+  PodIndexSpec:
     properties:
-      environment:
-        type: string
-        docs: The environment where the index is hosted.
-      replicas:
-        type: integer
-        docs: >-
-          The number of replicas. Replicas duplicate your index. They provide
-          higher availability and throughput. Replicas can be scaled up or down
-          as your needs change.
-        default: 1
-        validation:
-          min: 1
-      shards:
-        type: integer
-        docs: >-
-          The number of shards. Shards split your data across multiple pods so
-          you can fit more data into an index.
-        default: 1
-        validation:
-          min: 1
-      pod_type:
-        type: string
-        docs: >-
-          The type of pod to use. One of `s1`, `p1`, or `p2` appended with `.`
-          and one of `x1`, `x2`, `x4`, or `x8`.
-        default: p1.x1
-      pods:
-        type: integer
-        docs: >-
-          The number of pods to be used in the index. This should be equal to
-          `shards` x `replicas`.'
-        default: 1
-        validation:
-          min: 1
-      metadata_config:
-        type: optional<PodSpecMetadataConfig>
-        docs: >-
-          Configuration for the behavior of Pinecone's internal metadata index.
-          By default, all metadata is indexed; when `metadata_config` is
-          present, only specified metadata fields are indexed. These
-          configurations are only valid for use with pod-based indexes.
-      source_collection:
-        type: optional<string>
-        docs: The name of the collection to be used as the source for the index.
+      pod: PodSpec
     source:
       openapi: ../control-plane/openapi/openapi.yml
+  IndexStatus: unknown
+  IndexStatusState: unknown
   ErrorResponseErrorCode:
     enum:
       - OK
@@ -1064,8 +1624,9 @@ types:
       - FORBIDDEN
       - UNPROCESSABLE_ENTITY
       - PAYMENT_REQUIRED
+      - TOO_MANY_REQUESTS
     source:
-      openapi: ../inference/openapi/openapi.yml
+      openapi: ../metrics/openapi/openapi.yml
   ErrorResponseError:
     docs: Detailed information about the error that occurred.
     properties:
@@ -1077,35 +1638,13 @@ types:
           Additional information about the error. This field is not guaranteed
           to be present.
     source:
-      openapi: ../inference/openapi/openapi.yml
-  ErrorResponse:
-    docs: The response shape used for all error responses.
-    properties:
-      status:
-        type: integer
-        docs: The HTTP status code of the error.
-      error:
-        type: ErrorResponseError
-        docs: Detailed information about the error that occurred.
-    source:
-      openapi: ../inference/openapi/openapi.yml
-  ServerlessIndexSpec:
-    properties:
-      serverless: ServerlessSpec
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  PodIndexSpec:
-    properties:
-      pod: PodSpec
-    source:
-      openapi: ../control-plane/openapi/openapi.yml
-  IndexStatus: unknown
-  IndexStatusState: unknown
+      openapi: ../metrics/openapi/openapi.yml
   ImportErrorModeOnError:
     enum:
       - abort
       - continue
     docs: Indicates how to respond to errors during the import process.
+    inline: true
     source:
       openapi: ../data-plane/openapi/openapi.yml
   ImportErrorMode:
@@ -1121,7 +1660,7 @@ types:
     properties:
       id:
         type: optional<string>
-        docs: Unique identifier for the import operations.
+        docs: Unique identifier for the import operation.
         validation:
           minLength: 1
           maxLength: 1000
@@ -1140,6 +1679,7 @@ types:
       - Completed
       - Cancelled
     docs: The status of the operation.
+    inline: true
     source:
       openapi: ../data-plane/openapi/openapi.yml
   ImportModel:
@@ -1165,7 +1705,7 @@ types:
         docs: The end time of the import operation.
       percentComplete:
         type: optional<float>
-        docs: The progress made by the operation out of 100
+        docs: The progress made by the operation, as a percentage.
       recordsImported:
         type: optional<long>
         docs: The number of records successfully imported.
@@ -1186,56 +1726,121 @@ types:
       next: optional<string>
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
-  EmbeddingsListUsage:
-    docs: Usage statistics for the model inference.
+  SearchRecordsRequestQuery:
+    docs: The query inputs to search with.
     properties:
-      total_tokens:
-        type: optional<integer>
-        docs: Total number of tokens consumed across all inputs.
+      top_k:
+        type: integer
+        docs: The number of results to return for each search.
+      filter:
+        type: optional<map<string, unknown>>
+        docs: The filter to apply.
+      inputs: optional<EmbedInputs>
+      vector: optional<SearchRecordsVector>
+      id:
+        type: optional<string>
+        docs: The unique ID of the vector to be used as a query vector.
+        validation:
+          maxLength: 512
     source:
-      openapi: ../inference/openapi/openapi.yml
+      openapi: ../data-plane/openapi/openapi.yml
     inline: true
-  EmbeddingsList:
-    docs: Embeddings generated for the input
+  SearchRecordsRequestRerank:
+    docs: Parameters for reranking the initial search results.
     properties:
       model:
         type: string
-        docs: The model used to generate the embeddings
-      data:
-        docs: The embeddings generated for the inputs.
-        type: list<Embedding>
-      usage:
-        type: EmbeddingsListUsage
-        docs: Usage statistics for the model inference.
+        docs: >-
+          The name of the [reranking
+          model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          to use.
+      rank_fields:
+        docs: The fields to use for reranking.
+        type: list<string>
+      top_n:
+        type: optional<integer>
+        docs: >-
+          The number of top results to return after reranking. Defaults to
+          top_k.
+      parameters:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional model-specific parameters. Refer to the [model
+          guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          for available model parameters.
+      query:
+        type: optional<string>
+        docs: >-
+          The query to rerank documents against. If a specific rerank query is
+          specified,  it overwrites the query input that was provided at the top
+          level.
     source:
-      openapi: ../inference/openapi/openapi.yml
-  RankedDocument:
-    docs: A ranked document with a relevance score and an index position.
+      openapi: ../data-plane/openapi/openapi.yml
+    inline: true
+  SearchRecordsRequest:
+    docs: A search request for records in a specific namespace.
     properties:
-      index:
+      query:
+        type: SearchRecordsRequestQuery
+        docs: The query inputs to search with.
+      fields:
+        type: optional<list<string>>
+        docs: The fields to return in the search results.
+      rerank:
+        type: optional<SearchRecordsRequestRerank>
+        docs: Parameters for reranking the initial search results.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  SearchUsage:
+    properties:
+      read_units:
         type: integer
-        docs: The index of the document
-      score:
-        type: double
-        docs: 'The relevance score of the document normalized between 0 and 1. '
-      document: optional<Document>
+        docs: The number of read units consumed by this operation.
+        validation:
+          min: 0
+      embed_total_tokens:
+        type: optional<integer>
+        docs: The number of embedding tokens consumed by this operation.
+        validation:
+          min: 0
+      rerank_units:
+        type: optional<integer>
+        docs: The number of rerank units consumed by this operation.
+        validation:
+          min: 0
     source:
-      openapi: ../inference/openapi/openapi.yml
-  Document:
-    type: map<string, string>
-    docs: Document for reranking
-  Embedding:
-    docs: Embedding of a single input
+      openapi: ../data-plane/openapi/openapi.yml
+  EmbedInputs: map<string, unknown>
+  VectorValues:
+    docs: This is the vector data included in the request.
+    type: list<float>
+  SearchVector:
     properties:
-      values:
-        type: optional<list<double>>
-        docs: The embedding values.
+      values: optional<VectorValues>
     source:
-      openapi: ../inference/openapi/openapi.yml
+      openapi: ../data-plane/openapi/openapi.yml
+  SearchRecordsVector:
+    properties:
+      values: optional<VectorValues>
+      sparse_values:
+        type: optional<list<float>>
+        docs: The sparse embedding values.
+      sparse_indices:
+        type: optional<list<integer>>
+        docs: The sparse embedding indices.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  Document:
+    type: map<string, unknown>
+    docs: Document for reranking
   RerankResultUsage:
     docs: Usage statistics for the model inference.
     properties:
-      rerank_units: optional<integer>
+      rerank_units:
+        type: optional<integer>
+        docs: The number of rerank units consumed by this operation.
+        validation:
+          min: 0
     source:
       openapi: ../inference/openapi/openapi.yml
     inline: true
@@ -1251,6 +1856,99 @@ types:
       usage:
         type: RerankResultUsage
         docs: Usage statistics for the model inference.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  DenseEmbedding:
+    docs: A dense embedding of a single input
+    properties:
+      values:
+        docs: The dense embedding values.
+        type: list<float>
+      vector_type: VectorType
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  EmbeddingsListUsage:
+    docs: Usage statistics for the model inference.
+    properties:
+      total_tokens:
+        type: optional<integer>
+        docs: Total number of tokens consumed across all inputs.
+        validation:
+          min: 0
+    source:
+      openapi: ../inference/openapi/openapi.yml
+    inline: true
+  EmbeddingsList:
+    docs: Embeddings generated for the input.
+    properties:
+      model:
+        type: string
+        docs: The model used to generate the embeddings
+      vector_type:
+        type: string
+        docs: >-
+          Indicates whether the response data contains 'dense' or 'sparse'
+          embeddings.
+      data:
+        docs: The embeddings generated for the inputs.
+        type: list<Embedding>
+      usage:
+        type: EmbeddingsListUsage
+        docs: Usage statistics for the model inference.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  SparseEmbedding:
+    docs: A sparse embedding of a single input
+    properties:
+      sparse_values:
+        docs: The sparse embedding values.
+        type: list<float>
+      sparse_indices:
+        docs: The sparse embedding indices.
+        type: list<integer>
+      sparse_tokens:
+        type: optional<list<string>>
+        docs: The normalized tokens used to create the sparse embedding.
+      vector_type: VectorType
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  RankedDocument:
+    docs: A ranked document with a relevance score and an index position.
+    properties:
+      index:
+        type: integer
+        docs: The index position of the document from the original request.
+      score:
+        type: double
+        docs: >-
+          The relevance of the document to the query, normalized between 0 and
+          1, with scores closer to 1 indicating higher relevance.
+      document: optional<Document>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  VectorType:
+    enum:
+      - dense
+      - sparse
+    docs: Indicates whether this is a 'dense' or 'sparse' embedding.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  Embedding:
+    docs: Embedding of a single input
+    properties:
+      vector_type: VectorType
+      values:
+        type: optional<list<float>>
+        docs: The dense embedding values.
+      sparse_values:
+        type: optional<list<float>>
+        docs: The sparse embedding values.
+      sparse_indices:
+        type: optional<list<integer>>
+        docs: The sparse embedding indices.
+      sparse_tokens:
+        type: optional<list<string>>
+        docs: The normalized tokens used to create the sparse embedding.
     source:
       openapi: ../inference/openapi/openapi.yml
   DeleteResponse:
@@ -1269,7 +1967,7 @@ types:
            summary will reflect only vectors matching that expression.
       dimension:
         type: optional<uint>
-        docs: The dimension of the indexed vectors.
+        docs: The dimension of the indexed vectors. Not specified if `sparse` index.
       indexFullness:
         type: optional<float>
         docs: >-
@@ -1278,12 +1976,18 @@ types:
 
            Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
 
-           The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+           The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/2024-04/control-plane/describe_index).
       totalVectorCount:
         type: optional<uint>
         docs: >-
           The total number of vectors in the index, regardless of whether a
           metadata filter expression was passed
+      metric:
+        type: optional<string>
+        docs: The metric of the index.
+      vectorType:
+        type: optional<string>
+        docs: The type of the vector the index supports.
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
   FetchResponse:
@@ -1361,10 +2065,11 @@ types:
     docs: A single query vector within a `QueryRequest`.
     properties:
       values:
+        type: optional<list<float>>
         docs: >-
-          The query vector values. This should be the same length as the
-          dimension of the index being queried.
-        type: list<float>
+          The query vector. This should be the same length as the dimension of
+          the index being queried. Each `query()` request can contain only one
+          of the parameters `id` or `vector`.
       sparseValues:
         type: optional<SparseValues>
         docs: The query sparse values.
@@ -1390,7 +2095,7 @@ types:
         type: optional<float>
         docs: >-
           This is a measure of similarity between this vector and the query
-          vector. The higher the score, the more they are similar.
+          vector.  The higher the score, the more they are similar.
       values:
         type: optional<list<float>>
         docs: This is the vector data, if it is requested.
@@ -1445,9 +2150,13 @@ types:
         type: string
         docs: This is the vector's unique id.
       values:
+        type: optional<list<float>>
         docs: This is the vector data included in the request.
-        type: list<float>
-      sparseValues: optional<SparseValues>
+      sparseValues:
+        type: optional<SparseValues>
+        docs: >-
+          This is the sparse data included in the request. Can only be specified
+          if `sparse` index.
       metadata:
         type: optional<Metadata>
         docs: This is the metadata included in the request.

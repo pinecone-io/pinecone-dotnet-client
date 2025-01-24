@@ -8,7 +8,7 @@ namespace Pinecone;
 public record StartImportResponse
 {
     /// <summary>
-    /// Unique identifier for the import operations.
+    /// Unique identifier for the import operation.
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id { get; set; }

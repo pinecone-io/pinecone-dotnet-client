@@ -22,11 +22,11 @@ public partial class BasePinecone
             new Dictionary<string, string>()
             {
                 { "Api-Key", apiKey },
-                { "X-Pinecone-API-Version", "2024-10" },
+                { "X-Pinecone-API-Version", "2025-01" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "Pinecone.Client/2.1.0" },
+                { "User-Agent", "Pinecone.Client/3.0.0" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -298,6 +298,8 @@ public partial class BasePinecone
             {
                 case 401:
                     throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 403:
+                    throw new ForbiddenError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 404:
                     throw new NotFoundError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 412:
@@ -324,7 +326,7 @@ public partial class BasePinecone
     /// <summary>
     /// This operation configures an existing index.
     ///
-    /// For serverless indexes, you can configure only index deletion protection and tags. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
+    /// For serverless indexes, you can configure index deletion protection, tags, and integrated inference embedding settings for the index. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
     ///
     /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection. For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
     /// </summary>
@@ -528,6 +530,94 @@ public partial class BasePinecone
                     );
                 case 403:
                     throw new ForbiddenError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 409:
+                    throw new ConflictError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 422:
+                    throw new UnprocessableEntityError(
+                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                    );
+                case 500:
+                    throw new InternalServerError(
+                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                    );
+            }
+        }
+        catch (JsonException)
+        {
+            // unable to map error response, throwing generic error
+        }
+        throw new PineconeApiException(
+            $"Error with status code {response.StatusCode}",
+            response.StatusCode,
+            responseBody
+        );
+    }
+
+    /// <summary>
+    /// This operation creates a serverless integrated inference index for a specific embedding model.
+    ///
+    /// Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// await client.CreateIndexForModelAsync(
+    ///     new CreateIndexForModelRequest
+    ///     {
+    ///         Name = "multilingual-e5-large-index",
+    ///         Cloud = CreateIndexForModelRequestCloud.Gcp,
+    ///         Region = "us-east1",
+    ///         DeletionProtection = DeletionProtection.Enabled,
+    ///         Embed = new CreateIndexForModelRequestEmbed
+    ///         {
+    ///             Model = "multilingual-e5-large",
+    ///             Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+    ///             FieldMap = new Dictionary&lt;string, object&gt;() { { "text", "your-text-field" } },
+    ///         },
+    ///     }
+    /// );
+    /// </code>
+    /// </example>
+    public async Task<Index> CreateIndexForModelAsync(
+        CreateIndexForModelRequest request,
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client.MakeRequestAsync(
+            new RawClient.JsonApiRequest
+            {
+                BaseUrl = _client.Options.BaseUrl,
+                Method = HttpMethod.Post,
+                Path = "indexes/create-for-model",
+                Body = request,
+                ContentType = "application/json",
+                Options = options,
+            },
+            cancellationToken
+        );
+        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            try
+            {
+                return JsonUtils.Deserialize<Index>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        try
+        {
+            switch (response.StatusCode)
+            {
+                case 400:
+                    throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 401:
+                    throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
+                case 404:
+                    throw new NotFoundError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 409:
                     throw new ConflictError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 case 422:

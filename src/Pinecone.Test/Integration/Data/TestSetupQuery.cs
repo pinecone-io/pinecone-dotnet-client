@@ -50,6 +50,7 @@ public class TestSetupQuery : BaseTest
             }
         );
 
+
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
     }
@@ -69,6 +70,7 @@ public class TestSetupQuery : BaseTest
                 TopK = 10
             }
         );
+
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -92,6 +94,7 @@ public class TestSetupQuery : BaseTest
                 TopK = 10
             }
         );
+
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -119,6 +122,7 @@ public class TestSetupQuery : BaseTest
                 TopK = 10
             }
         );
+
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));

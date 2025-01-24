@@ -18,7 +18,6 @@ public class CreateIndexTest : BaseMockServerTest
         const string requestJson = """
             {
               "name": "x",
-              "dimension": 20000,
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -38,6 +37,27 @@ public class CreateIndexTest : BaseMockServerTest
               "tags": {
                 "tags": "tags"
               },
+              "embed": {
+                "model": "model",
+                "metric": "cosine",
+                "dimension": 20000,
+                "vector_type": "vector_type",
+                "field_map": {
+                  "field_map": {
+                    "key": "value"
+                  }
+                },
+                "read_parameters": {
+                  "read_parameters": {
+                    "key": "value"
+                  }
+                },
+                "write_parameters": {
+                  "write_parameters": {
+                    "key": "value"
+                  }
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -47,7 +67,8 @@ public class CreateIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "Initializing"
-              }
+              },
+              "vector_type": "vector_type"
             }
             """;
 
@@ -71,7 +92,7 @@ public class CreateIndexTest : BaseMockServerTest
             new CreateIndexRequest
             {
                 Name = "x",
-                Dimension = 20000,
+                Dimension = null,
                 Metric = null,
                 DeletionProtection = null,
                 Tags = null,
@@ -83,6 +104,7 @@ public class CreateIndexTest : BaseMockServerTest
                         Region = "region",
                     },
                 },
+                VectorType = null,
             },
             RequestOptions
         );
@@ -121,6 +143,22 @@ public class CreateIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "vector_type",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -130,7 +168,8 @@ public class CreateIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "vector_type"
             }
             """;
 
@@ -179,6 +218,105 @@ public class CreateIndexTest : BaseMockServerTest
     {
         const string requestJson = """
             {
+              "name": "sparse-index",
+              "metric": "dotproduct",
+              "deletion_protection": "enabled",
+              "spec": {
+                "serverless": {
+                  "cloud": "gcp",
+                  "region": "us-east1"
+                }
+              },
+              "vector_type": "sparse"
+            }
+            """;
+
+        const string mockResponse = """
+            {
+              "name": "example-index",
+              "dimension": 1536,
+              "metric": "cosine",
+              "host": "semantic-search-c01b5b5.svc.us-west1-gcp.pinecone.io",
+              "deletion_protection": "disabled",
+              "tags": {
+                "tag0": "val0",
+                "tag1": "val1"
+              },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "vector_type",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
+              "spec": {
+                "serverless": {
+                  "cloud": "gcp",
+                  "region": "us-east-1"
+                }
+              },
+              "status": {
+                "ready": true,
+                "state": "ScalingUpPodSize"
+              },
+              "vector_type": "vector_type"
+            }
+            """;
+
+        Server
+            .Given(
+                WireMock
+                    .RequestBuilders.Request.Create()
+                    .WithPath("/indexes")
+                    .WithHeader("Content-Type", "application/json")
+                    .UsingPost()
+                    .WithBodyAsJson(requestJson)
+            )
+            .RespondWith(
+                WireMock
+                    .ResponseBuilders.Response.Create()
+                    .WithStatusCode(200)
+                    .WithBody(mockResponse)
+            );
+
+        var response = await Client.CreateIndexAsync(
+            new CreateIndexRequest
+            {
+                Name = "sparse-index",
+                Metric = CreateIndexRequestMetric.Dotproduct,
+                DeletionProtection = DeletionProtection.Enabled,
+                Spec = new ServerlessIndexSpec
+                {
+                    Serverless = new ServerlessSpec
+                    {
+                        Cloud = ServerlessSpecCloud.Gcp,
+                        Region = "us-east1",
+                    },
+                },
+                VectorType = "sparse",
+            },
+            RequestOptions
+        );
+        JToken
+            .Parse(mockResponse)
+            .Should()
+            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+    }
+
+    [Test]
+    public async Task MockServerTest_4()
+    {
+        const string requestJson = """
+            {
               "name": "movie-recommendations",
               "dimension": 1536,
               "metric": "cosine",
@@ -214,6 +352,22 @@ public class CreateIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "vector_type",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -223,7 +377,8 @@ public class CreateIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "vector_type"
             }
             """;
 

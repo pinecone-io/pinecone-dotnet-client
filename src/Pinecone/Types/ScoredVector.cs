@@ -15,7 +15,7 @@ public record ScoredVector
     public required string Id { get; set; }
 
     /// <summary>
-    /// This is a measure of similarity between this vector and the query vector. The higher the score, the more they are similar.
+    /// This is a measure of similarity between this vector and the query vector.  The higher the score, the more they are similar.
     /// </summary>
     [JsonPropertyName("score")]
     public float? Score { get; set; }

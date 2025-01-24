@@ -8,11 +8,13 @@ environments:
 headers:
   X-Pinecone-API-Version:
     name: version
-    type: literal<"2024-10">
+    type: literal<"2025-01">
 auth-schemes:
   ApiKeyAuth:
     header: Api-Key
     name: apiKey
     type: string
     env: PINECONE_API_KEY
+  BearerAuthScheme:
+    scheme: bearer
 auth: ApiKeyAuth

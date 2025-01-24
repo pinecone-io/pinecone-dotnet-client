@@ -53,7 +53,7 @@ public class TestSetupUpsert : BaseTest
             }
         );
 
-        Helpers.PollStatsForNamespace(indexClient, targetNamespace, 9);
+        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 9);
 
         // Check the vector count reflects that some data has been upserted
         var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
@@ -120,7 +120,7 @@ public class TestSetupUpsert : BaseTest
             }
         );
 
-        Helpers.PollStatsForNamespace(indexClient, targetNamespace, 3);
+        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 3);
 
         // Check the vector count reflects that some data has been upserted
         var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());

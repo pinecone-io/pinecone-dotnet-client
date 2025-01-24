@@ -38,7 +38,7 @@ public class TestSetupFetch : BaseTest
         );
         Assert.That(results.Vectors["4"].Metadata["runtime"], Is.EqualTo(new MetadataValue(120)));
 
-        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
@@ -56,7 +56,7 @@ public class TestSetupFetch : BaseTest
 
         Assert.That(results.Vectors["1"].Id, Is.EqualTo("1"));
         Assert.That(results.Vectors["1"].Metadata, Is.Null);
-        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option csharp_namespace = "Pinecone.Grpc";
-option go_package = "github.com/pinecone-io/go-pinecone/internal/gen/data";
+option go_package = "github.com/pinecone-io/go-pinecone/internal/gen/db_data/grpc";
 option java_package = "io.pinecone.proto";
 option java_multiple_files = true;
 
@@ -26,10 +26,9 @@ message Vector {
   ];
 
   // This is the vector data included in the request.
-  repeated float         values                                       = 2 [
-    (google.api.field_behavior) = REQUIRED
-  ];
+  repeated float         values                                       = 2;
 
+  // This is the sparse data included in the request. Can only be specified if `sparse` index.
   SparseValues sparse_values = 4;
 
   // This is the metadata included in the request.
@@ -43,7 +42,7 @@ message ScoredVector {
     (google.api.field_behavior) = REQUIRED
   ];
 
-  // This is a measure of similarity between this vector and the query vector. The higher the score, the more they are similar.
+  // This is a measure of similarity between this vector and the query vector.  The higher the score, the more they are similar.
   float                  score                                        = 2;
 
   // This is the vector data, if it is requested.
@@ -73,7 +72,7 @@ message UpsertRequest {
     (google.api.field_behavior) = REQUIRED
   ];
 
-  // The namespace nwhere you upsert vectors.
+  // The namespace where you upsert vectors.
   string          namespace = 2;
 }
 
@@ -96,7 +95,7 @@ message DeleteRequest {
 
   // If specified, the metadata filter here will be used to select the vectors to delete. This is mutually exclusive
   // with specifying ids to delete in the ids param or using `delete_all=True`.
-  // For guidance and examples, see [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+  // For guidance and examples, see [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
   // Serverless indexes do not support delete by metadata. Instead, you can use the `list` operation to fetch the vector IDs based on their common ID prefix and then delete the records by ID.
   google.protobuf.Struct filter = 4;
 }
@@ -164,10 +163,8 @@ message ListResponse {
 // A single query vector within a `QueryRequest`.
 message QueryVector {
 
-  // The query vector values. This should be the same length as the dimension of the index being queried.
-  repeated float         values    = 1 [
-    (google.api.field_behavior) = REQUIRED
-  ];
+  // The query vector. This should be the same length as the dimension of the index being queried. Each `query()` request can contain only one of the parameters `id` or `vector`.
+  repeated float         values    = 1;
 
   // The query sparse values.
   SparseValues sparse_values = 5;
@@ -192,7 +189,7 @@ message QueryRequest {
     (google.api.field_behavior) = REQUIRED
   ];
 
-  // The filter to apply. You can use vector metadata to limit your search. See [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+  // The filter to apply. You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
   google.protobuf.Struct filter           = 3;
 
   // Indicates whether vector values are included in the response.
@@ -256,6 +253,7 @@ message UpdateRequest {
   // Vector data.
   repeated float values = 2;
 
+  // Sparse vector data.
   SparseValues           sparse_values = 5;
 
   // Metadata to set for the vector.
@@ -292,18 +290,24 @@ message DescribeIndexStatsResponse {
   // summary will reflect only vectors matching that expression.
   map<string, NamespaceSummary> namespaces = 1;
 
-  // The dimension of the indexed vectors.
-  uint32 dimension  = 2;
+  // The dimension of the indexed vectors. Not specified if `sparse` index.
+  optional uint32 dimension  = 2;
 
   // The fullness of the index, regardless of whether a metadata filter expression was passed. The granularity of this metric is 10%.
   //
   // Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
   //
-  // The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+  // The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/2024-04/control-plane/describe_index).
   float index_fullness = 3;
 
   // The total number of vectors in the index, regardless of whether a metadata filter expression was passed
   uint32 total_vector_count = 4;
+
+  // The metric of the index.
+  optional string metric = 5;
+
+  // The type of the vector the index supports.
+  optional string vector_type = 6;
 }
 
 // The `VectorService` interface is exposed by Pinecone's vector index services.
@@ -391,8 +395,6 @@ service VectorService {
   // The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
   //
   // Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
-  //
-  // For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
   rpc DescribeIndexStats(DescribeIndexStatsRequest) returns (DescribeIndexStatsResponse) {
     option (google.api.http) = {
       post: "/describe_index_stats"

@@ -1,20 +1,4 @@
 types:
-  EmbedRequestParameters:
-    docs: Model-specific parameters.
-    properties:
-      input_type:
-        type: optional<string>
-        docs: Common property used to distinguish between types of data.
-      truncate:
-        type: optional<string>
-        docs: >
-          How to handle inputs longer than those supported by the model. If
-          `"END"`, truncate the input sequence at the token limit. If `"NONE"`,
-          return an error when the input exceeds the token limit. 
-        default: END
-    source:
-      openapi: ../inference/openapi/openapi.yml
-    inline: true
   EmbedRequestInputsItem:
     properties:
       text: optional<string>
@@ -48,11 +32,14 @@ service:
               type: string
               docs: >-
                 The
-                [model](https://docs.pinecone.io/guides/inference/understanding-inference#models)
+                [model](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
                 to use for embedding generation.
             parameters:
-              type: optional<EmbedRequestParameters>
-              docs: Model-specific parameters.
+              type: optional<map<string, unknown>>
+              docs: >-
+                Additional model-specific parameters. Refer to the [model
+                guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+                for available model parameters.
             inputs:
               docs: List of inputs to generate embeddings for.
               type: list<EmbedRequestInputsItem>
@@ -72,11 +59,17 @@ service:
           response:
             body:
               model: multilingual-e5-large
+              vector_type: dense
               data:
-                - values:
-                    - 0.1
-                    - 0.2
-                    - 0.3
+                - vector_type: dense
+                  values:
+                    - 1.1
+                  sparse_values:
+                    - 1.1
+                  sparse_indices:
+                    - 1
+                  sparse_tokens:
+                    - sparse_tokens
               usage:
                 total_tokens: 205
     rerank:
@@ -84,14 +77,14 @@ service:
       method: POST
       auth: true
       docs: >-
-        Rerank items according to their relevance to a query.
+        Rerank documents according to their relevance to a query.
 
 
         For guidance and examples, see [Rerank
         documents](https://docs.pinecone.io/guides/inference/rerank).
       source:
         openapi: ../inference/openapi/openapi.yml
-      display-name: Rerank items
+      display-name: Rerank documents
       request:
         name: RerankRequest
         body:
@@ -100,7 +93,7 @@ service:
               type: string
               docs: >-
                 The
-                [model](https://docs.pinecone.io/guides/inference/understanding-inference#models)
+                [model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
                 to use for reranking.
             query:
               type: string
@@ -116,15 +109,18 @@ service:
               default: true
             rank_fields:
               type: optional<list<string>>
-              docs: >
+              docs: >-
                 The fields to rank the documents by. If not provided, the
                 default is `"text"`.
             documents:
               docs: The documents to rerank.
               type: list<root.Document>
             parameters:
-              type: optional<map<string, string>>
-              docs: Additional model-specific parameters for the reranker.
+              type: optional<map<string, unknown>>
+              docs: >-
+                Additional model-specific parameters. Refer to the [model
+                guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+                for available model parameters.
         content-type: application/json
       response:
         docs: OK

@@ -18,8 +18,11 @@ public record Vector
     /// This is the vector data included in the request.
     /// </summary>
     [JsonPropertyName("values")]
-    public ReadOnlyMemory<float> Values { get; set; }
+    public ReadOnlyMemory<float>? Values { get; set; }
 
+    /// <summary>
+    /// This is the sparse data included in the request. Can only be specified if `sparse` index.
+    /// </summary>
     [JsonPropertyName("sparseValues")]
     public SparseValues? SparseValues { get; set; }
 
@@ -41,9 +44,9 @@ public record Vector
     {
         var result = new Proto.Vector();
         result.Id = Id;
-        if (!Values.IsEmpty)
+        if (Values != null && !Values.Value.IsEmpty)
         {
-            result.Values.AddRange(Values.ToArray());
+            result.Values.AddRange(Values.Value.ToArray());
         }
         if (SparseValues != null)
         {
@@ -64,7 +67,7 @@ public record Vector
         return new Vector
         {
             Id = value.Id,
-            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
+            Values = value.Values?.ToArray(),
             SparseValues =
                 value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
             Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,

@@ -1,3 +1,5 @@
+using NUnit.Framework;
+
 namespace Pinecone.Test.Integration.Data;
 
 public static class Seed
@@ -107,13 +109,13 @@ public static class Seed
 
         while (!done)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Attempting to fetch from \"{namespaceName}\". Total time waited: {totalTime} seconds"
             );
             var results = await idx.FetchAsync(
                 new FetchRequest { Ids = ids.ToArray(), Namespace = namespaceName }
             );
-            Console.WriteLine(results);
+            TestContext.Out.WriteLine(results);
 
             var allPresent = ids.All(id => results.Vectors!.ContainsKey(id));
             if (allPresent)
