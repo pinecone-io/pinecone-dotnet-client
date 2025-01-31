@@ -1341,7 +1341,7 @@ await client.Inference.RerankAsync(
     {
         Model = "bge-reranker-v2-m3",
         Query = "What is the capital of France?",
-        Documents = new List<object>()
+        Documents = new List<Dictionary<string, object?>>()
         {
             new Dictionary<string, object>()
             {

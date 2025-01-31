@@ -163,6 +163,7 @@ service:
           This operation returns a list of all the indexes that you have
           previously created, and which are associated with the given project
         type: IndexList
+        status-code: 200
       errors:
         - UnauthorizedError
         - InternalServerError
@@ -322,7 +323,7 @@ service:
                   status:
                     ready: true
                     state: ScalingUpPodSize
-                  vector_type: vector_type
+                  vector_type: dense
     create_index:
       path: /indexes
       method: POST
@@ -367,16 +368,16 @@ service:
             tags: optional<IndexTags>
             spec: IndexSpec
             vector_type:
-              type: optional<string>
+              type: optional<VectorType>
               docs: >-
                 The index vector type. You can use 'dense' or 'sparse'. If
                 'dense', the vector dimension must be specified.  If 'sparse',
                 the vector dimension should not be specified.
-              default: dense
         content-type: application/json
       response:
         docs: The index has been successfully created.
         type: Index
+        status-code: 201
       errors:
         - BadRequestError
         - UnauthorizedError
@@ -411,7 +412,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -426,7 +427,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Creating a sparse serverless index
           request:
             name: sparse-index
@@ -451,7 +452,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -466,7 +467,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Creating a pod-based index
           request:
             name: movie-recommendations
@@ -500,7 +501,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -515,7 +516,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
     describe_index:
       path: /indexes/{index_name}
       method: GET
@@ -531,6 +532,7 @@ service:
       response:
         docs: Configuration information and deployment status of the index.
         type: Index
+        status-code: 200
       errors:
         - UnauthorizedError
         - NotFoundError
@@ -553,7 +555,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -586,7 +588,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -691,6 +693,7 @@ service:
           The request to configure the index has been accepted. Check the  index
           status to see when the change has been applied.
         type: Index
+        status-code: 202
       errors:
         - BadRequestError
         - UnauthorizedError
@@ -721,7 +724,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -736,7 +739,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Horizontal scaling with replicas
           path-parameters:
             index_name: test-index
@@ -758,7 +761,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -773,7 +776,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Scaling both pod size and number of replicas
           path-parameters:
             index_name: test-index
@@ -796,7 +799,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -811,7 +814,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Disable deletion protection for the index
           path-parameters:
             index_name: test-index
@@ -830,7 +833,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -845,7 +848,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
         - name: Update tag0 and delete tag1
           path-parameters:
             index_name: test-index
@@ -867,7 +870,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -882,7 +885,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
     list_collections:
       path: /collections
       method: GET
@@ -898,6 +901,7 @@ service:
           This operation returns a list of all the collections in your current
           project.
         type: CollectionList
+        status-code: 200
       errors:
         - UnauthorizedError
         - InternalServerError
@@ -968,6 +972,7 @@ service:
       response:
         docs: The collection has been successfully created.
         type: CollectionModel
+        status-code: 201
       errors:
         - BadRequestError
         - UnauthorizedError
@@ -1044,6 +1049,7 @@ service:
       response:
         docs: The index has successfully been created for the embedding model.
         type: Index
+        status-code: 201
       errors:
         - BadRequestError
         - UnauthorizedError
@@ -1077,7 +1083,7 @@ service:
                 model: multilingual-e5-large
                 metric: cosine
                 dimension: 1536
-                vector_type: vector_type
+                vector_type: dense
                 field_map:
                   text: your-text-field
                 read_parameters:
@@ -1092,7 +1098,7 @@ service:
               status:
                 ready: true
                 state: ScalingUpPodSize
-              vector_type: vector_type
+              vector_type: dense
     describe_collection:
       path: /collections/{collection_name}
       method: GET
@@ -1110,6 +1116,7 @@ service:
       response:
         docs: Configuration information and status of the collection.
         type: CollectionModel
+        status-code: 200
       errors:
         - UnauthorizedError
         - NotFoundError
@@ -1364,12 +1371,11 @@ types:
           min: 1
           max: 20000
       vector_type:
-        type: optional<string>
+        type: optional<VectorType>
         docs: >-
           The index vector type. You can use 'dense' or 'sparse'. If 'dense',
           the vector dimension must be specified.  If 'sparse', the vector
           dimension should not be specified.
-        default: dense
       field_map:
         type: optional<map<string, unknown>>
         docs: >-
@@ -1461,12 +1467,11 @@ types:
       spec: IndexSpec
       status: IndexModelStatus
       vector_type:
-        type: string
+        type: VectorType
         docs: >-
           The index vector type. You can use 'dense' or 'sparse'. If 'dense',
           the vector dimension must be specified.  If 'sparse', the vector
           dimension should not be specified.
-        default: dense
     source:
       openapi: ../control-plane/openapi/openapi.yml
   IndexList:
@@ -1602,6 +1607,13 @@ types:
       openapi: ../control-plane/openapi/openapi.yml
   IndexStatus: unknown
   IndexStatusState: unknown
+  VectorType:
+    enum:
+      - dense
+      - sparse
+    docs: Indicates whether this is a 'dense' or 'sparse' embedding.
+    source:
+      openapi: ../inference/openapi/openapi.yml
   ErrorResponseErrorCode:
     enum:
       - OK
@@ -1885,7 +1897,7 @@ types:
         type: string
         docs: The model used to generate the embeddings
       vector_type:
-        type: string
+        type: VectorType
         docs: >-
           Indicates whether the response data contains 'dense' or 'sparse'
           embeddings.
@@ -1926,17 +1938,9 @@ types:
       document: optional<Document>
     source:
       openapi: ../inference/openapi/openapi.yml
-  VectorType:
-    enum:
-      - dense
-      - sparse
-    docs: Indicates whether this is a 'dense' or 'sparse' embedding.
-    source:
-      openapi: ../inference/openapi/openapi.yml
   Embedding:
     docs: Embedding of a single input
     properties:
-      vector_type: VectorType
       values:
         type: optional<list<float>>
         docs: The dense embedding values.

@@ -20,7 +20,7 @@ public record RankedDocument
     public required double Score { get; set; }
 
     [JsonPropertyName("document")]
-    public object? Document { get; set; }
+    public Dictionary<string, object?>? Document { get; set; }
 
     public override string ToString()
     {

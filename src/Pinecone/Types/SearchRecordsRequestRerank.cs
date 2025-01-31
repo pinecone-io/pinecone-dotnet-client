@@ -29,7 +29,7 @@ public record SearchRecordsRequestRerank
     /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public object? Parameters { get; set; }
+    public Dictionary<string, object?>? Parameters { get; set; }
 
     /// <summary>
     /// The query to rerank documents against. If a specific rerank query is specified,  it overwrites the query input that was provided at the top level.

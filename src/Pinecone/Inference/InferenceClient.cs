@@ -100,7 +100,7 @@ public partial class InferenceClient
     ///     {
     ///         Model = "bge-reranker-v2-m3",
     ///         Query = "What is the capital of France?",
-    ///         Documents = new List&lt;object&gt;()
+    ///         Documents = new List&lt;Dictionary&lt;string, object?&gt;&gt;()
     ///         {
     ///             new Dictionary&lt;string, object&gt;()
     ///             {

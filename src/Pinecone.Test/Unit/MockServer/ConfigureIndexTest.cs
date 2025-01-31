@@ -33,7 +33,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "model",
                 "metric": "cosine",
                 "dimension": 20000,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "field_map": {
                     "key": "value"
@@ -60,7 +60,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "Initializing"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 
@@ -125,7 +125,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "multilingual-e5-large",
                 "metric": "cosine",
                 "dimension": 1536,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "text": "your-text-field"
                 },
@@ -147,7 +147,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "ScalingUpPodSize"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 
@@ -212,7 +212,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "multilingual-e5-large",
                 "metric": "cosine",
                 "dimension": 1536,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "text": "your-text-field"
                 },
@@ -234,7 +234,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "ScalingUpPodSize"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 
@@ -300,7 +300,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "multilingual-e5-large",
                 "metric": "cosine",
                 "dimension": 1536,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "text": "your-text-field"
                 },
@@ -322,7 +322,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "ScalingUpPodSize"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 
@@ -381,7 +381,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "multilingual-e5-large",
                 "metric": "cosine",
                 "dimension": 1536,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "text": "your-text-field"
                 },
@@ -403,7 +403,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "ScalingUpPodSize"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 
@@ -461,7 +461,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "model": "multilingual-e5-large",
                 "metric": "cosine",
                 "dimension": 1536,
-                "vector_type": "vector_type",
+                "vector_type": "dense",
                 "field_map": {
                   "text": "your-text-field"
                 },
@@ -483,7 +483,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "ready": true,
                 "state": "ScalingUpPodSize"
               },
-              "vector_type": "vector_type"
+              "vector_type": "dense"
             }
             """;
 

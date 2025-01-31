@@ -23,19 +23,19 @@ public record CreateIndexForModelRequestEmbed
     /// Identifies the name of the text field from your document model that will be embedded.
     /// </summary>
     [JsonPropertyName("field_map")]
-    public object FieldMap { get; set; } = new Dictionary<string, object?>();
+    public Dictionary<string, object?> FieldMap { get; set; } = new Dictionary<string, object?>();
 
     /// <summary>
     /// The read parameters for the embedding model.
     /// </summary>
     [JsonPropertyName("read_parameters")]
-    public object? ReadParameters { get; set; }
+    public Dictionary<string, object?>? ReadParameters { get; set; }
 
     /// <summary>
     /// The write parameters for the embedding model.
     /// </summary>
     [JsonPropertyName("write_parameters")]
-    public object? WriteParameters { get; set; }
+    public Dictionary<string, object?>? WriteParameters { get; set; }
 
     public override string ToString()
     {

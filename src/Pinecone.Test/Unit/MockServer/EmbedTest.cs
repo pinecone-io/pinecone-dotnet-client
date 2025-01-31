@@ -28,7 +28,7 @@ public class EmbedTest : BaseMockServerTest
         const string mockResponse = """
             {
               "model": "model",
-              "vector_type": "vector_type",
+              "vector_type": "dense",
               "data": [
                 {
                   "vector_type": "dense",

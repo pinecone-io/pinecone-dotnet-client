@@ -17,10 +17,10 @@ public record SearchRecordsRequestQuery
     /// The filter to apply.
     /// </summary>
     [JsonPropertyName("filter")]
-    public object? Filter { get; set; }
+    public Dictionary<string, object?>? Filter { get; set; }
 
     [JsonPropertyName("inputs")]
-    public object? Inputs { get; set; }
+    public Dictionary<string, object?>? Inputs { get; set; }
 
     [JsonPropertyName("vector")]
     public SearchRecordsVector? Vector { get; set; }

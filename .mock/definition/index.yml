@@ -42,6 +42,7 @@ service:
       response:
         docs: A list of import operations
         type: root.ListImportsResponse
+        status-code: 200
       examples:
         - response:
             body:
@@ -98,6 +99,7 @@ service:
       response:
         docs: Successful import operation
         type: root.StartImportResponse
+        status-code: 200
       examples:
         - request:
             uri: uri
@@ -125,6 +127,7 @@ service:
       response:
         docs: Details of the import operation.
         type: root.ImportModel
+        status-code: 200
       examples:
         - path-parameters:
             id: '101'
@@ -159,6 +162,7 @@ service:
       response:
         docs: Operation cancelled successfully
         type: root.CancelImportResponse
+        status-code: 200
       examples:
         - path-parameters:
             id: '101'
@@ -191,6 +195,7 @@ service:
       response:
         docs: OK
         type: root.DescribeIndexStatsResponse
+        status-code: 200
       examples:
         - request: {}
           response:
@@ -262,6 +267,7 @@ service:
       response:
         docs: OK
         type: root.QueryResponse
+        status-code: 200
       examples:
         - request:
             topK: 3
@@ -330,6 +336,7 @@ service:
       response:
         docs: OK
         type: root.DeleteResponse
+        status-code: 200
       examples:
         - request:
             ids:
@@ -362,6 +369,7 @@ service:
       response:
         docs: OK
         type: root.FetchResponse
+        status-code: 200
       examples:
         - query-parameters:
             ids: v1
@@ -417,6 +425,7 @@ service:
       response:
         docs: OK
         type: root.ListResponse
+        status-code: 200
       examples:
         - query-parameters:
             limit: 50
@@ -466,6 +475,7 @@ service:
       response:
         docs: OK
         type: root.UpdateResponse
+        status-code: 200
       examples:
         - request:
             id: v1
@@ -504,6 +514,7 @@ service:
       response:
         docs: OK
         type: root.UpsertResponse
+        status-code: 200
       examples:
         - request:
             vectors:

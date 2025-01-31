@@ -29,25 +29,25 @@ public record ModelIndexEmbed
     /// The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.
     /// </summary>
     [JsonPropertyName("vector_type")]
-    public string? VectorType { get; set; }
+    public VectorType? VectorType { get; set; }
 
     /// <summary>
     /// Identifies the name of the text field from your document model that is embedded.
     /// </summary>
     [JsonPropertyName("field_map")]
-    public object? FieldMap { get; set; }
+    public Dictionary<string, object?>? FieldMap { get; set; }
 
     /// <summary>
     /// The read parameters for the embedding model.
     /// </summary>
     [JsonPropertyName("read_parameters")]
-    public object? ReadParameters { get; set; }
+    public Dictionary<string, object?>? ReadParameters { get; set; }
 
     /// <summary>
     /// The write parameters for the embedding model.
     /// </summary>
     [JsonPropertyName("write_parameters")]
-    public object? WriteParameters { get; set; }
+    public Dictionary<string, object?>? WriteParameters { get; set; }
 
     public override string ToString()
     {

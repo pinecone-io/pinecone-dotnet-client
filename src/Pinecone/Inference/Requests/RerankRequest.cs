@@ -41,13 +41,14 @@ public record RerankRequest
     /// The documents to rerank.
     /// </summary>
     [JsonPropertyName("documents")]
-    public IEnumerable<object> Documents { get; set; } = new List<object>();
+    public IEnumerable<Dictionary<string, object?>> Documents { get; set; } =
+        new List<Dictionary<string, object?>>();
 
     /// <summary>
     /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public object? Parameters { get; set; }
+    public Dictionary<string, object?>? Parameters { get; set; }
 
     public override string ToString()
     {

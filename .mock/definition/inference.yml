@@ -47,6 +47,7 @@ service:
       response:
         docs: OK
         type: root.EmbeddingsList
+        status-code: 200
       errors:
         - root.BadRequestError
         - root.UnauthorizedError
@@ -61,8 +62,7 @@ service:
               model: multilingual-e5-large
               vector_type: dense
               data:
-                - vector_type: dense
-                  values:
+                - values:
                     - 1.1
                   sparse_values:
                     - 1.1
@@ -125,6 +125,7 @@ service:
       response:
         docs: OK
         type: root.RerankResult
+        status-code: 200
       errors:
         - root.BadRequestError
         - root.UnauthorizedError

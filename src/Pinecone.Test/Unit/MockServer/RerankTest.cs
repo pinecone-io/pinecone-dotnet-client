@@ -87,7 +87,7 @@ public class RerankTest : BaseMockServerTest
                 TopN = null,
                 ReturnDocuments = null,
                 RankFields = null,
-                Documents = new List<object>()
+                Documents = new List<Dictionary<string, object?>>()
                 {
                     new Dictionary<string, object>()
                     {
@@ -174,7 +174,7 @@ public class RerankTest : BaseMockServerTest
             {
                 Model = "bge-reranker-v2-m3",
                 Query = "What is the capital of France?",
-                Documents = new List<object>()
+                Documents = new List<Dictionary<string, object?>>()
                 {
                     new Dictionary<string, object>()
                     {

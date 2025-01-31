@@ -30,7 +30,7 @@ public class ListIndexesTest : BaseMockServerTest
                     "model": "model",
                     "metric": "cosine",
                     "dimension": 20000,
-                    "vector_type": "vector_type",
+                    "vector_type": "dense",
                     "field_map": {
                       "field_map": {
                         "key": "value"
@@ -57,7 +57,7 @@ public class ListIndexesTest : BaseMockServerTest
                     "ready": true,
                     "state": "Initializing"
                   },
-                  "vector_type": "vector_type"
+                  "vector_type": "dense"
                 },
                 {
                   "name": "x",
@@ -72,7 +72,7 @@ public class ListIndexesTest : BaseMockServerTest
                     "model": "model",
                     "metric": "cosine",
                     "dimension": 20000,
-                    "vector_type": "vector_type",
+                    "vector_type": "dense",
                     "field_map": {
                       "field_map": {
                         "key": "value"
@@ -99,7 +99,7 @@ public class ListIndexesTest : BaseMockServerTest
                     "ready": true,
                     "state": "Initializing"
                   },
-                  "vector_type": "vector_type"
+                  "vector_type": "dense"
                 }
               ]
             }
@@ -373,7 +373,7 @@ public class ListIndexesTest : BaseMockServerTest
                     "ready": true,
                     "state": "ScalingUpPodSize"
                   },
-                  "vector_type": "vector_type"
+                  "vector_type": "dense"
                 }
               ]
             }

@@ -189,7 +189,7 @@ public class EmbeddingTest
         Assert.Multiple(() =>
         {
             Assert.That(embeddings.Model, Is.EqualTo("multilingual-e5-large"));
-            Assert.That(embeddings.VectorType, Is.EqualTo("sparse"));
+            Assert.That(embeddings.VectorType, Is.EqualTo(VectorType.Sparse));
             Assert.That(embeddings.Data, Is.Not.Null);
             Assert.That(embeddings.Data.Count, Is.EqualTo(1));
             var embedding = embeddings.Data.First();
@@ -237,7 +237,7 @@ public class EmbeddingTest
         Assert.Multiple(() =>
         {
             Assert.That(embeddings.Model, Is.EqualTo("multilingual-e5-large"));
-            Assert.That(embeddings.VectorType, Is.EqualTo("dense"));
+            Assert.That(embeddings.VectorType, Is.EqualTo(VectorType.Dense));
             Assert.That(embeddings.Data, Is.Not.Null);
             Assert.That(embeddings.Data.Count, Is.EqualTo(1));
             var embedding = embeddings.Data.First();

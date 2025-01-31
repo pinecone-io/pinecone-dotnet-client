@@ -17,7 +17,7 @@ public record EmbedRequest
     /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public object? Parameters { get; set; }
+    public Dictionary<string, object?>? Parameters { get; set; }
 
     /// <summary>
     /// List of inputs to generate embeddings for.

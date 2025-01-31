@@ -51,7 +51,7 @@ public record Index
     /// The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.
     /// </summary>
     [JsonPropertyName("vector_type")]
-    public required string VectorType { get; set; }
+    public required VectorType VectorType { get; set; }
 
     public override string ToString()
     {

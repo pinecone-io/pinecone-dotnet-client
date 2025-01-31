@@ -17,7 +17,7 @@ public record ErrorResponseError
     /// Additional information about the error. This field is not guaranteed to be present.
     /// </summary>
     [JsonPropertyName("details")]
-    public object? Details { get; set; }
+    public Dictionary<string, object?>? Details { get; set; }
 
     public override string ToString()
     {
