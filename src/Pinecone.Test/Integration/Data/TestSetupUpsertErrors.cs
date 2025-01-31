@@ -22,7 +22,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
         Assert.That(e.StatusCode, Is.EqualTo(7));
     }
@@ -41,7 +41,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -67,7 +67,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
 
         Assert.ThrowsAsync<PineconeApiException>(async () =>
@@ -89,7 +89,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -123,7 +123,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -141,7 +141,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2" }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -150,7 +150,7 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() });
+            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() }).ConfigureAwait(false);
         });
     }
 
@@ -164,7 +164,7 @@ public class TestSetupUpsertErrors : BaseTest
                 {
                     // Missing the Vectors field entirely
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 }

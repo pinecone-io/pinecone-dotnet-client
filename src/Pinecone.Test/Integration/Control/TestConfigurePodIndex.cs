@@ -14,7 +14,7 @@ public class TestConfigurePodIndex : BaseTest
             Environment,
             Dimension,
             Metric
-        );
+        ).ConfigureAwait(false);
         await Client.ConfigureIndexAsync(
             indexName,
             new ConfigureIndexRequest
@@ -24,6 +24,6 @@ public class TestConfigurePodIndex : BaseTest
                     Pod = new ConfigureIndexRequestSpecPod { Replicas = 1, PodType = "p1.x1" }
                 }
             }
-        );
+        ).ConfigureAwait(false);
     }
 }

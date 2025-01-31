@@ -19,7 +19,7 @@ public class TestSetupQuery : BaseTest
                 Namespace = targetNamespace,
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -48,7 +48,7 @@ public class TestSetupQuery : BaseTest
                 Namespace = targetNamespace,
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
@@ -69,7 +69,7 @@ public class TestSetupQuery : BaseTest
                 IncludeValues = true,
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
@@ -93,7 +93,7 @@ public class TestSetupQuery : BaseTest
                 IncludeMetadata = true,
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
@@ -121,7 +121,7 @@ public class TestSetupQuery : BaseTest
                 IncludeMetadata = true,
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());

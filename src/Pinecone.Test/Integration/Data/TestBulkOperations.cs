@@ -21,7 +21,7 @@ public class TestBulkOperations : BaseTest
                     OnError = ImportErrorModeOnError.Abort
                 }
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(response, Is.InstanceOf<StartImportResponse>());
         Assert.That(response.Id, Is.Not.Null);
@@ -39,10 +39,10 @@ public class TestBulkOperations : BaseTest
                     OnError = ImportErrorModeOnError.Abort
                 }
             }
-        );
+        ).ConfigureAwait(false);
         Assert.That(startResponse.Id, Is.Not.Null);
 
-        var cancelResponse = await IndexClient.CancelBulkImportAsync(startResponse.Id);
+        var cancelResponse = await IndexClient.CancelBulkImportAsync(startResponse.Id).ConfigureAwait(false);
         Assert.That(cancelResponse, Is.InstanceOf<object>());
     }
 
@@ -58,13 +58,13 @@ public class TestBulkOperations : BaseTest
                     OnError = ImportErrorModeOnError.Abort
                 }
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(startResponse, Is.InstanceOf<StartImportResponse>());
         Assert.That(startResponse.Id, Is.Not.Null);
 
         // Describe the bulk import
-        var describeResponse = await IndexClient.DescribeBulkImportAsync(startResponse.Id);
+        var describeResponse = await IndexClient.DescribeBulkImportAsync(startResponse.Id).ConfigureAwait(false);
         Assert.That(describeResponse, Is.InstanceOf<ImportModel>());
         Assert.Multiple(() =>
         {
@@ -89,7 +89,7 @@ public class TestBulkOperations : BaseTest
                         OnError = ImportErrorModeOnError.Abort
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         }
 
         var page = 0;
@@ -100,7 +100,7 @@ public class TestBulkOperations : BaseTest
             {
                 Limit = 1,
                 PaginationToken = paginationToken
-            });
+            }).ConfigureAwait(false);
             paginationToken = listResponse.Pagination?.Next;
             Assert.That(listResponse.Data, Is.Not.Null);
 
@@ -128,7 +128,7 @@ public class TestBulkOperations : BaseTest
             new StartImportRequest
             {
                 Uri = null!
-            }));
+            }).ConfigureAwait(false));
 
         TestContext.Out.WriteLine("Exception body: " + exception.Body);
 

@@ -31,7 +31,7 @@ public class TestCreateIndexForModel : BaseTest
                     [tagKey] = tagValue
                 }
             }
-        );
+        ).ConfigureAwait(false);
         Assert.Multiple(() =>
         {
             Assert.That(index, Is.Not.Null);

@@ -8,7 +8,7 @@ public class TestSetupUpsert : BaseTest
     [TestCase(false)]
     public async Task TestUpsertToNamespace(bool useNondefaultNamespace)
     {
-        var indexClient = await CreateIndexForTest();
+        var indexClient = await CreateIndexForTest().ConfigureAwait(false);
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with tuples
@@ -23,7 +23,7 @@ public class TestSetupUpsert : BaseTest
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         // Upsert with objects
         await indexClient.UpsertAsync(
@@ -37,7 +37,7 @@ public class TestSetupUpsert : BaseTest
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         // Upsert with dictionary
         await indexClient.UpsertAsync(
@@ -51,12 +51,12 @@ public class TestSetupUpsert : BaseTest
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
-        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 9);
+        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 9).ConfigureAwait(false);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
         Assert.That(stats.TotalVectorCount, Is.EqualTo(9));
         Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(9));
     }
@@ -65,7 +65,7 @@ public class TestSetupUpsert : BaseTest
     [TestCase(false)]
     public async Task TestUpsertToNamespaceWithSparseEmbeddingValues(bool useNondefaultNamespace)
     {
-        var indexClient = await CreateIndexForTest();
+        var indexClient = await CreateIndexForTest().ConfigureAwait(false);
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with sparse values object
@@ -87,7 +87,7 @@ public class TestSetupUpsert : BaseTest
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         // Upsert with sparse values dictionary
         await indexClient.UpsertAsync(
@@ -118,12 +118,12 @@ public class TestSetupUpsert : BaseTest
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
-        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 3);
+        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 3).ConfigureAwait(false);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
         Assert.That(stats.TotalVectorCount, Is.EqualTo(3));
         Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(3));
     }
@@ -146,8 +146,8 @@ public class TestSetupUpsert : BaseTest
                     }
                 }
             }
-        );
-        await Task.Delay(5000);
+        ).ConfigureAwait(false);
+        await Task.Delay(5000).ConfigureAwait(false);
         return Client.Index(indexName);
     }
 }

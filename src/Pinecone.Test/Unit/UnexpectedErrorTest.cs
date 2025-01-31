@@ -54,7 +54,7 @@ public class UnexpectedErrorTest
             );
 
         var exception = Assert.ThrowsAsync<PineconeApiException>(
-            async () => await Client.DescribeIndexAsync("index_name", RequestOptions)
+            async () => await Client.DescribeIndexAsync("index_name", RequestOptions).ConfigureAwait(false)
         );
         Assert.Multiple(() =>
         {

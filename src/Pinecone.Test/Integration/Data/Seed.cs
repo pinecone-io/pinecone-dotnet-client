@@ -18,7 +18,7 @@ public static class Seed
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         // Upsert with metadata
         await idx.UpsertAsync(
@@ -47,7 +47,7 @@ public static class Seed
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         // Upsert with dict
         await idx.UpsertAsync(
@@ -61,14 +61,14 @@ public static class Seed
                 },
                 Namespace = targetNamespace
             }
-        );
+        ).ConfigureAwait(false);
 
         if (wait)
             await PollFetchForIdsInNamespace(
                 idx,
                 ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
                 targetNamespace
-            );
+            ).ConfigureAwait(false);
     }
 
     public static async Task SetupListData(IndexClient idx, string targetNamespace, bool wait)
@@ -84,11 +84,11 @@ public static class Seed
 
             await idx.UpsertAsync(
                 new UpsertRequest { Vectors = vectors, Namespace = targetNamespace }
-            );
+            ).ConfigureAwait(false);
         }
 
         if (wait)
-            await PollFetchForIdsInNamespace(idx, ["999"], targetNamespace);
+            await PollFetchForIdsInNamespace(idx, ["999"], targetNamespace).ConfigureAwait(false);
     }
 
     public static async Task PollFetchForIdsInNamespace(
@@ -111,10 +111,10 @@ public static class Seed
         {
             await TestContext.Out.WriteLineAsync(
                 $"Attempting to fetch from \"{namespaceName}\". Total time waited: {totalTime} seconds"
-            );
+            ).ConfigureAwait(false);
             var results = await idx.FetchAsync(
                 new FetchRequest { Ids = ids.ToArray(), Namespace = namespaceName }
-            );
+            ).ConfigureAwait(false);
             TestContext.Out.WriteLine(results);
 
             var allPresent = ids.All(id => results.Vectors!.ContainsKey(id));
@@ -131,7 +131,7 @@ public static class Seed
             }
 
             totalTime += deltaT;
-            await Task.Delay(deltaT * 1000); // Sleep for deltaT seconds
+            await Task.Delay(deltaT * 1000).ConfigureAwait(false); // Sleep for deltaT seconds
         }
     }
 }

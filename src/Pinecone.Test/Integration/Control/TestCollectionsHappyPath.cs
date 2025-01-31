@@ -18,13 +18,13 @@ public class TestCollectionsHappyPath : BaseTest
             })
             .ToList();
 
-        await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
+        await index.UpsertAsync(new UpsertRequest { Vectors = vectors }).ConfigureAwait(false);
 
         var collectionName = $"coll1-{Helpers.RandomString(10)}";
 
-        await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName);
+        await Helpers.CreateCollectionAndWaitUntilReady(Client, collectionName, IndexName).ConfigureAwait(false);
 
-        var desc = await Client.DescribeCollectionAsync(collectionName);
+        var desc = await Client.DescribeCollectionAsync(collectionName).ConfigureAwait(false);
 
         Assert.That(desc.Name, Is.EqualTo(collectionName));
         Assert.That(desc.Status, Is.EqualTo(CollectionModelStatus.Ready));
@@ -36,7 +36,7 @@ public class TestCollectionsHappyPath : BaseTest
 
         // Create index from collection
         var newIndexName = $"index-from-collection-{collectionName}";
-        await TestContext.Out.WriteLineAsync($"Creating index {newIndexName} from collection {collectionName}...");
+        await TestContext.Out.WriteLineAsync($"Creating index {newIndexName} from collection {collectionName}...").ConfigureAwait(false);
         await Helpers.CreatePodIndexAndWaitUntilReady(
             Client,
             newIndexName,
@@ -44,17 +44,17 @@ public class TestCollectionsHappyPath : BaseTest
             Dimension,
             Metric,
             sourceCollection: collectionName
-        );
+        ).ConfigureAwait(false);
         var newIndex = Client.Index(newIndexName);
 
         // Verify stats reflect the vectors present in the collection
-        var stats = await newIndex.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
+        var stats = await newIndex.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
         Assert.That(stats.TotalVectorCount, Is.EqualTo(numVectors));
 
         // Verify the vectors from the collection can be fetched
         var results = await newIndex.FetchAsync(
             new FetchRequest { Ids = vectors.Select(v => v.Id).ToArray() }
-        );
+        ).ConfigureAwait(false);
         foreach (var v in vectors)
         {
             var fetchedVector = results.Vectors![v.Id];
@@ -97,6 +97,6 @@ public class TestCollectionsHappyPath : BaseTest
                     }
                 }
             }
-        );
+        ).ConfigureAwait(false);
     }
 }
