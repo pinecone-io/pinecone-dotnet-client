@@ -499,6 +499,27 @@ var embeddings = await pinecone.Inference.EmbedAsync(new EmbedRequest()
 var embeddedData = embeddings.Data;
 ```
 
+There are two different types of embeddings generated depending on the model that you use:
+* Dense: represented by the `DenseEmbedding` class
+* Sparse: represented by the `SparseEmbedding` class
+
+You can check the type of embedding using the `VectorType` property or using the `IsDense` and `IsSparse` properties.
+Once you know the type of the embedding, you can get the appropriate type using the `AsDense()` and `AsSparse()` methods.
+
+```csharp
+var embedding = embeddedData.First();
+if (embedding.VectorType == VectorType.Dense)
+{
+    var denseEmbedding = embedding.AsDense();
+    // Use dense embedding
+}
+else if (embedding.VectorType == VectorType.Sparse)
+{
+    var sparseEmbedding = embedding.AsSparse();
+    // Use sparse embedding
+}
+```
+
 ### Rerank
 
 The following example shows how to rerank items according to their relevance to a query.
