@@ -29,6 +29,27 @@ public class ConfigureIndexTest : BaseMockServerTest
               "tags": {
                 "tags": "tags"
               },
+              "embed": {
+                "model": "model",
+                "metric": "cosine",
+                "dimension": 20000,
+                "vector_type": "dense",
+                "field_map": {
+                  "field_map": {
+                    "key": "value"
+                  }
+                },
+                "read_parameters": {
+                  "read_parameters": {
+                    "key": "value"
+                  }
+                },
+                "write_parameters": {
+                  "write_parameters": {
+                    "key": "value"
+                  }
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -38,7 +59,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "Initializing"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -65,6 +87,7 @@ public class ConfigureIndexTest : BaseMockServerTest
                 Spec = null,
                 DeletionProtection = null,
                 Tags = null,
+                Embed = null,
             },
             RequestOptions
         );
@@ -98,6 +121,22 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -107,7 +146,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -168,6 +208,22 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -177,7 +233,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -239,6 +296,22 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -248,7 +321,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -303,6 +377,22 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -312,7 +402,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -366,6 +457,22 @@ public class ConfigureIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -375,7 +482,8 @@ public class ConfigureIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "ScalingUpPodSize"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -399,7 +507,7 @@ public class ConfigureIndexTest : BaseMockServerTest
             "test-index",
             new ConfigureIndexRequest
             {
-                Tags = new Dictionary<string, string?>() { { "tag0", "new-val" }, { "tag1", "" } },
+                Tags = new Dictionary<string, string>() { { "tag0", "new-val" }, { "tag1", "" } },
             },
             RequestOptions
         );

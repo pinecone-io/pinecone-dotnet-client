@@ -2,13 +2,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Pinecone;
 
-#nullable enable
-
-namespace Pinecone.Test.Integration.Serialization;
+namespace Pinecone.Test.Unit;
 
 [TestFixture]
+[Parallelizable(ParallelScope.All)]
 public class AdditionalPropertiesTest
 {
     [Test]

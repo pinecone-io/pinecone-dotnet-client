@@ -51,7 +51,8 @@ public class UserAgentTest
                                "status": {
                                  "ready": true,
                                  "state": "Initializing"
-                               }
+                               },
+                               "vector_type": "dense"
                              }
                              """;
 
@@ -100,7 +101,8 @@ public class UserAgentTest
                                       "status": {
                                         "ready": true,
                                         "state": "Initializing"
-                                      }
+                                      },
+                                      "vector_type": "dense"
                                     }
                                     """;
 
@@ -115,7 +117,7 @@ public class UserAgentTest
                     .WithBody(mockResponse)
             );
 
-        await Client.DescribeIndexAsync("index_name", RequestOptions);
+        await Client.DescribeIndexAsync("index_name", RequestOptions).ConfigureAwait(false);
         var request = Server.LogEntries.Last().RequestMessage;
         var userAgent = request.Headers?["User-Agent"].ToString();
         Assert.That(userAgent, Is.Not.Null);
@@ -145,7 +147,7 @@ public class UserAgentTest
                     .WithBody(mockResponse)
             );
 
-        await IndexClient.ListBulkImportsAsync(new ListBulkImportsRequest());
+        await IndexClient.ListBulkImportsAsync(new ListBulkImportsRequest()).ConfigureAwait(false);
 
         var request = Server.LogEntries.Last().RequestMessage;
         var userAgent = request.Headers?["User-Agent"].ToString();

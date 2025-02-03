@@ -14,7 +14,7 @@ public class TestSetupLists : BaseTest
         do
         {
             var listRequest = new ListRequest { PaginationToken = paginationToken };
-            var listResult = await IndexClient.ListAsync(listRequest);
+            var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
             Assert.That(listResult.Vectors, Is.Not.Null);
             if (listResult.Vectors?.Count() > 0)
@@ -38,7 +38,7 @@ public class TestSetupLists : BaseTest
             Limit = 20,
             Namespace = ListNamespace,
         };
-        var listResult = await IndexClient.ListAsync(listRequest);
+        var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
         Assert.That(listResult.Vectors, Is.Not.Null);
         Assert.That(listResult.Vectors.Count(), Is.EqualTo(11));
@@ -77,7 +77,7 @@ public class TestSetupLists : BaseTest
                 Namespace = ListNamespace,
                 PaginationToken = paginationToken
             };
-            var listResult = await IndexClient.ListAsync(listRequest);
+            var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
             if (listResult.Vectors?.Count() > 0)
             {
@@ -103,7 +103,7 @@ public class TestSetupLists : BaseTest
                 Namespace = "no-results",
                 PaginationToken = paginationToken
             };
-            var listResult = await IndexClient.ListAsync(listRequest);
+            var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
             if (listResult.Vectors?.Count() > 0)
             {
@@ -132,7 +132,7 @@ public class TestSetupLists : BaseTest
                 Namespace = ListNamespace,
                 PaginationToken = paginationToken
             };
-            var listResult = await IndexClient.ListAsync(listRequest);
+            var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
             Assert.That(listResult.Vectors, Is.Not.Null);
             if (listResult.Vectors?.Count() > 0)
@@ -172,7 +172,7 @@ public class TestSetupLists : BaseTest
                 Namespace = ListNamespace,
                 PaginationToken = paginationToken
             };
-            var listResult = await IndexClient.ListAsync(listRequest);
+            var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
             if (listResult.Vectors?.Count() > 0)
             {
                 var result = await IndexClient.FetchAsync(
@@ -181,7 +181,7 @@ public class TestSetupLists : BaseTest
                         Ids = listResult.Vectors.Select(vector => vector.Id!),
                         Namespace = ListNamespace
                     }
-                );
+                ).ConfigureAwait(false);
                 vectors.AddRange(result.Vectors!.Values);
             }
 

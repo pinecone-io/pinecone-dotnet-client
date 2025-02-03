@@ -38,7 +38,7 @@ public record ImportModel
     public DateTime? FinishedAt { get; set; }
 
     /// <summary>
-    /// The progress made by the operation out of 100
+    /// The progress made by the operation, as a percentage.
     /// </summary>
     [JsonPropertyName("percentComplete")]
     public float? PercentComplete { get; set; }

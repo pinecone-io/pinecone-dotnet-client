@@ -8,16 +8,16 @@ namespace Pinecone;
 public record EmbedRequest
 {
     /// <summary>
-    /// The [model](https://docs.pinecone.io/guides/inference/understanding-inference#models) to use for embedding generation.
+    /// The [model](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) to use for embedding generation.
     /// </summary>
     [JsonPropertyName("model")]
     public required string Model { get; set; }
 
     /// <summary>
-    /// Model-specific parameters.
+    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
-    public EmbedRequestParameters? Parameters { get; set; }
+    public Dictionary<string, object?>? Parameters { get; set; }
 
     /// <summary>
     /// List of inputs to generate embeddings for.

@@ -24,6 +24,27 @@ public class DescribeIndexTest : BaseMockServerTest
               "tags": {
                 "tags": "tags"
               },
+              "embed": {
+                "model": "model",
+                "metric": "cosine",
+                "dimension": 20000,
+                "vector_type": "dense",
+                "field_map": {
+                  "field_map": {
+                    "key": "value"
+                  }
+                },
+                "read_parameters": {
+                  "read_parameters": {
+                    "key": "value"
+                  }
+                },
+                "write_parameters": {
+                  "write_parameters": {
+                    "key": "value"
+                  }
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "gcp",
@@ -33,7 +54,8 @@ public class DescribeIndexTest : BaseMockServerTest
               "status": {
                 "ready": true,
                 "state": "Initializing"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -69,6 +91,22 @@ public class DescribeIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "serverless": {
                   "cloud": "aws",
@@ -78,7 +116,8 @@ public class DescribeIndexTest : BaseMockServerTest
               "status": {
                 "ready": false,
                 "state": "Initializing"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 
@@ -114,6 +153,22 @@ public class DescribeIndexTest : BaseMockServerTest
                 "tag0": "val0",
                 "tag1": "val1"
               },
+              "embed": {
+                "model": "multilingual-e5-large",
+                "metric": "cosine",
+                "dimension": 1536,
+                "vector_type": "dense",
+                "field_map": {
+                  "text": "your-text-field"
+                },
+                "read_parameters": {
+                  "input_type": "query",
+                  "truncate": "NONE"
+                },
+                "write_parameters": {
+                  "input_type": "passage"
+                }
+              },
               "spec": {
                 "pod": {
                   "environment": "us-east-1-aws",
@@ -134,7 +189,8 @@ public class DescribeIndexTest : BaseMockServerTest
               "status": {
                 "ready": false,
                 "state": "Initializing"
-              }
+              },
+              "vector_type": "dense"
             }
             """;
 

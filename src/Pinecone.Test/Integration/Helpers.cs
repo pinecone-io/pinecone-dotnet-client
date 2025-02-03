@@ -1,3 +1,5 @@
+using NUnit.Framework;
+
 namespace Pinecone.Test.Integration;
 
 public static class Helpers
@@ -19,19 +21,19 @@ public static class Helpers
     {
         await client.CreateCollectionAsync(
             new CreateCollectionRequest { Name = collectionName, Source = indexName }
-        );
+        ).ConfigureAwait(false);
 
         var timeWaited = 0;
-        var desc = await client.DescribeCollectionAsync(collectionName);
+        var desc = await client.DescribeCollectionAsync(collectionName).ConfigureAwait(false);
         var collectionReady = desc.Status;
         while (collectionReady != CollectionModelStatus.Ready && timeWaited < 180)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for collection {collectionName} to be ready. Waited {timeWaited} seconds..."
-            );
-            await Task.Delay(5000);
+            ).ConfigureAwait(false);
+            await Task.Delay(5000).ConfigureAwait(false);
             timeWaited += 5;
-            desc = await client.DescribeCollectionAsync(collectionName);
+            desc = await client.DescribeCollectionAsync(collectionName).ConfigureAwait(false);
             collectionReady = desc.Status;
         }
         if (timeWaited >= 180)
@@ -39,7 +41,7 @@ public static class Helpers
             throw new Exception($"Collection {collectionName} is not ready after 180 seconds");
         }
         // extra wait to ensure true readiness
-        await Task.Delay(20000);
+        await Task.Delay(20000).ConfigureAwait(false);
     }
 
     public static async Task<string> CreatePodIndexAndWaitUntilReady(
@@ -61,33 +63,33 @@ public static class Helpers
                 deletionProtection,
                 sourceCollection
             )
-        );
+        ).ConfigureAwait(false);
         var indexReady = false;
         var timeWaited = 0;
         while (!indexReady && timeWaited < 120)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for index {indexName} to be ready. Waited {timeWaited} seconds..."
-            );
-            await Task.Delay(5000);
+            ).ConfigureAwait(false);
+            await Task.Delay(5000).ConfigureAwait(false);
             timeWaited += 5;
             try
             {
-                var status = (await client.DescribeIndexAsync(indexName)).Status;
+                var status = (await client.DescribeIndexAsync(indexName).ConfigureAwait(false)).Status;
                 indexReady = status.Ready;
             }
             catch (NotFoundError)
             {
-                Console.WriteLine("Index not found yet.");
+                await TestContext.Out.WriteLineAsync("Index not found yet.").ConfigureAwait(false);
             }
         }
-        Console.WriteLine($"Index {indexName} has a {indexReady} ready status!");
+        await TestContext.Out.WriteLineAsync($"Index {indexName} has a {indexReady} ready status!").ConfigureAwait(false);
         if (timeWaited > 120)
         {
             throw new Exception($"Index {indexName} is not ready after 120 seconds");
         }
         // extra wait to ensure true readiness
-        await Task.Delay(120000);
+        await Task.Delay(120000).ConfigureAwait(false);
         return index.Host;
     }
 
@@ -130,24 +132,24 @@ public static class Helpers
             ?? throw new Exception($"Expected environment variable {name} is not set");
     }
 
-    public static void PollStatsForNamespace(
+    public static async Task PollStatsForNamespaceAsync(
         IndexClient idx,
         string namespaceName,
         int expectedCount
     )
     {
-        var maxSleep = 120;
-        const int deltaT = 5;
+        const int maxSleep = 120;
+        const int deltaT = 1;
         var totalTime = 0;
         var done = false;
 
         while (!done)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for namespace \"{namespaceName}\" to have vectors. Total time waited: {totalTime} seconds"
-            );
+            ).ConfigureAwait(false);
 
-            var stats = idx.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).Result;
+            var stats = await idx.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
 
             if (
                 stats.Namespaces!.ContainsKey(namespaceName)
@@ -165,7 +167,7 @@ public static class Helpers
             else
             {
                 totalTime += deltaT;
-                Thread.Sleep(deltaT * 1000);
+                await Task.Delay(deltaT * 1000).ConfigureAwait(false);
             }
         }
     }
@@ -201,59 +203,59 @@ public static class Helpers
 
     public static async Task<bool> IndexExistsAsync(PineconeClient client, string indexName)
     {
-        var indexes = await client.ListIndexesAsync();
+        var indexes = await client.ListIndexesAsync().ConfigureAwait(false);
         return indexes.Indexes!.Any(index => index.Name == indexName);
     }
 
     public static async Task TryDeleteIndex(PineconeClient client, string indexName)
     {
-        var index = await client.DescribeIndexAsync(indexName);
-        await TryDeleteIndex(client, index);
+        var index = await client.DescribeIndexAsync(indexName).ConfigureAwait(false);
+        await TryDeleteIndex(client, index).ConfigureAwait(false);
     }
 
     public static async Task TryDeleteIndex(PineconeClient client, Index index)
     {
         var indexName = index.Name;
         var timeWaited = 0;
-        while (await IndexExistsAsync(client, indexName) && timeWaited < 120)
+        while (await IndexExistsAsync(client, indexName).ConfigureAwait(false) && timeWaited < 120)
         {
             // Turn off deletion protection in case it's on
             if (index.DeletionProtection == DeletionProtection.Enabled)
             {
                 try
                 {
-                    Console.WriteLine(
+                    await TestContext.Out.WriteLineAsync(
                         $"Attempting turn off deletion protection of index {indexName}"
-                    );
-                    await TurnOffDelectionProtection(client, index);
-                    Console.WriteLine($"Turned off deletion protection of index {indexName}");
+                    ).ConfigureAwait(false);
+                    await TurnOffDelectionProtection(client, index).ConfigureAwait(false);
+                    await TestContext.Out.WriteLineAsync($"Turned off deletion protection of index {indexName}").ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(
+                    await TestContext.Out.WriteLineAsync(
                         $"Unable to turn of deletion protection of index {indexName}: {e.Message}"
-                    );
+                    ).ConfigureAwait(false);
                     timeWaited += 5;
-                    await Task.Delay(5000);
+                    await Task.Delay(5000).ConfigureAwait(false);
                     continue;
                 }
             }
             try
             {
-                Console.WriteLine($"Attempting delete of index {indexName}");
-                await client.DeleteIndexAsync(indexName);
-                Console.WriteLine($"Deleted index {indexName}");
+                await TestContext.Out.WriteLineAsync($"Attempting delete of index {indexName}").ConfigureAwait(false);
+                await client.DeleteIndexAsync(indexName).ConfigureAwait(false);
+                await TestContext.Out.WriteLineAsync($"Deleted index {indexName}").ConfigureAwait(false);
                 break;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to delete index {indexName}: {e.Message}");
+                await TestContext.Out.WriteLineAsync($"Unable to delete index {indexName}: {e.Message}").ConfigureAwait(false);
             }
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for index {indexName} to be ready to delete. Waited {timeWaited} seconds..."
-            );
+            ).ConfigureAwait(false);
             timeWaited += 5;
-            await Task.Delay(5000);
+            await Task.Delay(5000).ConfigureAwait(false);
         }
 
         if (timeWaited >= 120)
@@ -267,7 +269,7 @@ public static class Helpers
         await client.ConfigureIndexAsync(
             index.Name,
             new ConfigureIndexRequest { DeletionProtection = DeletionProtection.Disabled }
-        );
+        ).ConfigureAwait(false);
     }
 
     public static async Task TryDeleteCollection(PineconeClient client, string collectionName)
@@ -275,21 +277,21 @@ public static class Helpers
         var timeWaited = 0;
         while (timeWaited < 120)
         {
-            Console.WriteLine(
+            await TestContext.Out.WriteLineAsync(
                 $"Waiting for collection {collectionName} to be ready to delete. Waited {timeWaited} seconds..."
-            );
+            ).ConfigureAwait(false);
             timeWaited += 5;
-            await Task.Delay(5000);
+            await Task.Delay(5000).ConfigureAwait(false);
             try
             {
-                Console.WriteLine($"Attempting delete of collection {collectionName}");
-                await client.DeleteCollectionAsync(collectionName);
-                Console.WriteLine($"Deleted collection {collectionName}");
+                await TestContext.Out.WriteLineAsync($"Attempting delete of collection {collectionName}").ConfigureAwait(false);
+                await client.DeleteCollectionAsync(collectionName).ConfigureAwait(false);
+                await TestContext.Out.WriteLineAsync($"Deleted collection {collectionName}").ConfigureAwait(false);
                 break;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to delete collection {collectionName}: {e.Message}");
+                await TestContext.Out.WriteLineAsync($"Unable to delete collection {collectionName}: {e.Message}").ConfigureAwait(false);
             }
         }
 
@@ -301,15 +303,15 @@ public static class Helpers
 
     public static async Task Cleanup(PineconeClient client)
     {
-        var indexes = await client.ListIndexesAsync();
+        var indexes = await client.ListIndexesAsync().ConfigureAwait(false);
         foreach (var index in indexes.Indexes ?? [])
         {
-            await TryDeleteIndex(client, index);
+            await TryDeleteIndex(client, index).ConfigureAwait(false);
         }
-        var collections = await client.ListCollectionsAsync();
+        var collections = await client.ListCollectionsAsync().ConfigureAwait(false);
         foreach (var collection in collections.Collections ?? [])
         {
-            await TryDeleteCollection(client, collection.Name);
+            await TryDeleteCollection(client, collection.Name).ConfigureAwait(false);
         }
     }
 

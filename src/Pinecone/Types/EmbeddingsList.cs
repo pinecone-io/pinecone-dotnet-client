@@ -14,6 +14,12 @@ public record EmbeddingsList
     public required string Model { get; set; }
 
     /// <summary>
+    /// Indicates whether the response data contains 'dense' or 'sparse' embeddings.
+    /// </summary>
+    [JsonPropertyName("vector_type")]
+    public required VectorType VectorType { get; set; }
+
+    /// <summary>
     /// The embeddings generated for the inputs.
     /// </summary>
     [JsonPropertyName("data")]

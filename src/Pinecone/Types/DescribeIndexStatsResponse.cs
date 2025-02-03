@@ -10,14 +10,14 @@ public record DescribeIndexStatsResponse
 {
     /// <summary>
     /// A mapping for each namespace in the index from the namespace name to a
-    /// summary of its contents. If a metadata filter expression is present, the
-    /// summary will reflect only vectors matching that expression.
+    ///  summary of its contents. If a metadata filter expression is present, the
+    ///  summary will reflect only vectors matching that expression.
     /// </summary>
     [JsonPropertyName("namespaces")]
     public Dictionary<string, NamespaceSummary>? Namespaces { get; set; }
 
     /// <summary>
-    /// The dimension of the indexed vectors.
+    /// The dimension of the indexed vectors. Not specified if `sparse` index.
     /// </summary>
     [JsonPropertyName("dimension")]
     public uint? Dimension { get; set; }
@@ -25,9 +25,9 @@ public record DescribeIndexStatsResponse
     /// <summary>
     /// The fullness of the index, regardless of whether a metadata filter expression was passed. The granularity of this metric is 10%.
     ///
-    /// Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
+    ///  Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
     ///
-    /// The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+    ///  The index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/2024-04/control-plane/describe_index).
     /// </summary>
     [JsonPropertyName("indexFullness")]
     public float? IndexFullness { get; set; }
@@ -37,6 +37,18 @@ public record DescribeIndexStatsResponse
     /// </summary>
     [JsonPropertyName("totalVectorCount")]
     public uint? TotalVectorCount { get; set; }
+
+    /// <summary>
+    /// The metric of the index.
+    /// </summary>
+    [JsonPropertyName("metric")]
+    public string? Metric { get; set; }
+
+    /// <summary>
+    /// The type of the vector the index supports.
+    /// </summary>
+    [JsonPropertyName("vectorType")]
+    public string? VectorType { get; set; }
 
     public override string ToString()
     {
@@ -69,6 +81,14 @@ public record DescribeIndexStatsResponse
         {
             result.TotalVectorCount = TotalVectorCount ?? 0;
         }
+        if (Metric != null)
+        {
+            result.Metric = Metric ?? "";
+        }
+        if (VectorType != null)
+        {
+            result.VectorType = VectorType ?? "";
+        }
         return result;
     }
 
@@ -86,6 +106,8 @@ public record DescribeIndexStatsResponse
             Dimension = value.Dimension,
             IndexFullness = value.IndexFullness,
             TotalVectorCount = value.TotalVectorCount,
+            Metric = value.Metric,
+            VectorType = value.VectorType,
         };
     }
 }

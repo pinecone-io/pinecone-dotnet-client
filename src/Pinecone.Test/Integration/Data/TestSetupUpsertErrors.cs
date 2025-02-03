@@ -9,10 +9,7 @@ public class TestSetupUpsertErrors : BaseTest
     [Test]
     public void TestUpsertFailsWhenApiKeyInvalid()
     {
-        var pinecone = new PineconeClient(Helpers.FakeApiKey(), new ClientOptions
-        {
-            BaseUrl = Helpers.GetEnvironmentVar("PINECONE_BASE_URL", BasePineconeEnvironment.Default)
-        });
+        var pinecone = new PineconeClient(Helpers.FakeApiKey());
         var e = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
             var index = pinecone.Index(null, IndexHost);
@@ -25,7 +22,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
         Assert.That(e.StatusCode, Is.EqualTo(7));
     }
@@ -44,7 +41,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -70,7 +67,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
 
         Assert.ThrowsAsync<PineconeApiException>(async () =>
@@ -92,7 +89,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -126,7 +123,7 @@ public class TestSetupUpsertErrors : BaseTest
                         }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -144,7 +141,7 @@ public class TestSetupUpsertErrors : BaseTest
                         new() { Id = "2" }
                     }
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 
@@ -153,7 +150,7 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() });
+            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() }).ConfigureAwait(false);
         });
     }
 
@@ -167,7 +164,7 @@ public class TestSetupUpsertErrors : BaseTest
                 {
                     // Missing the Vectors field entirely
                 }
-            );
+            ).ConfigureAwait(false);
         });
     }
 }

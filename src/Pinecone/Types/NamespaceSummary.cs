@@ -10,7 +10,7 @@ public record NamespaceSummary
 {
     /// <summary>
     /// The number of vectors stored in this namespace. Note that updates to this field may lag behind updates to the
-    /// underlying index and corresponding query results, etc.
+    ///  underlying index and corresponding query results, etc.
     /// </summary>
     [JsonPropertyName("vectorCount")]
     public uint? VectorCount { get; set; }

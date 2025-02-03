@@ -18,7 +18,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 Filter = new Metadata { { "genre", "action" } },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -43,7 +43,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -69,7 +69,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -96,7 +96,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -121,7 +121,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -158,7 +158,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -195,7 +195,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -221,7 +221,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -247,7 +247,7 @@ public class TestSetupQueryWithFilter : BaseTest
                 },
                 TopK = 10
             }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));

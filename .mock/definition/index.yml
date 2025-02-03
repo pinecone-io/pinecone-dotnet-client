@@ -8,9 +8,20 @@ service:
       path: /bulk/imports
       method: GET
       auth: true
-      docs: >
+      docs: >-
         The `list_imports` operation lists all recent and ongoing import
-        operations. For guidance and examples, see [Import
+        operations.
+
+
+        By default, `list_imports` returns up to 100 imports per page. If the
+        `limit` parameter is set, `list` returns up to that number of imports
+        instead. Whenever there are additional IDs to return, the response also
+        includes a `pagination_token` that you can use to get the next batch of
+        imports. When the response does not include a `pagination_token`, there
+        are no more imports to return.
+
+
+        For guidance and examples, see [Import
         data](https://docs.pinecone.io/guides/data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
@@ -20,6 +31,7 @@ service:
         query-parameters:
           limit:
             type: optional<integer>
+            default: 100
             docs: Max number of operations to return per page.
             validation:
               min: 1
@@ -30,6 +42,7 @@ service:
       response:
         docs: A list of import operations
         type: root.ListImportsResponse
+        status-code: 200
       examples:
         - response:
             body:
@@ -48,10 +61,13 @@ service:
       path: /bulk/imports
       method: POST
       auth: true
-      docs: >
+      docs: >-
         The `start_import` operation starts an asynchronous import of vectors
-        from object storage into an index. For guidance and examples, see
-        [Import data](https://docs.pinecone.io/guides/data/import-data).
+        from object storage into an index.
+
+
+        For guidance and examples, see [Import
+        data](https://docs.pinecone.io/guides/data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       display-name: Start import
@@ -62,16 +78,19 @@ service:
             integrationId:
               type: optional<string>
               docs: >-
-                The id of the storage integration that should be used to access
-                the data.
+                The id of the [storage
+                integration](https://docs.pinecone.io/guides/operations/integrations/manage-storage-integrations)
+                that should be used to access the data.
               validation:
                 maxLength: 1000
             uri:
               type: string
               docs: >-
-                The URI prefix under which the data to import is available. All
-                data within this prefix will be listed then imported into the
-                target index. Currently only `s3://` URIs are supported.
+                The [URI
+                prefix](https://docs.pinecone.io/guides/data/understanding-imports#directory-structure)
+                under which the data to import is available. All data within
+                this prefix will be listed then imported into the target index.
+                Currently only `s3://` URIs are supported.
               validation:
                 minLength: 1
                 maxLength: 1500
@@ -80,6 +99,7 @@ service:
       response:
         docs: Successful import operation
         type: root.StartImportResponse
+        status-code: 200
       examples:
         - request:
             uri: uri
@@ -90,19 +110,24 @@ service:
       path: /bulk/imports/{id}
       method: GET
       auth: true
-      docs: >
+      docs: >-
         The `describe_import` operation returns details of a specific import
-        operation. For guidance and examples,
+        operation.
 
-        see [Import data](https://docs.pinecone.io/guides/data/import-data).
+
+        For guidance and examples, see [Import
+        data](https://docs.pinecone.io/guides/data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       path-parameters:
-        id: string
+        id:
+          type: string
+          docs: Unique identifier for the import operation.
       display-name: Describe an import
       response:
-        docs: Details of the import operation
+        docs: Details of the import operation.
         type: root.ImportModel
+        status-code: 200
       examples:
         - path-parameters:
             id: '101'
@@ -120,19 +145,24 @@ service:
       path: /bulk/imports/{id}
       method: DELETE
       auth: true
-      docs: >
+      docs: >-
         The `cancel_import` operation cancels an import operation if it is not
-        yet finished. It has no effect if the operation is already finished. For
-        guidance and examples, see [Import
+        yet finished. It has no effect if the operation is already finished.
+
+
+        For guidance and examples, see [Import
         data](https://docs.pinecone.io/guides/data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       path-parameters:
-        id: string
+        id:
+          type: string
+          docs: Unique identifier for the import operation.
       display-name: Cancel an import
       response:
         docs: Operation cancelled successfully
         type: root.CancelImportResponse
+        status-code: 200
       examples:
         - path-parameters:
             id: '101'
@@ -148,8 +178,6 @@ service:
          The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
 
          Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
-
-         For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -167,6 +195,7 @@ service:
       response:
         docs: OK
         type: root.DescribeIndexStatsResponse
+        status-code: 200
       examples:
         - request: {}
           response:
@@ -203,8 +232,8 @@ service:
               type: optional<root.Metadata>
               docs: >-
                 The filter to apply. You can use vector metadata to limit your
-                search. See [Filter with
-                metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+                search. See [Understanding
+                metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
             includeValues:
               type: optional<boolean>
               docs: Indicates whether vector values are included in the response.
@@ -238,6 +267,7 @@ service:
       response:
         docs: OK
         type: root.QueryResponse
+        status-code: 200
       examples:
         - request:
             topK: 3
@@ -300,12 +330,13 @@ service:
                 If specified, the metadata filter here will be used to select
                 the vectors to delete. This is mutually exclusive
                  with specifying ids to delete in the ids param or using `delete_all=True`.
-                 For guidance and examples, see [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+                 For guidance and examples, see [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
                  Serverless indexes do not support delete by metadata. Instead, you can use the `list` operation to fetch the vector IDs based on their common ID prefix and then delete the records by ID.
         content-type: application/json
       response:
         docs: OK
         type: root.DeleteResponse
+        status-code: 200
       examples:
         - request:
             ids:
@@ -338,6 +369,7 @@ service:
       response:
         docs: OK
         type: root.FetchResponse
+        status-code: 200
       examples:
         - query-parameters:
             ids: v1
@@ -393,6 +425,7 @@ service:
       response:
         docs: OK
         type: root.ListResponse
+        status-code: 200
       examples:
         - query-parameters:
             limit: 50
@@ -429,7 +462,9 @@ service:
             values:
               type: optional<list<float>>
               docs: Vector data.
-            sparseValues: optional<root.SparseValues>
+            sparseValues:
+              type: optional<root.SparseValues>
+              docs: Sparse vector data.
             setMetadata:
               type: optional<root.Metadata>
               docs: Metadata to set for the vector.
@@ -440,6 +475,7 @@ service:
       response:
         docs: OK
         type: root.UpdateResponse
+        status-code: 200
       examples:
         - request:
             id: v1
@@ -473,11 +509,12 @@ service:
               type: list<root.Vector>
             namespace:
               type: optional<string>
-              docs: The namespace nwhere you upsert vectors.
+              docs: The namespace where you upsert vectors.
         content-type: application/json
       response:
         docs: OK
         type: root.UpsertResponse
+        status-code: 200
       examples:
         - request:
             vectors:

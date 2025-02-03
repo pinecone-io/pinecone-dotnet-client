@@ -7,6 +7,9 @@ namespace Pinecone;
 
 public record RerankResultUsage
 {
+    /// <summary>
+    /// The number of rerank units consumed by this operation.
+    /// </summary>
     [JsonPropertyName("rerank_units")]
     public int? RerankUnits { get; set; }
 

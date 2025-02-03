@@ -89,7 +89,7 @@ public partial class InferenceClient
     }
 
     /// <summary>
-    /// Rerank items according to their relevance to a query.
+    /// Rerank documents according to their relevance to a query.
     ///
     /// For guidance and examples, see [Rerank documents](https://docs.pinecone.io/guides/inference/rerank).
     /// </summary>
@@ -100,9 +100,9 @@ public partial class InferenceClient
     ///     {
     ///         Model = "bge-reranker-v2-m3",
     ///         Query = "What is the capital of France?",
-    ///         Documents = new List&lt;Dictionary&lt;string, string&gt;&gt;()
+    ///         Documents = new List&lt;Dictionary&lt;string, object?&gt;&gt;()
     ///         {
-    ///             new Dictionary&lt;string, string&gt;()
+    ///             new Dictionary&lt;string, object&gt;()
     ///             {
     ///                 { "id", "1" },
     ///                 { "text", "Paris is the capital of France." },

@@ -8,6 +8,7 @@
         <PackageIcon>icon.png</PackageIcon>
         <Description>The Pinecone .NET Client</Description>
         <Copyright>Copyright © Pinecone Systems, Inc. 2024</Copyright>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\icon.png" Pack="true" PackagePath=""/>

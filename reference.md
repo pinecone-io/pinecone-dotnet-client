@@ -51,7 +51,7 @@ await client.ListIndexesAsync();
 <dd>
 
 This operation deploys a Pinecone index. This is where you specify the measure of similarity, the dimension of vectors to be stored in the index, which cloud provider you would like to deploy with, and more.
-
+  
 For guidance and examples, see [Create an index](https://docs.pinecone.io/guides/indexes/create-an-index#create-a-serverless-index).
 </dd>
 </dl>
@@ -230,9 +230,9 @@ await client.DeleteIndexAsync("test-index");
 <dl>
 <dd>
 
-This operation configures an existing index.
+This operation configures an existing index. 
 
-For serverless indexes, you can configure only index deletion protection and tags. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
+For serverless indexes, you can configure index deletion protection, tags, and integrated inference embedding settings for the index. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
 
 It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection. For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
 </dd>
@@ -346,7 +346,7 @@ await client.ListCollectionsAsync();
 <dd>
 
 This operation creates a Pinecone collection.
-
+  
 Serverless indexes do not support collections.
 </dd>
 </dl>
@@ -380,6 +380,76 @@ await client.CreateCollectionAsync(
 <dd>
 
 **request:** `CreateCollectionRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.<a href="/src/Pinecone/BasePinecone.cs">CreateIndexForModelAsync</a>(CreateIndexForModelRequest { ... }) -> Index</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+This operation creates a serverless integrated inference index for a specific embedding model.
+
+Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.CreateIndexForModelAsync(
+    new CreateIndexForModelRequest
+    {
+        Name = "multilingual-e5-large-index",
+        Cloud = CreateIndexForModelRequestCloud.Gcp,
+        Region = "us-east1",
+        DeletionProtection = DeletionProtection.Enabled,
+        Embed = new CreateIndexForModelRequestEmbed
+        {
+            Model = "multilingual-e5-large",
+            Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+            FieldMap = new Dictionary<string, object>() { { "text", "your-text-field" } },
+        },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `CreateIndexForModelRequest` 
     
 </dd>
 </dl>
@@ -514,7 +584,11 @@ await client.DeleteCollectionAsync("test-collection");
 <dl>
 <dd>
 
-The `list_imports` operation lists all recent and ongoing import operations. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+The `list_imports` operation lists all recent and ongoing import operations.
+
+By default, `list_imports` returns up to 100 imports per page. If the `limit` parameter is set, `list` returns up to that number of imports instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of imports. When the response does not include a `pagination_token`, there are no more imports to return.
+
+For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
 </dl>
 </dd>
@@ -568,7 +642,9 @@ await client.Index.ListBulkImportsAsync(new ListBulkImportsRequest());
 <dl>
 <dd>
 
-The `start_import` operation starts an asynchronous import of vectors from object storage into an index. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+The `start_import` operation starts an asynchronous import of vectors from object storage into an index.
+
+For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
 </dl>
 </dd>
@@ -622,8 +698,9 @@ await client.Index.StartBulkImportAsync(new StartImportRequest { Uri = "uri" });
 <dl>
 <dd>
 
-The `describe_import` operation returns details of a specific import operation. For guidance and examples,
-see [Import data](https://docs.pinecone.io/guides/data/import-data).
+The `describe_import` operation returns details of a specific import operation.
+
+For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
 </dl>
 </dd>
@@ -653,7 +730,7 @@ await client.Index.DescribeBulkImportAsync("101");
 <dl>
 <dd>
 
-**id:** `string` 
+**id:** `string` — Unique identifier for the import operation.
     
 </dd>
 </dl>
@@ -677,7 +754,9 @@ await client.Index.DescribeBulkImportAsync("101");
 <dl>
 <dd>
 
-The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished. For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
+The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished.
+
+For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
 </dl>
 </dd>
@@ -707,7 +786,7 @@ await client.Index.CancelBulkImportAsync("101");
 <dl>
 <dd>
 
-**id:** `string` 
+**id:** `string` — Unique identifier for the import operation.
     
 </dd>
 </dl>
@@ -733,11 +812,9 @@ await client.Index.CancelBulkImportAsync("101");
 
 Get index stats
 
-The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+ The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
 
-Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
-
-For pod-based indexes, the index fullness result may be inaccurate during pod resizing; to get the status of a pod resizing process, use [`describe_index`](https://docs.pinecone.io/reference/api/control-plane/describe_index).
+ Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
 </dd>
 </dl>
 </dd>
@@ -793,9 +870,9 @@ await client.Index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
 
 Query vectors
 
-The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+ The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
 
-For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
+ For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
 </dd>
 </dl>
 </dd>
@@ -859,9 +936,9 @@ await client.Index.QueryAsync(
 
 Delete vectors
 
-The `delete` operation deletes vectors, by id, from a single namespace.
+ The `delete` operation deletes vectors, by id, from a single namespace.
 
-For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
+ For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
 </dd>
 </dl>
 </dd>
@@ -923,9 +1000,9 @@ await client.Index.DeleteAsync(
 
 Fetch vectors
 
-The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+ The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
 
-For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
+ For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
 </dd>
 </dl>
 </dd>
@@ -981,13 +1058,13 @@ await client.Index.FetchAsync(new FetchRequest { Ids = ["v1"], Namespace = "exam
 
 List vector IDs
 
-The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+ The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
 
-`list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+ `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
 
-For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
+ For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
 
-**Note:** `list` is supported only for serverless indexes.
+ **Note:** `list` is supported only for serverless indexes.
 </dd>
 </dl>
 </dd>
@@ -1050,9 +1127,9 @@ await client.Index.ListAsync(
 
 Update a vector
 
-The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+ The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
 
-For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
+ For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
 </dd>
 </dl>
 </dd>
@@ -1115,9 +1192,9 @@ await client.Index.UpdateAsync(
 
 Upsert vectors
 
-The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+ The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
 
-For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+ For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
 </dd>
 </dl>
 </dd>
@@ -1242,7 +1319,7 @@ await client.Inference.EmbedAsync(
 <dl>
 <dd>
 
-Rerank items according to their relevance to a query.
+Rerank documents according to their relevance to a query.
 
 For guidance and examples, see [Rerank documents](https://docs.pinecone.io/guides/inference/rerank).
 </dd>
@@ -1264,9 +1341,9 @@ await client.Inference.RerankAsync(
     {
         Model = "bge-reranker-v2-m3",
         Query = "What is the capital of France?",
-        Documents = new List<Dictionary<string, string>>()
+        Documents = new List<Dictionary<string, object?>>()
         {
-            new Dictionary<string, string>()
+            new Dictionary<string, object>()
             {
                 { "id", "1" },
                 { "text", "Paris is the capital of France." },

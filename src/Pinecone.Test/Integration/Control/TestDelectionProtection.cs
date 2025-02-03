@@ -17,17 +17,17 @@ public class TestDeletionProtection : BaseTest
             Dimension,
             Metric,
             true
-        );
+        ).ConfigureAwait(false);
 
-        var desc = await Client.DescribeIndexAsync(indexName);
-        Console.WriteLine(desc.DeletionProtection);
+        var desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
+        TestContext.Out.WriteLine(desc.DeletionProtection);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Attempt to delete the index should raise an exception
         var exceptionThrown = false;
         try
         {
-            await Client.DeleteIndexAsync(indexName);
+            await Client.DeleteIndexAsync(indexName).ConfigureAwait(false);
         }
         catch (PineconeException)
         {
@@ -40,12 +40,12 @@ public class TestDeletionProtection : BaseTest
         await Client.ConfigureIndexAsync(
             indexName,
             new ConfigureIndexRequest { DeletionProtection = DeletionProtection.Disabled }
-        );
-        desc = await Client.DescribeIndexAsync(indexName);
+        ).ConfigureAwait(false);
+        desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));
 
         // Now deletion should succeed
-        await Helpers.TryDeleteIndex(Client, indexName);
+        await Helpers.TryDeleteIndex(Client, indexName).ConfigureAwait(false);
     }
 
     [Test]
@@ -60,9 +60,9 @@ public class TestDeletionProtection : BaseTest
             Dimension,
             Metric,
             true
-        );
+        ).ConfigureAwait(false);
 
-        var desc = await Client.DescribeIndexAsync(indexName);
+        var desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Changing replicas only should not change deletion protection
@@ -75,8 +75,8 @@ public class TestDeletionProtection : BaseTest
                     Pod = new ConfigureIndexRequestSpecPod { Replicas = 2 }
                 }
             }
-        );
-        desc = await Client.DescribeIndexAsync(indexName);
+        ).ConfigureAwait(false);
+        desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         var replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
         Assert.That(replicaCount, Is.EqualTo(2));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
@@ -92,8 +92,8 @@ public class TestDeletionProtection : BaseTest
                 },
                 DeletionProtection = DeletionProtection.Disabled
             }
-        );
-        desc = await Client.DescribeIndexAsync(indexName);
+        ).ConfigureAwait(false);
+        desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
         Assert.That(replicaCount, Is.EqualTo(3));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));

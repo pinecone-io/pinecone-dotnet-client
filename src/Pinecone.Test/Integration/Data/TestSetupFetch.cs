@@ -15,7 +15,7 @@ public class TestSetupFetch : BaseTest
 
         var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1", "2", "4" }, Namespace = targetNamespace }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<FetchResponse>());
         Assert.That(results.Usage, Is.Not.Null);
@@ -38,7 +38,7 @@ public class TestSetupFetch : BaseTest
         );
         Assert.That(results.Vectors["4"].Metadata["runtime"], Is.EqualTo(new MetadataValue(120)));
 
-        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values!.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
@@ -49,14 +49,14 @@ public class TestSetupFetch : BaseTest
 
         var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1" }, Namespace = targetNamespace }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Vectors, Has.Count.EqualTo(1));
 
         Assert.That(results.Vectors["1"].Id, Is.EqualTo("1"));
         Assert.That(results.Vectors["1"].Metadata, Is.Null);
-        Assert.That(results.Vectors["1"].Values.Length, Is.EqualTo(ExpectedDimension));
+        Assert.That(results.Vectors["1"].Values.Value.Length, Is.EqualTo(ExpectedDimension));
     }
 
     [TestCase(true)]
@@ -67,7 +67,7 @@ public class TestSetupFetch : BaseTest
 
         var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "100" }, Namespace = targetNamespace }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Vectors!, Is.Empty);
@@ -80,7 +80,7 @@ public class TestSetupFetch : BaseTest
 
         var results = await IndexClient.FetchAsync(
             new FetchRequest { Ids = new[] { "1" }, Namespace = targetNamespace }
-        );
+        ).ConfigureAwait(false);
 
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
         Assert.That(results.Vectors!, Is.Empty);
@@ -96,7 +96,7 @@ public class TestSetupFetch : BaseTest
         {
             await IndexClient.FetchAsync(
                 new FetchRequest { Ids = Array.Empty<string>(), Namespace = targetNamespace }
-            );
+            ).ConfigureAwait(false);
         });
 
         Assert.That(exception.StatusCode, Is.EqualTo(3));
@@ -105,7 +105,7 @@ public class TestSetupFetch : BaseTest
     [Test]
     public async Task TestFetchUnspecifiedNamespace()
     {
-        var results = await IndexClient.FetchAsync(new FetchRequest { Ids = new[] { "1", "4" } });
+        var results = await IndexClient.FetchAsync(new FetchRequest { Ids = new[] { "1", "4" } }).ConfigureAwait(false);
 
         Assert.That(results.Namespace, Is.EqualTo(""));
         Assert.That(results.Vectors?["1"].Id, Is.EqualTo("1"));

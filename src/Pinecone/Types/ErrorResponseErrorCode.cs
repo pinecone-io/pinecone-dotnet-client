@@ -68,4 +68,7 @@ public enum ErrorResponseErrorCode
 
     [EnumMember(Value = "PAYMENT_REQUIRED")]
     PaymentRequired,
+
+    [EnumMember(Value = "TOO_MANY_REQUESTS")]
+    TooManyRequests,
 }

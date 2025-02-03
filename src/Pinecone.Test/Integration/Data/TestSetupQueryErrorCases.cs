@@ -20,7 +20,7 @@ public class TestSetupQueryErrorCases : BaseTest
                     Namespace = targetNamespace,
                     TopK = 10
                 }
-            );
+            ).ConfigureAwait(false);
         });
 
         Assert.That(ex.StatusCode, Is.EqualTo(3));

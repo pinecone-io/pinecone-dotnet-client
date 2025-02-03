@@ -1,5 +1,8 @@
+using NUnit.Framework;
+
 namespace Pinecone.Test.Integration.Control;
 
+[Parallelizable(ParallelScope.All)]
 public abstract class BaseTest
 {
     protected PineconeClient Client => Setup.Client;

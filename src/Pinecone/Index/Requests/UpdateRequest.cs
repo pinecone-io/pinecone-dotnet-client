@@ -20,6 +20,9 @@ public record UpdateRequest
     [JsonPropertyName("values")]
     public ReadOnlyMemory<float>? Values { get; set; }
 
+    /// <summary>
+    /// Sparse vector data.
+    /// </summary>
     [JsonPropertyName("sparseValues")]
     public SparseValues? SparseValues { get; set; }
 

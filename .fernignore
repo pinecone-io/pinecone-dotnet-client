@@ -3,14 +3,16 @@
 src/Pinecone/PineconeClient.cs
 src/Pinecone/Core/Public/SourceTagOption.cs
 src/Pinecone/Core/Public/IsTlsEnabledOption.cs
+src/Pinecone/Types/Embedding.cs
 src/Pinecone.Test/Integration
+src/Pinecone.Test/Unit/EmbeddingTest.cs
+src/Pinecone.Test/Unit/AdditionalPropertiesTest.cs
 src/Pinecone.Test/Unit/UserAgentTest.cs
 src/Pinecone.Test/Unit/UnexpectedErrorTest.cs
+src/Pinecone.Test/Unit/MockServer/EmbedTest.cs
 .github/workflows/ci.yml
-
-# The following file should always be .fernignore'd.
-
 CONTRIBUTING.md
 README.md
 icon.png
+LICENSE
 src/Pinecone/Pinecone.Custom.props

@@ -18,10 +18,10 @@ public record CreateIndexRequest
     /// The dimensions of the vectors to be inserted in the index.
     /// </summary>
     [JsonPropertyName("dimension")]
-    public required int Dimension { get; set; }
+    public int? Dimension { get; set; }
 
     /// <summary>
-    /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'.
+    /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse', the metric must be 'dotproduct'. If the `vector_type` is `dense`, the metric defaults to 'cosine'.
     /// </summary>
     [JsonPropertyName("metric")]
     public CreateIndexRequestMetric? Metric { get; set; }
@@ -30,10 +30,16 @@ public record CreateIndexRequest
     public DeletionProtection? DeletionProtection { get; set; }
 
     [JsonPropertyName("tags")]
-    public Dictionary<string, string?>? Tags { get; set; }
+    public Dictionary<string, string>? Tags { get; set; }
 
     [JsonPropertyName("spec")]
     public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
+
+    /// <summary>
+    /// The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.
+    /// </summary>
+    [JsonPropertyName("vector_type")]
+    public VectorType? VectorType { get; set; }
 
     public override string ToString()
     {

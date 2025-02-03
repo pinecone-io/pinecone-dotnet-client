@@ -26,6 +26,27 @@ public class ListIndexesTest : BaseMockServerTest
                   "tags": {
                     "tags": "tags"
                   },
+                  "embed": {
+                    "model": "model",
+                    "metric": "cosine",
+                    "dimension": 20000,
+                    "vector_type": "dense",
+                    "field_map": {
+                      "field_map": {
+                        "key": "value"
+                      }
+                    },
+                    "read_parameters": {
+                      "read_parameters": {
+                        "key": "value"
+                      }
+                    },
+                    "write_parameters": {
+                      "write_parameters": {
+                        "key": "value"
+                      }
+                    }
+                  },
                   "spec": {
                     "serverless": {
                       "cloud": "gcp",
@@ -35,7 +56,8 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": true,
                     "state": "Initializing"
-                  }
+                  },
+                  "vector_type": "dense"
                 },
                 {
                   "name": "x",
@@ -46,6 +68,27 @@ public class ListIndexesTest : BaseMockServerTest
                   "tags": {
                     "tags": "tags"
                   },
+                  "embed": {
+                    "model": "model",
+                    "metric": "cosine",
+                    "dimension": 20000,
+                    "vector_type": "dense",
+                    "field_map": {
+                      "field_map": {
+                        "key": "value"
+                      }
+                    },
+                    "read_parameters": {
+                      "read_parameters": {
+                        "key": "value"
+                      }
+                    },
+                    "write_parameters": {
+                      "write_parameters": {
+                        "key": "value"
+                      }
+                    }
+                  },
                   "spec": {
                     "serverless": {
                       "cloud": "gcp",
@@ -55,7 +98,8 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": true,
                     "state": "Initializing"
-                  }
+                  },
+                  "vector_type": "dense"
                 }
               ]
             }
@@ -93,6 +137,21 @@ public class ListIndexesTest : BaseMockServerTest
                     "tag0": "val0",
                     "tag1": "val1"
                   },
+                  "embed": {
+                    "model": "multilingual-e5-large",
+                    "metric": "cosine",
+                    "dimension": 1536,
+                    "field_map": {
+                      "text": "your-text-field"
+                    },
+                    "read_parameters": {
+                      "input_type": "query",
+                      "truncate": "NONE"
+                    },
+                    "write_parameters": {
+                      "input_type": "passage"
+                    }
+                  },
                   "spec": {
                     "pod": {
                       "environment": "us-west1-gcp",
@@ -113,7 +172,8 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": true,
                     "state": "Ready"
-                  }
+                  },
+                  "vector_type": "dense"
                 },
                 {
                   "name": "image-search",
@@ -125,6 +185,21 @@ public class ListIndexesTest : BaseMockServerTest
                     "tag0": "val0",
                     "tag1": "val1"
                   },
+                  "embed": {
+                    "model": "multilingual-e5-large",
+                    "metric": "cosine",
+                    "dimension": 1536,
+                    "field_map": {
+                      "text": "your-text-field"
+                    },
+                    "read_parameters": {
+                      "input_type": "query",
+                      "truncate": "NONE"
+                    },
+                    "write_parameters": {
+                      "input_type": "passage"
+                    }
+                  },
                   "spec": {
                     "serverless": {
                       "cloud": "aws",
@@ -134,7 +209,45 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": false,
                     "state": "Initializing"
-                  }
+                  },
+                  "vector_type": "dense"
+                },
+                {
+                  "name": "sparse-index",
+                  "dimension": 1536,
+                  "metric": "dotproduct",
+                  "host": "sparse-index-1a2b3c4d.svc.us-east1-gcp.pinecone.io",
+                  "deletion_protection": "disabled",
+                  "tags": {
+                    "tag0": "val0",
+                    "tag1": "val1"
+                  },
+                  "embed": {
+                    "model": "multilingual-e5-large",
+                    "metric": "cosine",
+                    "dimension": 1536,
+                    "field_map": {
+                      "text": "your-text-field"
+                    },
+                    "read_parameters": {
+                      "input_type": "query",
+                      "truncate": "NONE"
+                    },
+                    "write_parameters": {
+                      "input_type": "passage"
+                    }
+                  },
+                  "spec": {
+                    "serverless": {
+                      "cloud": "aws",
+                      "region": "us-east-1"
+                    }
+                  },
+                  "status": {
+                    "ready": true,
+                    "state": "Ready"
+                  },
+                  "vector_type": "sparse"
                 }
               ]
             }
@@ -172,6 +285,21 @@ public class ListIndexesTest : BaseMockServerTest
                     "tag0": "val0",
                     "tag1": "val1"
                   },
+                  "embed": {
+                    "model": "multilingual-e5-large",
+                    "metric": "cosine",
+                    "dimension": 1536,
+                    "field_map": {
+                      "text": "your-text-field"
+                    },
+                    "read_parameters": {
+                      "input_type": "query",
+                      "truncate": "NONE"
+                    },
+                    "write_parameters": {
+                      "input_type": "passage"
+                    }
+                  },
                   "spec": {
                     "serverless": {
                       "cloud": "aws",
@@ -181,7 +309,8 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": false,
                     "state": "Initializing"
-                  }
+                  },
+                  "vector_type": "dense"
                 }
               ]
             }
@@ -219,6 +348,21 @@ public class ListIndexesTest : BaseMockServerTest
                     "tag0": "val0",
                     "tag1": "val1"
                   },
+                  "embed": {
+                    "model": "multilingual-e5-large",
+                    "metric": "cosine",
+                    "dimension": 1536,
+                    "field_map": {
+                      "text": "your-text-field"
+                    },
+                    "read_parameters": {
+                      "input_type": "query",
+                      "truncate": "NONE"
+                    },
+                    "write_parameters": {
+                      "input_type": "passage"
+                    }
+                  },
                   "spec": {
                     "serverless": {
                       "cloud": "gcp",
@@ -228,7 +372,8 @@ public class ListIndexesTest : BaseMockServerTest
                   "status": {
                     "ready": true,
                     "state": "ScalingUpPodSize"
-                  }
+                  },
+                  "vector_type": "dense"
                 }
               ]
             }

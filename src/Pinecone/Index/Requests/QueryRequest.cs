@@ -21,7 +21,7 @@ public record QueryRequest
     public required uint TopK { get; set; }
 
     /// <summary>
-    /// The filter to apply. You can use vector metadata to limit your search. See [Filter with metadata](https://docs.pinecone.io/guides/data/filter-with-metadata).
+    /// The filter to apply. You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
     /// </summary>
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
