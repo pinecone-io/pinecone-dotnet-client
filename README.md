@@ -70,18 +70,18 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
-   Name = "example-index",
-   Dimension = 1538,
-   Metric = CreateIndexRequestMetric.Cosine,
-   Spec = new ServerlessIndexSpec
-   {
-       Serverless = new ServerlessSpec
-       {
-           Cloud = ServerlessSpecCloud.Azure,
-           Region = "eastus2",
-       }
-   },
-   DeletionProtection = DeletionProtection.Enabled
+    Name = "example-index",
+    Dimension = 1538,
+    Metric = CreateIndexRequestMetric.Cosine,
+    Spec = new ServerlessIndexSpec
+    {
+        Serverless = new ServerlessSpec
+        {
+            Cloud = ServerlessSpecCloud.Azure,
+            Region = "eastus2",
+        }
+    },
+    DeletionProtection = DeletionProtection.Enabled
 });
 ```
 
@@ -96,21 +96,21 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
-   Name = "example-index",
-   Dimension = 1538,
-   Metric = CreateIndexRequestMetric.Cosine,
-   Spec = new PodIndexSpec
-   {
-       Pod = new PodSpec
-       {
-           Environment = "eastus-azure",
-           PodType = "p1.x1",
-           Pods = 1,
-           Replicas = 1,
-           Shards = 1,
-       }
-   },
-   DeletionProtection = DeletionProtection.Enabled
+    Name = "example-index",
+    Dimension = 1538,
+    Metric = CreateIndexRequestMetric.Cosine,
+    Spec = new PodIndexSpec
+    {
+        Pod = new PodSpec
+        {
+            Environment = "eastus-azure",
+            PodType = "p1.x1",
+            Pods = 1,
+            Replicas = 1,
+            Shards = 1,
+        }
+    },
+    DeletionProtection = DeletionProtection.Enabled
 });
 ```
 
@@ -147,7 +147,7 @@ using Pinecone;
 
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 
-var indexModel = pinecone.DescribeIndexAsync("example-index");
+var indexModel = await pinecone.DescribeIndexAsync("example-index");
 ```
 
 ### Scale replicas
@@ -161,14 +161,14 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var indexMetadata = await pinecone.ConfigureIndexAsync("example-index", new ConfigureIndexRequest
 {
-   Spec = new ConfigureIndexRequestSpec
-   {
-       Pod = new ConfigureIndexRequestSpecPod
-       {
-           Replicas = 2,
-           PodType = "p1.x1",
-       }
-   }
+    Spec = new ConfigureIndexRequestSpec
+    {
+        Pod = new ConfigureIndexRequestSpecPod
+        {
+            Replicas = 2,
+            PodType = "p1.x1",
+        }
+    }
 });
 ```
 
@@ -201,34 +201,29 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-// Vector ids to be upserted
 var upsertIds = new[] { "v1", "v2", "v3" };
 
-// List of values to be upserted
 float[][] values =
 [
     [1.0f, 2.0f, 3.0f],
     [4.0f, 5.0f, 6.0f],
-    [7.0f, 8.0f, 9.0f],
+    [7.0f, 8.0f, 9.0f]
 ];
 
-// List of sparse indices to be upserted
 uint[][] sparseIndices =
 [
     [1, 2, 3],
     [4, 5, 6],
-    [7, 8, 9],
+    [7, 8, 9]
 ];
 
-// List of sparse values to be upserted
 float[][] sparseValues =
 [
     [1000f, 2000f, 3000f],
     [4000f, 5000f, 6000f],
-    [7000f, 8000f, 9000f],
+    [7000f, 8000f, 9000f]
 ];
 
-// Metadata to be upserted
 var metadataStructArray = new[]
 {
     new Metadata { ["genre"] = "action", ["year"] = 2019 },
@@ -254,7 +249,7 @@ for (var i = 0; i <= 2; i++)
     );
 }
 
-var upsertResponse = await index.UpsertAsync(new UpsertRequest { Vectors = vectors, });
+var upsertResponse = await index.UpsertAsync(new UpsertRequest { Vectors = vectors });
 ```
 
 ### Query an index
@@ -269,22 +264,21 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 var index = pinecone.Index("example-index");
 
 var queryResponse = await index.QueryAsync(
-   new QueryRequest
-   {
-       Namespace = "example-namespace",
-       Vector = [0.1f, 0.2f, 0.3f, 0.4f],
-       TopK = 10,
-       IncludeValues = true,
-       IncludeMetadata = true,
-       Filter = new Metadata
-       {
-           ["genre"] =
-               new Metadata
-               {
-                   ["$in"] = new[] { "comedy", "documentary", "drama" },
-               }
-       }
-   });
+    new QueryRequest
+    {
+        Namespace = "example-namespace",
+        Vector = new[] {0.1f, 0.2f, 0.3f, 0.4f},
+        TopK = 10,
+        IncludeValues = true,
+        IncludeMetadata = true,
+        Filter = new Metadata
+        {
+            ["genre"] = new Metadata
+            {
+                ["$in"] = new[] { "comedy", "documentary", "drama" },
+            }
+        }
+    });
 ```
 
 ### Query sparse-dense vectors
@@ -293,21 +287,22 @@ The following example queries an index using a sparse-dense vector:
 
 ```csharp
 using Pinecone;
+
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
 var queryResponse = await index.QueryAsync(
-   new QueryRequest
-   {
-       TopK = 10,
-       Vector = [0.1f, 0.2f, 0.3f],
-       SparseVector = new SparseValues
-       {
-           Indices = [10, 45, 16],
-           Values = [0.5f, 0.5f, 0.2f],
-       }
-   }
+    new QueryRequest
+    {
+        TopK = 10,
+        Vector = new[] {0.1f, 0.2f, 0.3f},
+        SparseVector = new SparseValues
+        {
+            Indices = [10, 45, 16],
+            Values = new[] {0.5f, 0.5f, 0.2f},
+        }
+    }
 );
 ```
 
@@ -324,8 +319,8 @@ var index = pinecone.Index("example-index");
 
 var deleteResponse = await index.DeleteAsync(new DeleteRequest
 {
-   Ids = new[] { "v1" },
-   Namespace = "example-namespace",
+    Ids = ["v1"],
+    Namespace = "example-namespace",
 });
 ```
 
@@ -338,7 +333,8 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var deleteResponse = await index.DeleteAsync(new DeleteRequest {
+var deleteResponse = await index.DeleteAsync(new DeleteRequest
+{
     DeleteAll = true,
     Namespace = "example-namespace",
 });
@@ -355,8 +351,9 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var fetchResponse = await index.FetchAsync(new FetchRequest {
-    Ids = new[] { "v1" },
+var fetchResponse = await index.FetchAsync(new FetchRequest
+{
+    Ids = ["v1"],
     Namespace = "example-namespace",
 });
 ```
@@ -375,7 +372,8 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 
 var index = pinecone.Index("example-index");
 
-var listResponse = await index.ListAsync(new ListRequest {
+var listResponse = await index.ListAsync(new ListRequest
+{
     Namespace = "example-namespace",
     Prefix = "prefix-",
 });
@@ -394,10 +392,10 @@ var index = pinecone.Index("example-index");
 
 var updateResponse = await index.UpdateAsync(new UpdateRequest
 {
-   Id = "vec1",
-   Values = new[] { 0.1f, 0.2f, 0.3f, 0.4f },
-   SetMetadata = new Metadata { ["genre"] = "drama" },
-   Namespace = "example-namespace",
+    Id = "vec1",
+    Values = new[] { 0.1f, 0.2f, 0.3f, 0.4f },
+    SetMetadata = new Metadata { ["genre"] = "drama" },
+    Namespace = "example-namespace",
 });
 ```
 
@@ -414,7 +412,8 @@ using Pinecone;
 
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 
-var collectionModel = await pinecone.CreateCollectionAsync(new CreateCollectionRequest {
+var collectionModel = await pinecone.CreateCollectionAsync(new CreateCollectionRequest
+{
     Name = "example-collection",
     Source = "example-index",
 });
@@ -470,28 +469,22 @@ var pinecone = new PineconeClient("PINECONE_API_KEY");
 // Prepare input sentences to be embedded
 List<EmbedRequestInputsItem> inputs =
 [
-    new()
-    {
-        Text = "The quick brown fox jumps over the lazy dog."
-    },
-    new()
-    {
-        Text = "Lorem ipsum"
-    }
+    new() { Text = "The quick brown fox jumps over the lazy dog." },
+    new() { Text = "Lorem ipsum" }
 ];
 
 // Specify the embedding model and parameters
 var embeddingModel = "multilingual-e5-large";
 
 // Generate embeddings for the input data
-var embeddings = await pinecone.Inference.EmbedAsync(new EmbedRequest()
+var embeddings = await pinecone.Inference.EmbedAsync(new EmbedRequest
 {
     Model = embeddingModel,
     Inputs = inputs,
-    Parameters = new EmbedRequestParameters()
+    Parameters = new Dictionary<string, object?>
     {
-        InputType = "query",
-        Truncate = "END"
+        ["InputType"] = "query",
+        ["Truncate"] = "END"
     }
 });
 
@@ -536,57 +529,39 @@ var model = "bge-reranker-v2-m3";
 var query = "The tech company Apple is known for its innovative products like the iPhone.";
 
 // Add the documents to rerank
-var documents = new List<Dictionary<string, string>>
+var documents = new List<Dictionary<string, object>>
 {
-    new()
-    {
-        ["id"] = "vec1",
-        ["my_field"] = "Apple is a popular fruit known for its sweetness and crisp texture."
-    },
-    new()
-    {
-        ["id"] = "vec2",
-        ["my_field"] = "Many people enjoy eating apples as a healthy snack."
-    },
-    new()
-    {
-        ["id"] = "vec3",
-        ["my_field"] =
-            "Apple Inc. has revolutionized the tech industry with its sleek designs and user-friendly interfaces."
-    },
-    new()
-    {
-        ["id"] = "vec4",
-        ["my_field"] = "An apple a day keeps the doctor away, as the saying goes."
-    }
+    new() { ["id"] = "vec1", ["my_field"] = "Apple is a popular fruit known for its sweetness and crisp texture." },
+    new() { ["id"] = "vec2", ["my_field"] = "Many people enjoy eating apples as a healthy snack." },
+    new() { ["id"] = "vec3", ["my_field"] = "Apple Inc. has revolutionized the tech industry with its sleek designs and user-friendly interfaces." },
+    new() { ["id"] = "vec4", ["my_field"] = "An apple a day keeps the doctor away, as the saying goes." }
 };
 
 // The fields to rank the documents by. If not provided, the default is "text"
 var rankFields = new List<string> { "my_field" };
 
 // The number of results to return sorted by relevance. Defaults to the number of inputs
-int topN = 2;
+var topN = 2;
 
 // Whether to return the documents in the response
-bool returnDocuments = true;
+var returnDocuments = true;
 
 // Additional model-specific parameters for the reranker
-var parameters = new Dictionary<string, string>
+var parameters = new Dictionary<string, object>
 {
     ["truncate"] = "END"
 };
 
 // Send ranking request
-var result = await pinecone.Inference.RerankAsync(
-    new RerankRequest
-    {
-        Model = model,
-        Query = query,
-        Documents = documents,
-        RankFields = rankFields,
-        TopN = topN,
-        Parameters = parameters
-    });
+var result = await pinecone.Inference.RerankAsync(new RerankRequest
+{
+    Model = model,
+    Query = query,
+    Documents = documents,
+    RankFields = rankFields,
+    TopN = topN,
+    Parameters = parameters
+});
 
 // Get ranked data
 var data = result.Data;
@@ -740,8 +715,7 @@ When the API returns a non-zero status code, (4xx or 5xx response), a subclass o
 try {
     pinecone.CreateIndexAsync(...);
 } catch (PineconeException e) {
-    System.Console.WriteLine(e.Message)
-    System.Console.WriteLine(e.StatusCode)
+    Console.WriteLine(e.Message)
 }
 ```
 
