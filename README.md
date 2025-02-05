@@ -483,8 +483,8 @@ var embeddings = await pinecone.Inference.EmbedAsync(new EmbedRequest
     Inputs = inputs,
     Parameters = new Dictionary<string, object?>
     {
-        ["InputType"] = "query",
-        ["Truncate"] = "END"
+        ["input_type"] = "query",
+        ["truncate"] = "END"
     }
 });
 
