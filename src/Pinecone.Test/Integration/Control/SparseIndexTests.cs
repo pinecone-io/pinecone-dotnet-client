@@ -35,7 +35,7 @@ public class SparseIndexTests : BaseTest
             Assert.Multiple(() =>
             {
                 Assert.That(index.Name, Is.EqualTo(indexName));
-                Assert.That(index.Metric, Is.EqualTo(IndexModelMetric.Cosine));
+                Assert.That(index.Metric, Is.EqualTo(IndexModelMetric.Dotproduct));
                 Assert.That(index.VectorType, Is.EqualTo(VectorType.Sparse));
             });
         }
