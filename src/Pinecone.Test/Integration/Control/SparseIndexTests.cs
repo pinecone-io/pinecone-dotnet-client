@@ -19,15 +19,12 @@ public class SparseIndexTests : BaseTest
                 Name = indexName,
                 Metric = CreateIndexRequestMetric.Dotproduct,
                 VectorType = VectorType.Sparse,
-                Spec = new PodIndexSpec
+                Spec = new ServerlessIndexSpec
                 {
-                    Pod = new PodSpec
+                    Serverless = new ServerlessSpec
                     {
-                        Environment = "us-west1-gcp",
-                        PodType = "p1.x1",
-                        Pods = 1,
-                        Replicas = 1,
-                        Shards = 1,
+                        Cloud = ServerlessSpecCloud.Aws,
+                        Region = "us-east-1"
                     }
                 },
                 DeletionProtection = DeletionProtection.Enabled
