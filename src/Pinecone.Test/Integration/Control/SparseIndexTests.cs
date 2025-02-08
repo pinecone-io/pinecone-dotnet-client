@@ -17,7 +17,7 @@ public class SparseIndexTests : BaseTest
             var index = await Client.CreateIndexAsync(new CreateIndexRequest
             {
                 Name = indexName,
-                Metric = CreateIndexRequestMetric.Cosine,
+                Metric = CreateIndexRequestMetric.Dotproduct,
                 VectorType = VectorType.Sparse,
                 Spec = new PodIndexSpec
                 {
