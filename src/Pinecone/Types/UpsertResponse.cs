@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// The response for the `upsert` operation.
+/// </summary>
 public record UpsertResponse
 {
     /// <summary>
@@ -14,17 +16,27 @@ public record UpsertResponse
     [JsonPropertyName("upsertedCount")]
     public uint? UpsertedCount { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new UpsertResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static UpsertResponse FromProto(ProtoGrpc.UpsertResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new UpsertResponse { UpsertedCount = value.UpsertedCount };
     }
 
     /// <summary>
     /// Maps the UpsertResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.UpsertResponse ToProto()
+    internal ProtoGrpc.UpsertResponse ToProto()
     {
-        var result = new Proto.UpsertResponse();
+        var result = new ProtoGrpc.UpsertResponse();
         if (UpsertedCount != null)
         {
             result.UpsertedCount = UpsertedCount ?? 0;
@@ -32,11 +44,9 @@ public record UpsertResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new UpsertResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static UpsertResponse FromProto(Proto.UpsertResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new UpsertResponse { UpsertedCount = value.UpsertedCount };
+        return JsonUtils.Serialize(this);
     }
 }

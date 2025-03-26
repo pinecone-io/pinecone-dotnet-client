@@ -5,8 +5,6 @@ using Grpc.Core;
 using Pinecone.Core;
 using Pinecone.Grpc;
 
-#nullable enable
-
 namespace Pinecone;
 
 public partial class IndexClient
@@ -31,11 +29,9 @@ public partial class IndexClient
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.ListBulkImportsAsync(new ListBulkImportsRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ListImportsResponse> ListBulkImportsAsync(
         ListBulkImportsRequest request,
         RequestOptions? options = null,
@@ -51,20 +47,22 @@ public partial class IndexClient
         {
             _query["paginationToken"] = request.PaginationToken;
         }
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Get,
-                Path = "bulk/imports",
-                Query = _query,
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Get,
+                    Path = "bulk/imports",
+                    Query = _query,
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<ListImportsResponse>(responseBody)!;
@@ -75,11 +73,14 @@ public partial class IndexClient
             }
         }
 
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
     }
 
     /// <summary>
@@ -87,32 +88,32 @@ public partial class IndexClient
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.StartBulkImportAsync(new StartImportRequest { Uri = "uri" });
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<StartImportResponse> StartBulkImportAsync(
         StartImportRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Post,
-                Path = "bulk/imports",
-                Body = request,
-                ContentType = "application/json",
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "bulk/imports",
+                    Body = request,
+                    ContentType = "application/json",
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<StartImportResponse>(responseBody)!;
@@ -123,11 +124,14 @@ public partial class IndexClient
             }
         }
 
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
     }
 
     /// <summary>
@@ -135,30 +139,33 @@ public partial class IndexClient
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.DescribeBulkImportAsync("101");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ImportModel> DescribeBulkImportAsync(
         string id,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Get,
-                Path = $"bulk/imports/{id}",
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Get,
+                    Path = string.Format(
+                        "bulk/imports/{0}",
+                        ValueConvert.ToPathParameterString(id)
+                    ),
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<ImportModel>(responseBody)!;
@@ -169,11 +176,14 @@ public partial class IndexClient
             }
         }
 
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
     }
 
     /// <summary>
@@ -181,30 +191,33 @@ public partial class IndexClient
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.CancelBulkImportAsync("101");
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<CancelImportResponse> CancelBulkImportAsync(
         string id,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Delete,
-                Path = $"bulk/imports/{id}",
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Delete,
+                    Path = string.Format(
+                        "bulk/imports/{0}",
+                        ValueConvert.ToPathParameterString(id)
+                    ),
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<CancelImportResponse>(responseBody)!;
@@ -215,11 +228,14 @@ public partial class IndexClient
             }
         }
 
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
     }
 
     /// <summary>
@@ -229,11 +245,9 @@ public partial class IndexClient
     ///
     ///  Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<DescribeIndexStatsResponse> DescribeIndexStatsAsync(
         DescribeIndexStatsRequest request,
         GrpcRequestOptions? options = null,
@@ -272,8 +286,7 @@ public partial class IndexClient
     ///
     ///  For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.QueryAsync(
     ///     new QueryRequest
     ///     {
@@ -283,8 +296,7 @@ public partial class IndexClient
     ///         IncludeMetadata = true,
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<QueryResponse> QueryAsync(
         QueryRequest request,
         GrpcRequestOptions? options = null,
@@ -323,8 +335,7 @@ public partial class IndexClient
     ///
     ///  For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.DeleteAsync(
     ///     new DeleteRequest
     ///     {
@@ -332,8 +343,7 @@ public partial class IndexClient
     ///         Namespace = "example",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<DeleteResponse> DeleteAsync(
         DeleteRequest request,
         GrpcRequestOptions? options = null,
@@ -372,11 +382,9 @@ public partial class IndexClient
     ///
     ///  For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.FetchAsync(new FetchRequest { Ids = ["v1"], Namespace = "example" });
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<FetchResponse> FetchAsync(
         FetchRequest request,
         GrpcRequestOptions? options = null,
@@ -419,8 +427,7 @@ public partial class IndexClient
     ///
     ///  **Note:** `list` is supported only for serverless indexes.
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.ListAsync(
     ///     new ListRequest
     ///     {
@@ -429,8 +436,7 @@ public partial class IndexClient
     ///         PaginationToken = "eyJza2lwX3Bhc3QiOiIxMDEwMy0=",
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<ListResponse> ListAsync(
         ListRequest request,
         GrpcRequestOptions? options = null,
@@ -469,8 +475,7 @@ public partial class IndexClient
     ///
     ///  For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.UpdateAsync(
     ///     new UpdateRequest
     ///     {
@@ -479,8 +484,7 @@ public partial class IndexClient
     ///         Values = new[] { 42.2f, 50.5f, 60.8f },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<UpdateResponse> UpdateAsync(
         UpdateRequest request,
         GrpcRequestOptions? options = null,
@@ -519,8 +523,7 @@ public partial class IndexClient
     ///
     ///  For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Index.UpsertAsync(
     ///     new UpsertRequest
     ///     {
@@ -530,8 +533,7 @@ public partial class IndexClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<UpsertResponse> UpsertAsync(
         UpsertRequest request,
         GrpcRequestOptions? options = null,

@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
+using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -12,49 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class ListCollectionsTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string mockResponse = """
-            {
-              "collections": [
-                {
-                  "name": "name",
-                  "size": 1000000,
-                  "status": "Initializing",
-                  "dimension": 20000,
-                  "vector_count": 1,
-                  "environment": "environment"
-                },
-                {
-                  "name": "name",
-                  "size": 1000000,
-                  "status": "Initializing",
-                  "dimension": 20000,
-                  "vector_count": 1,
-                  "environment": "environment"
-                }
-              ]
-            }
-            """;
-
-        Server
-            .Given(WireMock.RequestBuilders.Request.Create().WithPath("/collections").UsingGet())
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ListCollectionsAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest_1()
     {
         const string mockResponse = """
             {
@@ -96,15 +51,15 @@ public class ListCollectionsTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ListCollectionsAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.ListCollectionsAsync();
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<CollectionList>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_3()
+    public async global::System.Threading.Tasks.Task MockServerTest_2()
     {
         const string mockResponse = """
             {
@@ -130,10 +85,10 @@ public class ListCollectionsTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ListCollectionsAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.ListCollectionsAsync();
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<CollectionList>(mockResponse)).UsingDefaults()
+        );
     }
 }

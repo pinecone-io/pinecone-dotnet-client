@@ -1,30 +1,41 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// The response for the `update` operation.
+/// </summary>
 public record UpdateResponse
 {
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new UpdateResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static UpdateResponse FromProto(ProtoGrpc.UpdateResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new UpdateResponse();
     }
 
     /// <summary>
     /// Maps the UpdateResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.UpdateResponse ToProto()
+    internal ProtoGrpc.UpdateResponse ToProto()
     {
-        return new Proto.UpdateResponse();
+        return new ProtoGrpc.UpdateResponse();
     }
 
-    /// <summary>
-    /// Returns a new UpdateResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static UpdateResponse FromProto(Proto.UpdateResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new UpdateResponse();
+        return JsonUtils.Serialize(this);
     }
 }

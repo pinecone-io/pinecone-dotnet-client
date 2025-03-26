@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// The response for the `query` operation. These are the matches found for a particular query vector. The matches are ordered from most similar to least similar.
+/// </summary>
 public record QueryResponse
 {
     /// <summary>
@@ -32,17 +34,33 @@ public record QueryResponse
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new QueryResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static QueryResponse FromProto(ProtoGrpc.QueryResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new QueryResponse
+        {
+            Results = value.Results?.Select(SingleQueryResults.FromProto),
+            Matches = value.Matches?.Select(ScoredVector.FromProto),
+            Namespace = value.Namespace,
+            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
+        };
     }
 
     /// <summary>
     /// Maps the QueryResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.QueryResponse ToProto()
+    internal ProtoGrpc.QueryResponse ToProto()
     {
-        var result = new Proto.QueryResponse();
+        var result = new ProtoGrpc.QueryResponse();
         if (Results != null && Results.Any())
         {
             result.Results.AddRange(Results.Select(elem => elem.ToProto()));
@@ -62,17 +80,9 @@ public record QueryResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new QueryResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static QueryResponse FromProto(Proto.QueryResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new QueryResponse
-        {
-            Results = value.Results?.Select(SingleQueryResults.FromProto),
-            Matches = value.Matches?.Select(ScoredVector.FromProto),
-            Namespace = value.Namespace,
-            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

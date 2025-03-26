@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// A summary of the contents of a namespace.
+/// </summary>
 public record NamespaceSummary
 {
     /// <summary>
@@ -15,17 +17,27 @@ public record NamespaceSummary
     [JsonPropertyName("vectorCount")]
     public uint? VectorCount { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new NamespaceSummary type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static NamespaceSummary FromProto(ProtoGrpc.NamespaceSummary value)
     {
-        return JsonUtils.Serialize(this);
+        return new NamespaceSummary { VectorCount = value.VectorCount };
     }
 
     /// <summary>
     /// Maps the NamespaceSummary type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.NamespaceSummary ToProto()
+    internal ProtoGrpc.NamespaceSummary ToProto()
     {
-        var result = new Proto.NamespaceSummary();
+        var result = new ProtoGrpc.NamespaceSummary();
         if (VectorCount != null)
         {
             result.VectorCount = VectorCount ?? 0;
@@ -33,11 +45,9 @@ public record NamespaceSummary
         return result;
     }
 
-    /// <summary>
-    /// Returns a new NamespaceSummary type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static NamespaceSummary FromProto(Proto.NamespaceSummary value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new NamespaceSummary { VectorCount = value.VectorCount };
+        return JsonUtils.Serialize(this);
     }
 }

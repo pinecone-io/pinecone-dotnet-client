@@ -1,8 +1,7 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
@@ -38,17 +37,35 @@ public record ScoredVector
     [JsonPropertyName("metadata")]
     public Metadata? Metadata { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new ScoredVector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static ScoredVector FromProto(ProtoGrpc.ScoredVector value)
     {
-        return JsonUtils.Serialize(this);
+        return new ScoredVector
+        {
+            Id = value.Id,
+            Score = value.Score,
+            Values = value.Values?.ToArray(),
+            SparseValues =
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
+        };
     }
 
     /// <summary>
     /// Maps the ScoredVector type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.ScoredVector ToProto()
+    internal ProtoGrpc.ScoredVector ToProto()
     {
-        var result = new Proto.ScoredVector();
+        var result = new ProtoGrpc.ScoredVector();
         result.Id = Id;
         if (Score != null)
         {
@@ -69,19 +86,9 @@ public record ScoredVector
         return result;
     }
 
-    /// <summary>
-    /// Returns a new ScoredVector type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static ScoredVector FromProto(Proto.ScoredVector value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new ScoredVector
-        {
-            Id = value.Id,
-            Score = value.Score,
-            Values = value.Values?.ToArray(),
-            SparseValues =
-                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
-            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

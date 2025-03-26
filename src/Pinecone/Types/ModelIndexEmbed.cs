@@ -1,10 +1,12 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
+/// <summary>
+/// The embedding model and document fields mapped to embedding inputs.
+/// </summary>
 public record ModelIndexEmbed
 {
     /// <summary>
@@ -49,6 +51,14 @@ public record ModelIndexEmbed
     [JsonPropertyName("write_parameters")]
     public Dictionary<string, object?>? WriteParameters { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

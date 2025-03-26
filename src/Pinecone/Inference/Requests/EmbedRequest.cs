@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record EmbedRequest
@@ -26,6 +24,7 @@ public record EmbedRequest
     public IEnumerable<EmbedRequestInputsItem> Inputs { get; set; } =
         new List<EmbedRequestInputsItem>();
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

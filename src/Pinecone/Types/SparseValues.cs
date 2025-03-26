@@ -1,8 +1,8 @@
+using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
@@ -14,17 +14,31 @@ public record SparseValues
     [JsonPropertyName("values")]
     public ReadOnlyMemory<float> Values { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new SparseValues type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static SparseValues FromProto(ProtoGrpc.SparseValues value)
     {
-        return JsonUtils.Serialize(this);
+        return new SparseValues
+        {
+            Indices = value.Indices?.ToList() ?? Enumerable.Empty<uint>(),
+            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
+        };
     }
 
     /// <summary>
     /// Maps the SparseValues type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.SparseValues ToProto()
+    internal ProtoGrpc.SparseValues ToProto()
     {
-        var result = new Proto.SparseValues();
+        var result = new ProtoGrpc.SparseValues();
         if (Indices.Any())
         {
             result.Indices.AddRange(Indices);
@@ -36,15 +50,9 @@ public record SparseValues
         return result;
     }
 
-    /// <summary>
-    /// Returns a new SparseValues type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static SparseValues FromProto(Proto.SparseValues value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new SparseValues
-        {
-            Indices = value.Indices?.ToList() ?? new List<uint>(),
-            Values = value.Values?.ToArray() ?? new ReadOnlyMemory<float>(),
-        };
+        return JsonUtils.Serialize(this);
     }
 }

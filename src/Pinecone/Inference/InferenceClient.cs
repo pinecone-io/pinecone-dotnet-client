@@ -3,8 +3,6 @@ using System.Text.Json;
 using System.Threading;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public partial class InferenceClient
@@ -21,8 +19,7 @@ public partial class InferenceClient
     ///
     /// For guidance and examples, see [Generate embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inference.EmbedAsync(
     ///     new EmbedRequest
     ///     {
@@ -30,29 +27,30 @@ public partial class InferenceClient
     ///         Inputs = new List&lt;EmbedRequestInputsItem&gt;() { new EmbedRequestInputsItem() },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<EmbeddingsList> EmbedAsync(
         EmbedRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Post,
-                Path = "embed",
-                Body = request,
-                ContentType = "application/json",
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "embed",
+                    Body = request,
+                    ContentType = "application/json",
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<EmbeddingsList>(responseBody)!;
@@ -63,29 +61,34 @@ public partial class InferenceClient
             }
         }
 
-        try
         {
-            switch (response.StatusCode)
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
             {
-                case 400:
-                    throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
-                case 401:
-                    throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
-                case 500:
-                    throw new InternalServerError(
-                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
-                    );
+                switch (response.StatusCode)
+                {
+                    case 400:
+                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                    case 401:
+                        throw new UnauthorizedError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                    case 500:
+                        throw new InternalServerError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                }
             }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
         }
-        catch (JsonException)
-        {
-            // unable to map error response, throwing generic error
-        }
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
     }
 
     /// <summary>
@@ -93,8 +96,7 @@ public partial class InferenceClient
     ///
     /// For guidance and examples, see [Rerank documents](https://docs.pinecone.io/guides/inference/rerank).
     /// </summary>
-    /// <example>
-    /// <code>
+    /// <example><code>
     /// await client.Inference.RerankAsync(
     ///     new RerankRequest
     ///     {
@@ -112,29 +114,30 @@ public partial class InferenceClient
     ///         },
     ///     }
     /// );
-    /// </code>
-    /// </example>
+    /// </code></example>
     public async Task<RerankResult> RerankAsync(
         RerankRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
-        var response = await _client.MakeRequestAsync(
-            new RawClient.JsonApiRequest
-            {
-                BaseUrl = _client.Options.BaseUrl,
-                Method = HttpMethod.Post,
-                Path = "rerank",
-                Body = request,
-                ContentType = "application/json",
-                Options = options,
-            },
-            cancellationToken
-        );
-        var responseBody = await response.Raw.Content.ReadAsStringAsync();
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Post,
+                    Path = "rerank",
+                    Body = request,
+                    ContentType = "application/json",
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
         if (response.StatusCode is >= 200 and < 400)
         {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
                 return JsonUtils.Deserialize<RerankResult>(responseBody)!;
@@ -145,28 +148,33 @@ public partial class InferenceClient
             }
         }
 
-        try
         {
-            switch (response.StatusCode)
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
             {
-                case 400:
-                    throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
-                case 401:
-                    throw new UnauthorizedError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
-                case 500:
-                    throw new InternalServerError(
-                        JsonUtils.Deserialize<ErrorResponse>(responseBody)
-                    );
+                switch (response.StatusCode)
+                {
+                    case 400:
+                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                    case 401:
+                        throw new UnauthorizedError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                    case 500:
+                        throw new InternalServerError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                }
             }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
         }
-        catch (JsonException)
-        {
-            // unable to map error response, throwing generic error
-        }
-        throw new PineconeApiException(
-            $"Error with status code {response.StatusCode}",
-            response.StatusCode,
-            responseBody
-        );
     }
 }

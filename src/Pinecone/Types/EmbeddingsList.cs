@@ -1,10 +1,12 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
+/// <summary>
+/// Embeddings generated for the input.
+/// </summary>
 public record EmbeddingsList
 {
     /// <summary>
@@ -31,6 +33,14 @@ public record EmbeddingsList
     [JsonPropertyName("usage")]
     public required EmbeddingsListUsage Usage { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

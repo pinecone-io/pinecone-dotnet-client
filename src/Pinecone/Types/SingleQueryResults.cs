@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// The query results for a single `QueryVector`
+/// </summary>
 public record SingleQueryResults
 {
     /// <summary>
@@ -20,17 +22,31 @@ public record SingleQueryResults
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new SingleQueryResults type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static SingleQueryResults FromProto(ProtoGrpc.SingleQueryResults value)
     {
-        return JsonUtils.Serialize(this);
+        return new SingleQueryResults
+        {
+            Matches = value.Matches?.Select(ScoredVector.FromProto),
+            Namespace = value.Namespace,
+        };
     }
 
     /// <summary>
     /// Maps the SingleQueryResults type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.SingleQueryResults ToProto()
+    internal ProtoGrpc.SingleQueryResults ToProto()
     {
-        var result = new Proto.SingleQueryResults();
+        var result = new ProtoGrpc.SingleQueryResults();
         if (Matches != null && Matches.Any())
         {
             result.Matches.AddRange(Matches.Select(elem => elem.ToProto()));
@@ -42,15 +58,9 @@ public record SingleQueryResults
         return result;
     }
 
-    /// <summary>
-    /// Returns a new SingleQueryResults type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static SingleQueryResults FromProto(Proto.SingleQueryResults value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new SingleQueryResults
-        {
-            Matches = value.Matches?.Select(ScoredVector.FromProto),
-            Namespace = value.Namespace,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

@@ -1378,3 +1378,77 @@ await client.Inference.RerankAsync(
 </dd>
 </dl>
 </details>
+
+## VectorOperations Records
+<details><summary><code>client.VectorOperations.Records.<a href="/src/Pinecone/VectorOperations/Records/RecordsClient.cs">SearchNamespaceAsync</a>(namespace_, SearchRecordsNamespaceRequest { ... }) -> SearchRecordsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+This operation converts a query to a vector embedding and then searches a namespace using the embedding. It returns the most similar records in the namespace, along with their similarity scores.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.VectorOperations.Records.SearchNamespaceAsync(
+    "namespace",
+    new SearchRecordsNamespaceRequest
+    {
+        Query = new SearchRecordsRequestQuery
+        {
+            TopK = 10,
+            Inputs = new Dictionary<string, object>() { { "text", "your query text" } },
+        },
+        Fields = new List<string>() { "chunk_text" },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**namespace_:** `string` — The namespace to search.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `SearchRecordsNamespaceRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>

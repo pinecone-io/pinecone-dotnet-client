@@ -1,10 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Pinecone;
 using Pinecone.Core;
 
-#nullable enable
+namespace Pinecone.VectorOperations;
 
-namespace Pinecone;
-
+/// <summary>
+/// The query inputs to search with.
+/// </summary>
 public record SearchRecordsRequestQuery
 {
     /// <summary>
@@ -31,6 +34,14 @@ public record SearchRecordsRequestQuery
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

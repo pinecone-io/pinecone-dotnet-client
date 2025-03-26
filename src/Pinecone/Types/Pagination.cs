@@ -1,8 +1,7 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
@@ -11,17 +10,27 @@ public record Pagination
     [JsonPropertyName("next")]
     public string? Next { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new Pagination type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Pagination FromProto(ProtoGrpc.Pagination value)
     {
-        return JsonUtils.Serialize(this);
+        return new Pagination { Next = value.Next };
     }
 
     /// <summary>
     /// Maps the Pagination type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.Pagination ToProto()
+    internal ProtoGrpc.Pagination ToProto()
     {
-        var result = new Proto.Pagination();
+        var result = new ProtoGrpc.Pagination();
         if (Next != null)
         {
             result.Next = Next ?? "";
@@ -29,11 +38,9 @@ public record Pagination
         return result;
     }
 
-    /// <summary>
-    /// Returns a new Pagination type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static Pagination FromProto(Proto.Pagination value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new Pagination { Next = value.Next };
+        return JsonUtils.Serialize(this);
     }
 }

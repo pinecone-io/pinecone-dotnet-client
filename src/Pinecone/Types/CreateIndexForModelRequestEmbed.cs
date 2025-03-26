@@ -1,10 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
+/// <summary>
+/// Specify the integrated inference embedding configuration for the index.
+///
+/// Once set the model cannot be changed, but you can later update the embedding configuration for an integrated inference index including field map, read parameters, or write parameters.
+///
+/// Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+/// </summary>
 public record CreateIndexForModelRequestEmbed
 {
     /// <summary>
@@ -37,6 +43,14 @@ public record CreateIndexForModelRequestEmbed
     [JsonPropertyName("write_parameters")]
     public Dictionary<string, object?>? WriteParameters { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

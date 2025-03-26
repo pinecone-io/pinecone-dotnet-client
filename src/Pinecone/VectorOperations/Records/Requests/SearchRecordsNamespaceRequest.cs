@@ -1,11 +1,9 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
+namespace Pinecone.VectorOperations;
 
-namespace Pinecone;
-
-public record SearchRecordsRequest
+public record SearchRecordsNamespaceRequest
 {
     /// <summary>
     /// The query inputs to search with.
@@ -25,6 +23,7 @@ public record SearchRecordsRequest
     [JsonPropertyName("rerank")]
     public SearchRecordsRequestRerank? Rerank { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

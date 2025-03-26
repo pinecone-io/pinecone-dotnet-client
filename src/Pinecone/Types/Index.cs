@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using OneOf;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
+/// <summary>
+/// The IndexModel describes the configuration and status of a Pinecone index.
+/// </summary>
 public record Index
 {
     /// <summary>
@@ -53,6 +55,14 @@ public record Index
     [JsonPropertyName("vector_type")]
     public required VectorType VectorType { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

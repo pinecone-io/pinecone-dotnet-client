@@ -1,7 +1,6 @@
+using System.Text.Json.Serialization;
 using Pinecone.Core;
 using Proto = Pinecone.Grpc;
-
-#nullable enable
 
 namespace Pinecone;
 
@@ -10,24 +9,23 @@ public record ListRequest
     /// <summary>
     /// The vector IDs to fetch. Does not accept values containing spaces.
     /// </summary>
+    [JsonIgnore]
     public string? Prefix { get; set; }
 
     /// <summary>
     /// Max number of ids to return
     /// </summary>
+    [JsonIgnore]
     public uint? Limit { get; set; }
 
     /// <summary>
     /// Pagination token to continue a previous listing operation
     /// </summary>
+    [JsonIgnore]
     public string? PaginationToken { get; set; }
 
+    [JsonIgnore]
     public string? Namespace { get; set; }
-
-    public override string ToString()
-    {
-        return JsonUtils.Serialize(this);
-    }
 
     /// <summary>
     /// Maps the ListRequest type into its Protobuf-equivalent representation.
@@ -52,5 +50,11 @@ public record ListRequest
             result.Namespace = Namespace ?? "";
         }
         return result;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
     }
 }

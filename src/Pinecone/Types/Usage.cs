@@ -1,8 +1,7 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
@@ -14,17 +13,27 @@ public record Usage
     [JsonPropertyName("readUnits")]
     public uint? ReadUnits { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new Usage type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Usage FromProto(ProtoGrpc.Usage value)
     {
-        return JsonUtils.Serialize(this);
+        return new Usage { ReadUnits = value.ReadUnits };
     }
 
     /// <summary>
     /// Maps the Usage type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.Usage ToProto()
+    internal ProtoGrpc.Usage ToProto()
     {
-        var result = new Proto.Usage();
+        var result = new ProtoGrpc.Usage();
         if (ReadUnits != null)
         {
             result.ReadUnits = ReadUnits ?? 0;
@@ -32,11 +41,9 @@ public record Usage
         return result;
     }
 
-    /// <summary>
-    /// Returns a new Usage type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static Usage FromProto(Proto.Usage value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new Usage { ReadUnits = value.ReadUnits };
+        return JsonUtils.Serialize(this);
     }
 }

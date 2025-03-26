@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record CreateCollectionRequest
@@ -19,6 +17,7 @@ public record CreateCollectionRequest
     [JsonPropertyName("source")]
     public required string Source { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

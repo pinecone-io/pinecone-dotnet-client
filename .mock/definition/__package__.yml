@@ -23,7 +23,7 @@ errors:
         name: Internal server error
   BadRequestError:
     status-code: 400
-    type: ErrorResponse
+    type: unknown
     docs: Bad request. The request body included invalid request parameters.
     examples:
       - value:
@@ -1738,69 +1738,41 @@ types:
       next: optional<string>
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
-  SearchRecordsRequestQuery:
-    docs: The query inputs to search with.
+  UpsertRecord:
+    docs: The request for the `upsert` operation.
     properties:
-      top_k:
-        type: integer
-        docs: The number of results to return for each search.
-      filter:
-        type: optional<map<string, unknown>>
-        docs: The filter to apply.
-      inputs: optional<EmbedInputs>
-      vector: optional<SearchRecordsVector>
-      id:
-        type: optional<string>
-        docs: The unique ID of the vector to be used as a query vector.
-        validation:
-          maxLength: 512
-    source:
-      openapi: ../data-plane/openapi/openapi.yml
-    inline: true
-  SearchRecordsRequestRerank:
-    docs: Parameters for reranking the initial search results.
-    properties:
-      model:
+      _id:
         type: string
-        docs: >-
-          The name of the [reranking
-          model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
-          to use.
-      rank_fields:
-        docs: The fields to use for reranking.
-        type: list<string>
-      top_n:
-        type: optional<integer>
-        docs: >-
-          The number of top results to return after reranking. Defaults to
-          top_k.
-      parameters:
-        type: optional<map<string, unknown>>
-        docs: >-
-          Additional model-specific parameters. Refer to the [model
-          guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
-          for available model parameters.
-      query:
-        type: optional<string>
-        docs: >-
-          The query to rerank documents against. If a specific rerank query is
-          specified,  it overwrites the query input that was provided at the top
-          level.
+        docs: The unique ID of the record to upsert.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  SearchRecordsResponseResult:
+    properties:
+      hits:
+        docs: The hits for the search document request.
+        type: list<Hit>
     source:
       openapi: ../data-plane/openapi/openapi.yml
     inline: true
-  SearchRecordsRequest:
-    docs: A search request for records in a specific namespace.
+  SearchRecordsResponse:
+    docs: The records search response.
     properties:
-      query:
-        type: SearchRecordsRequestQuery
-        docs: The query inputs to search with.
+      result: SearchRecordsResponseResult
+      usage: SearchUsage
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+  Hit:
+    docs: A record whose vector values are similar to the provided search query.
+    properties:
+      _id:
+        type: string
+        docs: The record id of the search hit.
+      _score:
+        type: float
+        docs: The similarity score of the returned record.
       fields:
-        type: optional<list<string>>
-        docs: The fields to return in the search results.
-      rerank:
-        type: optional<SearchRecordsRequestRerank>
-        docs: Parameters for reranking the initial search results.
+        type: map<string, unknown>
+        docs: The selected record fields associated with the search hit.
     source:
       openapi: ../data-plane/openapi/openapi.yml
   SearchUsage:
@@ -1842,6 +1814,7 @@ types:
         docs: The sparse embedding indices.
     source:
       openapi: ../data-plane/openapi/openapi.yml
+  SearchRequest: unknown
   Document:
     type: map<string, unknown>
     docs: Document for reranking
@@ -2010,6 +1983,19 @@ types:
         docs: The usage for this operation.
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+  FieldBehavior:
+    enum:
+      - FIELD_BEHAVIOR_UNSPECIFIED
+      - OPTIONAL
+      - REQUIRED
+      - OUTPUT_ONLY
+      - INPUT_ONLY
+      - IMMUTABLE
+      - UNORDERED_LIST
+      - NON_EMPTY_DEFAULT
+      - IDENTIFIER
+    source:
+      proto: ../vector-service/proto/google/api/field_behavior.proto
   ListItem:
     properties:
       id: optional<string>

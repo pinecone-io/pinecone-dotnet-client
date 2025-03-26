@@ -1,30 +1,41 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// The response for the `Delete` operation.
+/// </summary>
 public record DeleteResponse
 {
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new DeleteResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static DeleteResponse FromProto(ProtoGrpc.DeleteResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new DeleteResponse();
     }
 
     /// <summary>
     /// Maps the DeleteResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.DeleteResponse ToProto()
+    internal ProtoGrpc.DeleteResponse ToProto()
     {
-        return new Proto.DeleteResponse();
+        return new ProtoGrpc.DeleteResponse();
     }
 
-    /// <summary>
-    /// Returns a new DeleteResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static DeleteResponse FromProto(Proto.DeleteResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new DeleteResponse();
+        return JsonUtils.Serialize(this);
     }
 }

@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record StartImportRequest
@@ -22,6 +20,7 @@ public record StartImportRequest
     [JsonPropertyName("errorMode")]
     public ImportErrorMode? ErrorMode { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

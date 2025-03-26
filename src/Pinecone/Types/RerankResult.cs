@@ -1,10 +1,12 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
+/// <summary>
+/// The result of a reranking request.
+/// </summary>
 public record RerankResult
 {
     /// <summary>
@@ -25,6 +27,14 @@ public record RerankResult
     [JsonPropertyName("usage")]
     public required RerankResultUsage Usage { get; set; }
 
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

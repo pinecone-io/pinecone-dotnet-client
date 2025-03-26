@@ -1,11 +1,13 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+/// <summary>
+/// A single query vector within a `QueryRequest`.
+/// </summary>
 public record QueryVector
 {
     /// <summary>
@@ -38,17 +40,35 @@ public record QueryVector
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
 
-    public override string ToString()
+    /// <summary>
+    /// Additional properties received from the response, if any.
+    /// </summary>
+    [JsonExtensionData]
+    public IDictionary<string, JsonElement> AdditionalProperties { get; internal set; } =
+        new Dictionary<string, JsonElement>();
+
+    /// <summary>
+    /// Returns a new QueryVector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static QueryVector FromProto(ProtoGrpc.QueryVector value)
     {
-        return JsonUtils.Serialize(this);
+        return new QueryVector
+        {
+            Values = value.Values?.ToArray(),
+            SparseValues =
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            TopK = value.TopK,
+            Namespace = value.Namespace,
+            Filter = value.Filter != null ? Metadata.FromProto(value.Filter) : null,
+        };
     }
 
     /// <summary>
     /// Maps the QueryVector type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.QueryVector ToProto()
+    internal ProtoGrpc.QueryVector ToProto()
     {
-        var result = new Proto.QueryVector();
+        var result = new ProtoGrpc.QueryVector();
         if (Values != null && !Values.Value.IsEmpty)
         {
             result.Values.AddRange(Values.Value.ToArray());
@@ -72,19 +92,9 @@ public record QueryVector
         return result;
     }
 
-    /// <summary>
-    /// Returns a new QueryVector type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static QueryVector FromProto(Proto.QueryVector value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new QueryVector
-        {
-            Values = value.Values?.ToArray(),
-            SparseValues =
-                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
-            TopK = value.TopK,
-            Namespace = value.Namespace,
-            Filter = value.Filter != null ? Metadata.FromProto(value.Filter) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

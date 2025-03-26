@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
+using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -12,73 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class DescribeIndexTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string mockResponse = """
-            {
-              "name": "x",
-              "dimension": 20000,
-              "metric": "cosine",
-              "host": "host",
-              "deletion_protection": "disabled",
-              "tags": {
-                "tags": "tags"
-              },
-              "embed": {
-                "model": "model",
-                "metric": "cosine",
-                "dimension": 20000,
-                "vector_type": "dense",
-                "field_map": {
-                  "field_map": {
-                    "key": "value"
-                  }
-                },
-                "read_parameters": {
-                  "read_parameters": {
-                    "key": "value"
-                  }
-                },
-                "write_parameters": {
-                  "write_parameters": {
-                    "key": "value"
-                  }
-                }
-              },
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "region"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "Initializing"
-              },
-              "vector_type": "dense"
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/indexes/index_name").UsingGet()
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.DescribeIndexAsync("index_name", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest_1()
     {
         const string mockResponse = """
             {
@@ -132,15 +63,15 @@ public class DescribeIndexTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.DescribeIndexAsync("test-index", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.DescribeIndexAsync("test-index");
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_3()
+    public async global::System.Threading.Tasks.Task MockServerTest_2()
     {
         const string mockResponse = """
             {
@@ -205,10 +136,10 @@ public class DescribeIndexTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.DescribeIndexAsync("test-index", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.DescribeIndexAsync("test-index");
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 }

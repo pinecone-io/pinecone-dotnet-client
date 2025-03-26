@@ -1,0 +1,117 @@
+imports:
+  root: ../__package__.yml
+types:
+  SearchRecordsRequestQuery:
+    docs: The query inputs to search with.
+    properties:
+      top_k:
+        type: integer
+        docs: The number of results to return for each search.
+      filter:
+        type: optional<map<string, unknown>>
+        docs: The filter to apply.
+      inputs: optional<root.EmbedInputs>
+      vector: optional<root.SearchRecordsVector>
+      id:
+        type: optional<string>
+        docs: The unique ID of the vector to be used as a query vector.
+        validation:
+          maxLength: 512
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+    inline: true
+  SearchRecordsRequestRerank:
+    docs: Parameters for reranking the initial search results.
+    properties:
+      model:
+        type: string
+        docs: >-
+          The name of the [reranking
+          model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          to use.
+      rank_fields:
+        docs: The fields to use for reranking.
+        type: list<string>
+      top_n:
+        type: optional<integer>
+        docs: >-
+          The number of top results to return after reranking. Defaults to
+          top_k.
+      parameters:
+        type: optional<map<string, unknown>>
+        docs: >-
+          Additional model-specific parameters. Refer to the [model
+          guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          for available model parameters.
+      query:
+        type: optional<string>
+        docs: >-
+          The query to rerank documents against. If a specific rerank query is
+          specified,  it overwrites the query input that was provided at the top
+          level.
+    source:
+      openapi: ../data-plane/openapi/openapi.yml
+    inline: true
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    searchNamespace:
+      path: /records/namespaces/{namespace}/search
+      method: POST
+      auth: true
+      docs: >-
+        This operation converts a query to a vector embedding and then searches
+        a namespace using the embedding. It returns the most similar records in
+        the namespace, along with their similarity scores.
+      source:
+        openapi: ../data-plane/openapi/openapi.yml
+      path-parameters:
+        namespace:
+          type: string
+          docs: The namespace to search.
+      display-name: Search a namespace
+      request:
+        name: SearchRecordsNamespaceRequest
+        body:
+          properties:
+            query:
+              type: SearchRecordsRequestQuery
+              docs: The query inputs to search with.
+            fields:
+              type: optional<list<string>>
+              docs: The fields to return in the search results.
+            rerank:
+              type: optional<SearchRecordsRequestRerank>
+              docs: Parameters for reranking the initial search results.
+        content-type: application/json
+      response:
+        docs: A successful search namespace response.
+        type: root.SearchRecordsResponse
+        status-code: 200
+      errors:
+        - root.BadRequestError
+      examples:
+        - path-parameters:
+            namespace: namespace
+          request:
+            query:
+              top_k: 10
+              inputs:
+                text: your query text
+            fields:
+              - chunk_text
+          response:
+            body:
+              result:
+                hits:
+                  - _id: example-record-1
+                    _score: 0.9281134605407715
+                    fields:
+                      data: your example text
+              usage:
+                read_units: 5
+                embed_total_tokens: 10
+                rerank_units: 1
+  source:
+    openapi: ../data-plane/openapi/openapi.yml
