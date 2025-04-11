@@ -1,8 +1,5 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using Pinecone;
 using Pinecone.Core;
 
 #nullable enable
@@ -80,10 +77,11 @@ public class EmbedTest : BaseMockServerTest
             },
             RequestOptions
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<EmbeddingsList>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
@@ -146,9 +144,10 @@ public class EmbedTest : BaseMockServerTest
             },
             RequestOptions
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<EmbeddingsList>(mockResponse)).UsingDefaults()
+        );
     }
 }

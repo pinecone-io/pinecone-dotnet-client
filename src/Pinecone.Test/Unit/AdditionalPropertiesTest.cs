@@ -1,7 +1,5 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Pinecone.Core;
 
 namespace Pinecone.Test.Unit;
 
@@ -12,40 +10,21 @@ public class AdditionalPropertiesTest
     [Test]
     public void TestSerialization()
     {
-        var inputJson =
-            @"
-        {
-  ""cloud"": ""aws"",
-  ""region"": ""us-east-1"",
-  ""extra"": ""value""
-}
-";
-
-        var expectedJson =
-            @"
-        {
-  ""cloud"": ""aws"",
-  ""region"": ""us-east-1""
-}
-";
+        const string actualJson = """
+            {
+              "cloud": "aws",
+              "region": "us-east-1",
+              "extra": "value"
+            }
+            """;
 
         var expectedObject = new ServerlessSpec
         {
             Cloud = ServerlessSpecCloud.Aws,
-            Region = "us-east-1"
+            Region = "us-east-1",
         };
 
-        var serializerOptions = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-
-        var deserializedObject = JsonSerializer.Deserialize<ServerlessSpec>(
-            inputJson,
-            serializerOptions
-        );
-
-        var serializedJson = JsonSerializer.Serialize(deserializedObject, serializerOptions);
-        Assert.That(JToken.DeepEquals(JToken.Parse(expectedJson), JToken.Parse(serializedJson)));
+        var actualObject = JsonUtils.Deserialize<ServerlessSpec>(actualJson);
+        Assert.That(actualObject, Is.EqualTo(expectedObject).UsingDefaults());
     }
 }
