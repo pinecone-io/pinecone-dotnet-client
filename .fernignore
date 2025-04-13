@@ -1,14 +1,18 @@
 # Specify files that shouldn't be modified by Fern
 
 src/Pinecone/PineconeClient.cs
+src/Pinecone/Core/NdJsonRequest.cs
+src/Pinecone/Core/NdJsonContent.cs
 src/Pinecone/Core/Public/SourceTagOption.cs
 src/Pinecone/Core/Public/IsTlsEnabledOption.cs
 src/Pinecone/Types/Embedding.cs
+src/Pinecone/Index/IndexClientExtended.cs
 src/Pinecone.Test/Integration
 src/Pinecone.Test/Unit/EmbeddingTest.cs
 src/Pinecone.Test/Unit/AdditionalPropertiesTest.cs
 src/Pinecone.Test/Unit/UserAgentTest.cs
 src/Pinecone.Test/Unit/UnexpectedErrorTest.cs
+src/Pinecone.Test/Unit/NdJsonContentTest.cs
 src/Pinecone.Test/Unit/MockServer/EmbedTest.cs
 .github/workflows/ci.yml
 CONTRIBUTING.md
