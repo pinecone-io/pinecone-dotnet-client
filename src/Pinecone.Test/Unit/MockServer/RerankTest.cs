@@ -1,11 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
 using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -13,109 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class RerankTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string requestJson = """
-            {
-              "model": "model",
-              "query": "query",
-              "documents": [
-                {
-                  "documents": {
-                    "key": "value"
-                  }
-                },
-                {
-                  "documents": {
-                    "key": "value"
-                  }
-                }
-              ]
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "model": "model",
-              "data": [
-                {
-                  "index": 1,
-                  "score": 1.1,
-                  "document": {
-                    "document": {
-                      "key": "value"
-                    }
-                  }
-                },
-                {
-                  "index": 1,
-                  "score": 1.1,
-                  "document": {
-                    "document": {
-                      "key": "value"
-                    }
-                  }
-                }
-              ],
-              "usage": {
-                "rerank_units": 1
-              }
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/rerank")
-                    .WithHeader("Content-Type", "application/json")
-                    .UsingPost()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.Inference.RerankAsync(
-            new RerankRequest
-            {
-                Model = "model",
-                Query = "query",
-                TopN = null,
-                ReturnDocuments = null,
-                RankFields = null,
-                Documents = new List<Dictionary<string, object?>>()
-                {
-                    new Dictionary<string, object>()
-                    {
-                        {
-                            "documents",
-                            new Dictionary<object, object?>() { { "key", "value" } }
-                        },
-                    },
-                    new Dictionary<string, object>()
-                    {
-                        {
-                            "documents",
-                            new Dictionary<object, object?>() { { "key", "value" } }
-                        },
-                    },
-                },
-                Parameters = null,
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest()
     {
         const string requestJson = """
             {
@@ -184,12 +78,11 @@ public class RerankTest : BaseMockServerTest
                         { "url", "https://example.com" },
                     },
                 },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<RerankResult>(mockResponse)).UsingDefaults()
+        );
     }
 }

@@ -1,13 +1,16 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record Vector
+public record Vector : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// This is the vector's unique id.
     /// </summary>
@@ -32,17 +35,33 @@ public record Vector
     [JsonPropertyName("metadata")]
     public Metadata? Metadata { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new Vector type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Vector FromProto(ProtoGrpc.Vector value)
     {
-        return JsonUtils.Serialize(this);
+        return new Vector
+        {
+            Id = value.Id,
+            Values = value.Values?.ToArray(),
+            SparseValues =
+                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
+            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
+        };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the Vector type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.Vector ToProto()
+    internal ProtoGrpc.Vector ToProto()
     {
-        var result = new Proto.Vector();
+        var result = new ProtoGrpc.Vector();
         result.Id = Id;
         if (Values != null && !Values.Value.IsEmpty)
         {
@@ -59,18 +78,9 @@ public record Vector
         return result;
     }
 
-    /// <summary>
-    /// Returns a new Vector type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static Vector FromProto(Proto.Vector value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new Vector
-        {
-            Id = value.Id,
-            Values = value.Values?.ToArray(),
-            SparseValues =
-                value.SparseValues != null ? SparseValues.FromProto(value.SparseValues) : null,
-            Metadata = value.Metadata != null ? Metadata.FromProto(value.Metadata) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

@@ -1,30 +1,45 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record UpsertResponse
+/// <summary>
+/// The response for the `upsert` operation.
+/// </summary>
+public record UpsertResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The number of vectors upserted.
     /// </summary>
     [JsonPropertyName("upsertedCount")]
     public uint? UpsertedCount { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new UpsertResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static UpsertResponse FromProto(ProtoGrpc.UpsertResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new UpsertResponse { UpsertedCount = value.UpsertedCount };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the UpsertResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.UpsertResponse ToProto()
+    internal ProtoGrpc.UpsertResponse ToProto()
     {
-        var result = new Proto.UpsertResponse();
+        var result = new ProtoGrpc.UpsertResponse();
         if (UpsertedCount != null)
         {
             result.UpsertedCount = UpsertedCount ?? 0;
@@ -32,11 +47,9 @@ public record UpsertResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new UpsertResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static UpsertResponse FromProto(Proto.UpsertResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new UpsertResponse { UpsertedCount = value.UpsertedCount };
+        return JsonUtils.Serialize(this);
     }
 }

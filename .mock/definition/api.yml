@@ -2,9 +2,9 @@ name: api
 error-discrimination:
   strategy: status-code
 display-name: Pinecone Control Plane API
-default-environment: Default
 environments:
   Default: https://api.pinecone.io
+default-environment: Default
 headers:
   X-Pinecone-API-Version:
     name: version

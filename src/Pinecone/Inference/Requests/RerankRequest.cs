@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record RerankRequest
@@ -50,6 +48,7 @@ public record RerankRequest
     [JsonPropertyName("parameters")]
     public Dictionary<string, object?>? Parameters { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

@@ -1,12 +1,18 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
-public record ModelIndexEmbed
+/// <summary>
+/// The embedding model and document fields mapped to embedding inputs.
+/// </summary>
+public record ModelIndexEmbed : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The name of the embedding model used to create the index.
     /// </summary>
@@ -49,6 +55,13 @@ public record ModelIndexEmbed
     [JsonPropertyName("write_parameters")]
     public Dictionary<string, object?>? WriteParameters { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

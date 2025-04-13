@@ -798,6 +798,79 @@ await client.Index.CancelBulkImportAsync("101");
 </dl>
 </details>
 
+<details><summary><code>client.Index.<a href="/src/Pinecone/Index/IndexClient.cs">SearchRecordsAsync</a>(namespace_, SearchRecordsRequest { ... }) -> SearchRecordsResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+This operation converts a query to a vector embedding and then searches a namespace using the embedding. It returns the most similar records in the namespace, along with their similarity scores.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Index.SearchRecordsAsync(
+    "namespace",
+    new SearchRecordsRequest
+    {
+        Query = new SearchRecordsRequestQuery
+        {
+            TopK = 10,
+            Inputs = new Dictionary<string, object>() { { "text", "your query text" } },
+        },
+        Fields = new List<string>() { "chunk_text" },
+    }
+);
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**namespace_:** `string` — The namespace to search.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `SearchRecordsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.Index.<a href="/src/Pinecone/Index/IndexClient.cs">DescribeIndexStatsAsync</a>(DescribeIndexStatsRequest { ... }) -> DescribeIndexStatsResponse</code></summary>
 <dl>
 <dd>

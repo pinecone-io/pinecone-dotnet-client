@@ -1,11 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
 using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -13,118 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class CreateIndexForModelTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string requestJson = """
-            {
-              "name": "x",
-              "cloud": "gcp",
-              "region": "region",
-              "embed": {
-                "model": "model",
-                "field_map": {
-                  "field_map": {
-                    "key": "value"
-                  }
-                }
-              }
-            }
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "x",
-              "dimension": 20000,
-              "metric": "cosine",
-              "host": "host",
-              "deletion_protection": "disabled",
-              "tags": {
-                "tags": "tags"
-              },
-              "embed": {
-                "model": "model",
-                "metric": "cosine",
-                "dimension": 20000,
-                "vector_type": "dense",
-                "field_map": {
-                  "field_map": {
-                    "key": "value"
-                  }
-                },
-                "read_parameters": {
-                  "read_parameters": {
-                    "key": "value"
-                  }
-                },
-                "write_parameters": {
-                  "write_parameters": {
-                    "key": "value"
-                  }
-                }
-              },
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "region"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "Initializing"
-              },
-              "vector_type": "dense"
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/create-for-model")
-                    .WithHeader("Content-Type", "application/json")
-                    .UsingPost()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.CreateIndexForModelAsync(
-            new CreateIndexForModelRequest
-            {
-                Name = "x",
-                Cloud = CreateIndexForModelRequestCloud.Gcp,
-                Region = "region",
-                DeletionProtection = null,
-                Tags = null,
-                Embed = new CreateIndexForModelRequestEmbed
-                {
-                    Model = "model",
-                    Metric = null,
-                    FieldMap = new Dictionary<string, object>()
-                    {
-                        {
-                            "field_map",
-                            new Dictionary<object, object?>() { { "key", "value" } }
-                        },
-                    },
-                    ReadParameters = null,
-                    WriteParameters = null,
-                },
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest()
     {
         const string requestJson = """
             {
@@ -212,12 +97,11 @@ public class CreateIndexForModelTest : BaseMockServerTest
                     Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
                     FieldMap = new Dictionary<string, object>() { { "text", "your-text-field" } },
                 },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 }

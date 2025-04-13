@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record ConfigureIndexRequest
@@ -26,6 +24,7 @@ public record ConfigureIndexRequest
     [JsonPropertyName("embed")]
     public ConfigureIndexRequestEmbed? Embed { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

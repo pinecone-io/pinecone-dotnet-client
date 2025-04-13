@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record QueryRequest
@@ -62,11 +60,6 @@ public record QueryRequest
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
-    public override string ToString()
-    {
-        return JsonUtils.Serialize(this);
-    }
-
     /// <summary>
     /// Maps the QueryRequest type into its Protobuf-equivalent representation.
     /// </summary>
@@ -107,5 +100,11 @@ public record QueryRequest
             result.Id = Id ?? "";
         }
         return result;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
     }
 }

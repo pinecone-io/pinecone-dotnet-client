@@ -1,13 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record FetchResponse
+/// <summary>
+/// The response for the `fetch` operation.
+/// </summary>
+public record FetchResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The fetched vectors, in the form of a map between the fetched ids and the fetched vectors
     /// </summary>
@@ -26,17 +32,34 @@ public record FetchResponse
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new FetchResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static FetchResponse FromProto(ProtoGrpc.FetchResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new FetchResponse
+        {
+            Vectors = value.Vectors?.ToDictionary(
+                kvp => kvp.Key,
+                kvp => Vector.FromProto(kvp.Value)
+            ),
+            Namespace = value.Namespace,
+            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
+        };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the FetchResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.FetchResponse ToProto()
+    internal ProtoGrpc.FetchResponse ToProto()
     {
-        var result = new Proto.FetchResponse();
+        var result = new ProtoGrpc.FetchResponse();
         if (Vectors != null && Vectors.Any())
         {
             foreach (var kvp in Vectors)
@@ -56,19 +79,9 @@ public record FetchResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new FetchResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static FetchResponse FromProto(Proto.FetchResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new FetchResponse
-        {
-            Vectors = value.Vectors?.ToDictionary(
-                kvp => kvp.Key,
-                kvp => Vector.FromProto(kvp.Value)
-            ),
-            Namespace = value.Namespace,
-            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

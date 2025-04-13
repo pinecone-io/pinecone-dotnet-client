@@ -1,13 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using OneOf;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
-public record Index
+/// <summary>
+/// The IndexModel describes the configuration and status of a Pinecone index.
+/// </summary>
+public record Index : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The name of the index. Resource name must be 1-45 characters long, start and end with an alphanumeric character, and consist only of lower case alphanumeric characters or '-'.
     /// </summary>
@@ -53,6 +59,13 @@ public record Index
     [JsonPropertyName("vector_type")]
     public required VectorType VectorType { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);
