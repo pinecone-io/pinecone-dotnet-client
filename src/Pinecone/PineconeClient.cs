@@ -88,7 +88,7 @@ public class PineconeClient : BasePinecone
 
     private static string NormalizeHost(string host, bool isTlsEnabled)
     {
-        if(host.StartsWith("http://") || host.StartsWith("https://"))
+        if (host.StartsWith("http://") || host.StartsWith("https://"))
         {
             return host;
         }

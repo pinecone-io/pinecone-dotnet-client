@@ -8,8 +8,7 @@ namespace Pinecone.Test.Unit;
 [TestFixture]
 public class EmbeddingTest
 {
-    private const string DenseJson =
-        """
+    private const string DenseJson = """
         {
           "vector_type": "dense",
           "values": [
@@ -41,8 +40,7 @@ public class EmbeddingTest
         });
     }
 
-    private const string SparseJson =
-        """
+    private const string SparseJson = """
         {
           "vector_type": "sparse",
           "sparse_values": [
@@ -85,8 +83,7 @@ public class EmbeddingTest
         });
     }
 
-    private const string NullVectorTypeJson =
-        """
+    private const string NullVectorTypeJson = """
         {
           "vector_type": null,
           "values": []
@@ -96,12 +93,16 @@ public class EmbeddingTest
     [Test]
     public void ShouldThrowExceptionForNullVectorType()
     {
-        var exception = Assert.Throws<JsonException>(() => JsonUtils.Deserialize<Embedding>(NullVectorTypeJson));
-        Assert.That(exception.Message, Is.EqualTo($"Discriminator property '{Embedding.DiscriminatorName}' is null"));
+        var exception = Assert.Throws<JsonException>(
+            () => JsonUtils.Deserialize<Embedding>(NullVectorTypeJson)
+        );
+        Assert.That(
+            exception.Message,
+            Is.EqualTo($"Discriminator property '{Embedding.DiscriminatorName}' is null")
+        );
     }
 
-    private const string NoVectorTypeJson =
-        """
+    private const string NoVectorTypeJson = """
         {
           "values": []
         }
@@ -110,12 +111,16 @@ public class EmbeddingTest
     [Test]
     public void ShouldThrowExceptionForMissingVectorType()
     {
-        var exception = Assert.Throws<JsonException>(() => JsonUtils.Deserialize<Embedding>(NoVectorTypeJson));
-        Assert.That(exception.Message, Is.EqualTo($"Missing discriminator property '{Embedding.DiscriminatorName}'"));
+        var exception = Assert.Throws<JsonException>(
+            () => JsonUtils.Deserialize<Embedding>(NoVectorTypeJson)
+        );
+        Assert.That(
+            exception.Message,
+            Is.EqualTo($"Missing discriminator property '{Embedding.DiscriminatorName}'")
+        );
     }
 
-    private const string UnexpectedVectorTypeJson =
-        """
+    private const string UnexpectedVectorTypeJson = """
         {
           "vector_type": "unexpected",
           "values": []
@@ -125,12 +130,18 @@ public class EmbeddingTest
     [Test]
     public void ShouldThrowExceptionForUnexpectedVectorType()
     {
-        var exception = Assert.Throws<JsonException>(() => JsonUtils.Deserialize<Embedding>(UnexpectedVectorTypeJson));
-        Assert.That(exception.Message, Is.EqualTo($"Discriminator property '{Embedding.DiscriminatorName}' is unexpected value 'unexpected'"));
+        var exception = Assert.Throws<JsonException>(
+            () => JsonUtils.Deserialize<Embedding>(UnexpectedVectorTypeJson)
+        );
+        Assert.That(
+            exception.Message,
+            Is.EqualTo(
+                $"Discriminator property '{Embedding.DiscriminatorName}' is unexpected value 'unexpected'"
+            )
+        );
     }
 
-    private const string InvalidVectorTypeJson =
-        """
+    private const string InvalidVectorTypeJson = """
         {
           "vector_type": 123,
           "values": []
@@ -140,12 +151,18 @@ public class EmbeddingTest
     [Test]
     public void ShouldThrowExceptionForInvalidVectorType()
     {
-        var exception = Assert.Throws<JsonException>(() => JsonUtils.Deserialize<Embedding>(InvalidVectorTypeJson));
-        Assert.That(exception.Message, Is.EqualTo($"Discriminator property '{Embedding.DiscriminatorName}' is not a string, instead is 123"));
+        var exception = Assert.Throws<JsonException>(
+            () => JsonUtils.Deserialize<Embedding>(InvalidVectorTypeJson)
+        );
+        Assert.That(
+            exception.Message,
+            Is.EqualTo(
+                $"Discriminator property '{Embedding.DiscriminatorName}' is not a string, instead is 123"
+            )
+        );
     }
 
-    private const string SparseListJson =
-        """
+    private const string SparseListJson = """
         {
           "model": "multilingual-e5-large",
           "vector_type": "sparse",
@@ -203,8 +220,7 @@ public class EmbeddingTest
         });
     }
 
-    private const string DenseListJson =
-        """
+    private const string DenseListJson = """
         {
           "model": "multilingual-e5-large",
           "vector_type": "dense",

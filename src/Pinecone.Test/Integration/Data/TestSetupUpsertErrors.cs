@@ -13,16 +13,18 @@ public class TestSetupUpsertErrors : BaseTest
         var e = Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
             var index = pinecone.Index(null, IndexHost);
-            await index.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await index
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
-                        new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
+                        Vectors = new List<Vector>
+                        {
+                            new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
+                            new() { Id = "2", Values = Helpers.EmbeddingValues(3) },
+                        },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
         Assert.That(e.StatusCode, Is.EqualTo(7));
     }
@@ -32,16 +34,18 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
-                        new() { Id = "2", Values = Helpers.EmbeddingValues(3) }
+                        Vectors = new List<Vector>
+                        {
+                            new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
+                            new() { Id = "2", Values = Helpers.EmbeddingValues(3) },
+                        },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
     }
 
@@ -50,46 +54,50 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new()
+                        Vectors = new List<Vector>
                         {
-                            Id = "1",
-                            Values = Helpers.EmbeddingValues(2),
-                            SparseValues = new SparseValues
+                            new()
                             {
-                                Indices = new List<uint> { 0 },
-                                Values = Helpers.EmbeddingValues(2)
-                            }
-                        }
+                                Id = "1",
+                                Values = Helpers.EmbeddingValues(2),
+                                SparseValues = new SparseValues
+                                {
+                                    Indices = new List<uint> { 0 },
+                                    Values = Helpers.EmbeddingValues(2),
+                                },
+                            },
+                        },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
 
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new()
+                        Vectors = new List<Vector>
                         {
-                            Id = "1",
-                            Values = Helpers.EmbeddingValues(2),
-                            SparseValues = new SparseValues
+                            new()
                             {
-                                Indices = new List<uint> { 0, 1 },
-                                Values = Helpers.EmbeddingValues(1)
-                            }
-                        }
+                                Id = "1",
+                                Values = Helpers.EmbeddingValues(2),
+                                SparseValues = new SparseValues
+                                {
+                                    Indices = new List<uint> { 0, 1 },
+                                    Values = Helpers.EmbeddingValues(1),
+                                },
+                            },
+                        },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
     }
 
@@ -98,32 +106,34 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new()
+                        Vectors = new List<Vector>
                         {
-                            Id = "1",
-                            SparseValues = new SparseValues
+                            new()
                             {
-                                Indices = new List<uint> { 0 },
-                                Values = Helpers.EmbeddingValues(1)
-                            }
+                                Id = "1",
+                                SparseValues = new SparseValues
+                                {
+                                    Indices = new List<uint> { 0 },
+                                    Values = Helpers.EmbeddingValues(1),
+                                },
+                            },
+                            new()
+                            {
+                                Id = "2",
+                                SparseValues = new SparseValues
+                                {
+                                    Indices = new List<uint> { 0, 1, 2 },
+                                    Values = Helpers.EmbeddingValues(3),
+                                },
+                            },
                         },
-                        new()
-                        {
-                            Id = "2",
-                            SparseValues = new SparseValues
-                            {
-                                Indices = new List<uint> { 0, 1, 2 },
-                                Values = Helpers.EmbeddingValues(3)
-                            }
-                        }
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
     }
 
@@ -132,16 +142,18 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    Vectors = new List<Vector>
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
                     {
-                        new() { Id = "1" },
-                        new() { Id = "2" }
+                        Vectors = new List<Vector>
+                        {
+                            new() { Id = "1" },
+                            new() { Id = "2" },
+                        },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         });
     }
 
@@ -150,7 +162,9 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() }).ConfigureAwait(false);
+            await IndexClient
+                .UpsertAsync(new UpsertRequest { Vectors = new List<Vector>() })
+                .ConfigureAwait(false);
         });
     }
 
@@ -159,12 +173,14 @@ public class TestSetupUpsertErrors : BaseTest
     {
         Assert.ThrowsAsync<PineconeApiException>(async () =>
         {
-            await IndexClient.UpsertAsync(
-                new UpsertRequest
-                {
-                    // Missing the Vectors field entirely
-                }
-            ).ConfigureAwait(false);
+            await IndexClient
+                .UpsertAsync(
+                    new UpsertRequest
+                    {
+                        // Missing the Vectors field entirely
+                    }
+                )
+                .ConfigureAwait(false);
         });
     }
 }

@@ -8,22 +8,20 @@ public class TestConfigurePodIndex : BaseTest
     public async Task TestConfigurePodIndexSucceeds()
     {
         var indexName = Helpers.GenerateIndexName("test-configure-pod-index-succeeds");
-        await Helpers.CreatePodIndexAndWaitUntilReady(
-            Client,
-            indexName,
-            Environment,
-            Dimension,
-            Metric
-        ).ConfigureAwait(false);
-        await Client.ConfigureIndexAsync(
-            indexName,
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
+        await Helpers
+            .CreatePodIndexAndWaitUntilReady(Client, indexName, Environment, Dimension, Metric)
+            .ConfigureAwait(false);
+        await Client
+            .ConfigureIndexAsync(
+                indexName,
+                new ConfigureIndexRequest
                 {
-                    Pod = new ConfigureIndexRequestSpecPod { Replicas = 1, PodType = "p1.x1" }
+                    Spec = new ConfigureIndexRequestSpec
+                    {
+                        Pod = new ConfigureIndexRequestSpecPod { Replicas = 1, PodType = "p1.x1" },
+                    },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
     }
 }

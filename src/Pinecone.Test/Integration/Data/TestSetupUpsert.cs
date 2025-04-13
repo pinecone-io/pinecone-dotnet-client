@@ -12,51 +12,61 @@ public class TestSetupUpsert : BaseTest
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with tuples
-        await indexClient.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+        await indexClient
+            .UpsertAsync(
+                new UpsertRequest
                 {
-                    new() { Id = "1", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "2", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "3", Values = Helpers.EmbeddingValues() }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "1", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "2", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "3", Values = Helpers.EmbeddingValues() },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         // Upsert with objects
-        await indexClient.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+        await indexClient
+            .UpsertAsync(
+                new UpsertRequest
                 {
-                    new() { Id = "4", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "5", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "6", Values = Helpers.EmbeddingValues() }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "4", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "5", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "6", Values = Helpers.EmbeddingValues() },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         // Upsert with dictionary
-        await indexClient.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+        await indexClient
+            .UpsertAsync(
+                new UpsertRequest
                 {
-                    new() { Id = "7", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "8", Values = Helpers.EmbeddingValues() },
-                    new() { Id = "9", Values = Helpers.EmbeddingValues() }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "7", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "8", Values = Helpers.EmbeddingValues() },
+                        new() { Id = "9", Values = Helpers.EmbeddingValues() },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
-        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 9).ConfigureAwait(false);
+        await Helpers
+            .PollStatsForNamespaceAsync(indexClient, targetNamespace, 9)
+            .ConfigureAwait(false);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
+        var stats = await indexClient
+            .DescribeIndexStatsAsync(new DescribeIndexStatsRequest())
+            .ConfigureAwait(false);
         Assert.That(stats.TotalVectorCount, Is.EqualTo(9));
         Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(9));
     }
@@ -69,61 +79,69 @@ public class TestSetupUpsert : BaseTest
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with sparse values object
-        await indexClient.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+        await indexClient
+            .UpsertAsync(
+                new UpsertRequest
                 {
-                    new()
+                    Vectors = new List<Vector>
                     {
-                        Id = "1",
-                        Values = Helpers.EmbeddingValues(),
-                        SparseValues = new SparseValues
+                        new()
                         {
-                            Indices = new List<uint> { 0, 1 },
-                            Values = Helpers.EmbeddingValues()
-                        }
-                    }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                            Id = "1",
+                            Values = Helpers.EmbeddingValues(),
+                            SparseValues = new SparseValues
+                            {
+                                Indices = new List<uint> { 0, 1 },
+                                Values = Helpers.EmbeddingValues(),
+                            },
+                        },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         // Upsert with sparse values dictionary
-        await indexClient.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+        await indexClient
+            .UpsertAsync(
+                new UpsertRequest
                 {
-                    new()
+                    Vectors = new List<Vector>
                     {
-                        Id = "2",
-                        Values = Helpers.EmbeddingValues(),
-                        SparseValues = new SparseValues
+                        new()
                         {
-                            Indices = new List<uint> { 0, 1 },
-                            Values = Helpers.EmbeddingValues()
-                        }
+                            Id = "2",
+                            Values = Helpers.EmbeddingValues(),
+                            SparseValues = new SparseValues
+                            {
+                                Indices = new List<uint> { 0, 1 },
+                                Values = Helpers.EmbeddingValues(),
+                            },
+                        },
+                        new()
+                        {
+                            Id = "3",
+                            Values = Helpers.EmbeddingValues(),
+                            SparseValues = new SparseValues
+                            {
+                                Indices = new List<uint> { 0, 1 },
+                                Values = Helpers.EmbeddingValues(),
+                            },
+                        },
                     },
-                    new()
-                    {
-                        Id = "3",
-                        Values = Helpers.EmbeddingValues(),
-                        SparseValues = new SparseValues
-                        {
-                            Indices = new List<uint> { 0, 1 },
-                            Values = Helpers.EmbeddingValues()
-                        }
-                    }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
-        await Helpers.PollStatsForNamespaceAsync(indexClient, targetNamespace, 3).ConfigureAwait(false);
+        await Helpers
+            .PollStatsForNamespaceAsync(indexClient, targetNamespace, 3)
+            .ConfigureAwait(false);
 
         // Check the vector count reflects that some data has been upserted
-        var stats = await indexClient.DescribeIndexStatsAsync(new DescribeIndexStatsRequest()).ConfigureAwait(false);
+        var stats = await indexClient
+            .DescribeIndexStatsAsync(new DescribeIndexStatsRequest())
+            .ConfigureAwait(false);
         Assert.That(stats.TotalVectorCount, Is.EqualTo(3));
         Assert.That(stats.Namespaces![targetNamespace].VectorCount, Is.EqualTo(3));
     }
@@ -131,22 +149,24 @@ public class TestSetupUpsert : BaseTest
     private async Task<IndexClient> CreateIndexForTest()
     {
         var indexName = Helpers.GenerateIndexName("upsert-testing");
-        await Client.CreateIndexAsync(
-            new CreateIndexRequest
-            {
-                Name = indexName,
-                Dimension = 2,
-                Metric = CreateIndexRequestMetric.Cosine,
-                Spec = new ServerlessIndexSpec
+        await Client
+            .CreateIndexAsync(
+                new CreateIndexRequest
                 {
-                    Serverless = new ServerlessSpec
+                    Name = indexName,
+                    Dimension = 2,
+                    Metric = CreateIndexRequestMetric.Cosine,
+                    Spec = new ServerlessIndexSpec
                     {
-                        Cloud = ServerlessSpecCloud.Aws,
-                        Region = "us-east-1"
-                    }
+                        Serverless = new ServerlessSpec
+                        {
+                            Cloud = ServerlessSpecCloud.Aws,
+                            Region = "us-east-1",
+                        },
+                    },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
         await Task.Delay(5000).ConfigureAwait(false);
         return Client.Index(indexName);
     }

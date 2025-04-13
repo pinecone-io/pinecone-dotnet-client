@@ -8,67 +8,71 @@ public static class Seed
     {
         // Upsert without metadata
         await idx.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+                new UpsertRequest
                 {
-                    new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
-                    new() { Id = "2", Values = Helpers.EmbeddingValues(2) },
-                    new() { Id = "3", Values = Helpers.EmbeddingValues(2) }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "1", Values = Helpers.EmbeddingValues(2) },
+                        new() { Id = "2", Values = Helpers.EmbeddingValues(2) },
+                        new() { Id = "3", Values = Helpers.EmbeddingValues(2) },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         // Upsert with metadata
         await idx.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+                new UpsertRequest
                 {
-                    new()
+                    Vectors = new List<Vector>
                     {
-                        Id = "4",
-                        Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata { { "genre", "action" }, { "runtime", 120 } }
+                        new()
+                        {
+                            Id = "4",
+                            Values = Helpers.EmbeddingValues(2),
+                            Metadata = new Metadata { { "genre", "action" }, { "runtime", 120 } },
+                        },
+                        new()
+                        {
+                            Id = "5",
+                            Values = Helpers.EmbeddingValues(2),
+                            Metadata = new Metadata { { "genre", "comedy" }, { "runtime", 90 } },
+                        },
+                        new()
+                        {
+                            Id = "6",
+                            Values = Helpers.EmbeddingValues(2),
+                            Metadata = new Metadata { { "genre", "romance" }, { "runtime", 240 } },
+                        },
                     },
-                    new()
-                    {
-                        Id = "5",
-                        Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata { { "genre", "comedy" }, { "runtime", 90 } }
-                    },
-                    new()
-                    {
-                        Id = "6",
-                        Values = Helpers.EmbeddingValues(2),
-                        Metadata = new Metadata { { "genre", "romance" }, { "runtime", 240 } }
-                    }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         // Upsert with dict
         await idx.UpsertAsync(
-            new UpsertRequest
-            {
-                Vectors = new List<Vector>
+                new UpsertRequest
                 {
-                    new() { Id = "7", Values = Helpers.EmbeddingValues(2) },
-                    new() { Id = "8", Values = Helpers.EmbeddingValues(2) },
-                    new() { Id = "9", Values = Helpers.EmbeddingValues(2) }
-                },
-                Namespace = targetNamespace
-            }
-        ).ConfigureAwait(false);
+                    Vectors = new List<Vector>
+                    {
+                        new() { Id = "7", Values = Helpers.EmbeddingValues(2) },
+                        new() { Id = "8", Values = Helpers.EmbeddingValues(2) },
+                        new() { Id = "9", Values = Helpers.EmbeddingValues(2) },
+                    },
+                    Namespace = targetNamespace,
+                }
+            )
+            .ConfigureAwait(false);
 
         if (wait)
             await PollFetchForIdsInNamespace(
-                idx,
-                ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                targetNamespace
-            ).ConfigureAwait(false);
+                    idx,
+                    ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                    targetNamespace
+                )
+                .ConfigureAwait(false);
     }
 
     public static async Task SetupListData(IndexClient idx, string targetNamespace, bool wait)
@@ -83,8 +87,9 @@ public static class Seed
                 );
 
             await idx.UpsertAsync(
-                new UpsertRequest { Vectors = vectors, Namespace = targetNamespace }
-            ).ConfigureAwait(false);
+                    new UpsertRequest { Vectors = vectors, Namespace = targetNamespace }
+                )
+                .ConfigureAwait(false);
         }
 
         if (wait)
@@ -109,12 +114,15 @@ public static class Seed
 
         while (!done)
         {
-            await TestContext.Out.WriteLineAsync(
-                $"Attempting to fetch from \"{namespaceName}\". Total time waited: {totalTime} seconds"
-            ).ConfigureAwait(false);
+            await TestContext
+                .Out.WriteLineAsync(
+                    $"Attempting to fetch from \"{namespaceName}\". Total time waited: {totalTime} seconds"
+                )
+                .ConfigureAwait(false);
             var results = await idx.FetchAsync(
-                new FetchRequest { Ids = ids.ToArray(), Namespace = namespaceName }
-            ).ConfigureAwait(false);
+                    new FetchRequest { Ids = ids.ToArray(), Namespace = namespaceName }
+                )
+                .ConfigureAwait(false);
             TestContext.Out.WriteLine(results);
 
             var allPresent = ids.All(id => results.Vectors!.ContainsKey(id));

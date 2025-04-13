@@ -10,15 +10,17 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata { { "genre", "action" } },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata { { "genre", "action" } },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -32,18 +34,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "runtime", new MetadataValue(new Metadata { { "$gt", 100 } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "runtime", new MetadataValue(new Metadata { { "$gt", 100 } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -58,18 +62,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "runtime", new MetadataValue(new Metadata { { "$gte", 90 } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "runtime", new MetadataValue(new Metadata { { "$gte", 90 } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -85,18 +91,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "runtime", new MetadataValue(new Metadata { { "$lt", 100 } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "runtime", new MetadataValue(new Metadata { { "$lt", 100 } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -110,18 +118,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "runtime", new MetadataValue(new Metadata { { "$lte", 120 } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "runtime", new MetadataValue(new Metadata { { "$lte", 120 } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -136,29 +146,31 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
                     {
-                        "genre",
-                        new MetadataValue(
-                            new Metadata
-                            {
+                        {
+                            "genre",
+                            new MetadataValue(
+                                new Metadata
                                 {
-                                    "$in",
-                                    new List<string> { "romance" }
+                                    {
+                                        "$in",
+                                        new List<string> { "romance" }
+                                    },
                                 }
-                            }
-                        )
-                    }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                            )
+                        },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -173,29 +185,31 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
                     {
-                        "genre",
-                        new MetadataValue(
-                            new Metadata
-                            {
+                        {
+                            "genre",
+                            new MetadataValue(
+                                new Metadata
                                 {
-                                    "$nin",
-                                    new List<string> { "romance" }
+                                    {
+                                        "$nin",
+                                        new List<string> { "romance" }
+                                    },
                                 }
-                            }
-                        )
-                    }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                            )
+                        },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -210,18 +224,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "genre", new MetadataValue(new Metadata { { "$eq", "action" } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "genre", new MetadataValue(new Metadata { { "$eq", "action" } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -236,18 +252,20 @@ public class TestSetupQueryWithFilter : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                Filter = new Metadata
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
                 {
-                    { "genre", new MetadataValue(new Metadata { { "$ne", "action" } }) }
-                },
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    Filter = new Metadata
+                    {
+                        { "genre", new MetadataValue(new Metadata { { "$ne", "action" } }) },
+                    },
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));

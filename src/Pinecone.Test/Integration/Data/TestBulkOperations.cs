@@ -12,16 +12,15 @@ public class TestBulkOperations : BaseTest
     [Test]
     public async Task TestStartBulkImport()
     {
-        var response = await IndexClient.StartBulkImportAsync(
-            new StartImportRequest
-            {
-                Uri = ImportUri,
-                ErrorMode = new ImportErrorMode
+        var response = await IndexClient
+            .StartBulkImportAsync(
+                new StartImportRequest
                 {
-                    OnError = ImportErrorModeOnError.Abort
+                    Uri = ImportUri,
+                    ErrorMode = new ImportErrorMode { OnError = ImportErrorModeOnError.Abort },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
 
         Assert.That(response, Is.InstanceOf<StartImportResponse>());
         Assert.That(response.Id, Is.Not.Null);
@@ -30,41 +29,43 @@ public class TestBulkOperations : BaseTest
     [Test]
     public async Task TestCancelBulkImport()
     {
-        var startResponse = await IndexClient.StartBulkImportAsync(
-            new StartImportRequest
-            {
-                Uri = ImportUri,
-                ErrorMode = new ImportErrorMode
+        var startResponse = await IndexClient
+            .StartBulkImportAsync(
+                new StartImportRequest
                 {
-                    OnError = ImportErrorModeOnError.Abort
+                    Uri = ImportUri,
+                    ErrorMode = new ImportErrorMode { OnError = ImportErrorModeOnError.Abort },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
         Assert.That(startResponse.Id, Is.Not.Null);
 
-        var cancelResponse = await IndexClient.CancelBulkImportAsync(startResponse.Id).ConfigureAwait(false);
+        var cancelResponse = await IndexClient
+            .CancelBulkImportAsync(startResponse.Id)
+            .ConfigureAwait(false);
         Assert.That(cancelResponse, Is.InstanceOf<object>());
     }
 
     [Test]
     public async Task TestDescribeBulkImport()
     {
-        var startResponse = await IndexClient.StartBulkImportAsync(
-            new StartImportRequest
-            {
-                Uri = ImportUri,
-                ErrorMode = new ImportErrorMode
+        var startResponse = await IndexClient
+            .StartBulkImportAsync(
+                new StartImportRequest
                 {
-                    OnError = ImportErrorModeOnError.Abort
+                    Uri = ImportUri,
+                    ErrorMode = new ImportErrorMode { OnError = ImportErrorModeOnError.Abort },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
 
         Assert.That(startResponse, Is.InstanceOf<StartImportResponse>());
         Assert.That(startResponse.Id, Is.Not.Null);
 
         // Describe the bulk import
-        var describeResponse = await IndexClient.DescribeBulkImportAsync(startResponse.Id).ConfigureAwait(false);
+        var describeResponse = await IndexClient
+            .DescribeBulkImportAsync(startResponse.Id)
+            .ConfigureAwait(false);
         Assert.That(describeResponse, Is.InstanceOf<ImportModel>());
         Assert.Multiple(() =>
         {
@@ -80,27 +81,26 @@ public class TestBulkOperations : BaseTest
     {
         for (var i = 0; i < 5; i++)
         {
-            await IndexClient.StartBulkImportAsync(
-                new StartImportRequest
-                {
-                    Uri = ImportUri,
-                    ErrorMode = new ImportErrorMode
+            await IndexClient
+                .StartBulkImportAsync(
+                    new StartImportRequest
                     {
-                        OnError = ImportErrorModeOnError.Abort
+                        Uri = ImportUri,
+                        ErrorMode = new ImportErrorMode { OnError = ImportErrorModeOnError.Abort },
                     }
-                }
-            ).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
         }
 
         var page = 0;
         string? paginationToken = null;
         do
         {
-            var listResponse = await IndexClient.ListBulkImportsAsync(new ListBulkImportsRequest
-            {
-                Limit = 1,
-                PaginationToken = paginationToken
-            }).ConfigureAwait(false);
+            var listResponse = await IndexClient
+                .ListBulkImportsAsync(
+                    new ListBulkImportsRequest { Limit = 1, PaginationToken = paginationToken }
+                )
+                .ConfigureAwait(false);
             paginationToken = listResponse.Pagination?.Next;
             Assert.That(listResponse.Data, Is.Not.Null);
 
@@ -124,11 +124,12 @@ public class TestBulkOperations : BaseTest
     [Test]
     public void TestCreateBulkImportError()
     {
-        var exception = Assert.ThrowsAsync<PineconeApiException>(async () => await IndexClient.StartBulkImportAsync(
-            new StartImportRequest
-            {
-                Uri = null!
-            }).ConfigureAwait(false));
+        var exception = Assert.ThrowsAsync<PineconeApiException>(
+            async () =>
+                await IndexClient
+                    .StartBulkImportAsync(new StartImportRequest { Uri = null! })
+                    .ConfigureAwait(false)
+        );
 
         TestContext.Out.WriteLine("Exception body: " + exception.Body);
 
@@ -143,7 +144,12 @@ public class TestBulkOperations : BaseTest
         Assert.Multiple(() =>
         {
             Assert.That(errorResponse["code"]?.GetValue<int>(), Is.EqualTo(3));
-            Assert.That(errorResponse["message"]?.GetValue<string>(), Is.EqualTo("Import URI parameter is required. Import URI must contain between 1 and 1500 characters."));
+            Assert.That(
+                errorResponse["message"]?.GetValue<string>(),
+                Is.EqualTo(
+                    "Import URI parameter is required. Import URI must contain between 1 and 1500 characters."
+                )
+            );
         });
     }
 }

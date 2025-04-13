@@ -26,39 +26,41 @@ public class UserAgentTest
         BaseUrl = Server.Urls[0];
 
         // Initialize the Client
-        Client = new PineconeClient("API_KEY", new ClientOptions
-        {
-            SourceTag = SourceTag,
-            BaseUrl = BaseUrl
-        });
+        Client = new PineconeClient(
+            "API_KEY",
+            new ClientOptions { SourceTag = SourceTag, BaseUrl = BaseUrl }
+        );
 
         var mockResponse = $$"""
-                             {
-                               "name": "{{IndexName}}",
-                               "dimension": 1,
-                               "metric": "cosine",
-                               "host": "{{BaseUrl}}",
-                               "deletion_protection": "disabled",
-                               "tags": {
-                                 "tags": "tags"
-                               },
-                               "spec": {
-                                 "serverless": {
-                                   "cloud": "gcp",
-                                   "region": "region"
-                                 }
-                               },
-                               "status": {
-                                 "ready": true,
-                                 "state": "Initializing"
-                               },
-                               "vector_type": "dense"
-                             }
-                             """;
+            {
+              "name": "{{IndexName}}",
+              "dimension": 1,
+              "metric": "cosine",
+              "host": "{{BaseUrl}}",
+              "deletion_protection": "disabled",
+              "tags": {
+                "tags": "tags"
+              },
+              "spec": {
+                "serverless": {
+                  "cloud": "gcp",
+                  "region": "region"
+                }
+              },
+              "status": {
+                "ready": true,
+                "state": "Initializing"
+              },
+              "vector_type": "dense"
+            }
+            """;
 
         Server
             .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath($"/indexes/{IndexName}").UsingGet()
+                WireMock
+                    .RequestBuilders.Request.Create()
+                    .WithPath($"/indexes/{IndexName}")
+                    .UsingGet()
             )
             .RespondWith(
                 WireMock
@@ -71,7 +73,6 @@ public class UserAgentTest
         RequestOptions = new RequestOptions { BaseUrl = BaseUrl };
     }
 
-
     [OneTimeTearDown]
     public void Teardown()
     {
@@ -83,28 +84,28 @@ public class UserAgentTest
     public async Task ClientShouldSendUserAgent()
     {
         const string mockResponse = """
-                                    {
-                                      "name": "name",
-                                      "dimension": 1,
-                                      "metric": "cosine",
-                                      "host": "host",
-                                      "deletion_protection": "disabled",
-                                      "tags": {
-                                        "tags": "tags"
-                                      },
-                                      "spec": {
-                                        "serverless": {
-                                          "cloud": "gcp",
-                                          "region": "region"
-                                        }
-                                      },
-                                      "status": {
-                                        "ready": true,
-                                        "state": "Initializing"
-                                      },
-                                      "vector_type": "dense"
-                                    }
-                                    """;
+            {
+              "name": "name",
+              "dimension": 1,
+              "metric": "cosine",
+              "host": "host",
+              "deletion_protection": "disabled",
+              "tags": {
+                "tags": "tags"
+              },
+              "spec": {
+                "serverless": {
+                  "cloud": "gcp",
+                  "region": "region"
+                }
+              },
+              "status": {
+                "ready": true,
+                "state": "Initializing"
+              },
+              "vector_type": "dense"
+            }
+            """;
 
         Server
             .Given(
@@ -122,24 +123,22 @@ public class UserAgentTest
         var userAgent = request.Headers?["User-Agent"].ToString();
         Assert.That(userAgent, Is.Not.Null);
 
-        const string expectedUserAgent = $"lang=C#; version={Version.Current}; source_tag={SourceTag}";
+        const string expectedUserAgent =
+            $"lang=C#; version={Version.Current}; source_tag={SourceTag}";
         Assert.That(userAgent, Is.EqualTo(expectedUserAgent));
     }
-
 
     [Test]
     public async Task IndexClientShouldSendUserAgent()
     {
         const string mockResponse = """
-                                    {
-                                      "collections": []
-                                    }
-                                    """;
+            {
+              "collections": []
+            }
+            """;
 
         Server
-            .Given(
-                WireMock.RequestBuilders.Request.Create().WithPath("/bulk/imports").UsingGet()
-            )
+            .Given(WireMock.RequestBuilders.Request.Create().WithPath("/bulk/imports").UsingGet())
             .RespondWith(
                 WireMock
                     .ResponseBuilders.Response.Create()
@@ -153,7 +152,8 @@ public class UserAgentTest
         var userAgent = request.Headers?["User-Agent"].ToString();
         Assert.That(userAgent, Is.Not.Null);
 
-        const string expectedUserAgent = $"lang=C#; version={Version.Current}; source_tag={SourceTag}";
+        const string expectedUserAgent =
+            $"lang=C#; version={Version.Current}; source_tag={SourceTag}";
         Assert.That(userAgent, Is.EqualTo(expectedUserAgent));
     }
 }

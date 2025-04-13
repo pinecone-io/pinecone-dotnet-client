@@ -12,14 +12,16 @@ public class TestSetupQuery : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Id = "1",
-                Namespace = targetNamespace,
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Id = "1",
+                    Namespace = targetNamespace,
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -41,15 +43,16 @@ public class TestSetupQuery : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Vector = EmbeddingValues(2),
-                Namespace = targetNamespace,
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
-
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Vector = EmbeddingValues(2),
+                    Namespace = targetNamespace,
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -61,16 +64,17 @@ public class TestSetupQuery : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Vector = EmbeddingValues(2),
-                Namespace = targetNamespace,
-                IncludeValues = true,
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
-
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Vector = EmbeddingValues(2),
+                    Namespace = targetNamespace,
+                    IncludeValues = true,
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -85,16 +89,17 @@ public class TestSetupQuery : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Vector = EmbeddingValues(2),
-                Namespace = targetNamespace,
-                IncludeMetadata = true,
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
-
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Vector = EmbeddingValues(2),
+                    Namespace = targetNamespace,
+                    IncludeMetadata = true,
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
@@ -112,17 +117,18 @@ public class TestSetupQuery : BaseTest
     {
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
-        var results = await IndexClient.QueryAsync(
-            new QueryRequest
-            {
-                Vector = EmbeddingValues(2),
-                Namespace = targetNamespace,
-                IncludeValues = true,
-                IncludeMetadata = true,
-                TopK = 10
-            }
-        ).ConfigureAwait(false);
-
+        var results = await IndexClient
+            .QueryAsync(
+                new QueryRequest
+                {
+                    Vector = EmbeddingValues(2),
+                    Namespace = targetNamespace,
+                    IncludeValues = true,
+                    IncludeMetadata = true,
+                    TopK = 10,
+                }
+            )
+            .ConfigureAwait(false);
 
         Assert.That(results, Is.InstanceOf<QueryResponse>());
         Assert.That(results.Namespace, Is.EqualTo(targetNamespace));
