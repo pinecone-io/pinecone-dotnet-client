@@ -10,14 +10,16 @@ public class TestDeletionProtection : BaseTest
     {
         var indexName = Helpers.GenerateIndexName("test-deletion-protection-works");
         // Create index with deletion protection enabled
-        await Helpers.CreatePodIndexAndWaitUntilReady(
-            Client,
-            indexName,
-            Environment,
-            Dimension,
-            Metric,
-            true
-        ).ConfigureAwait(false);
+        await Helpers
+            .CreatePodIndexAndWaitUntilReady(
+                Client,
+                indexName,
+                Environment,
+                Dimension,
+                Metric,
+                true
+            )
+            .ConfigureAwait(false);
 
         var desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         TestContext.Out.WriteLine(desc.DeletionProtection);
@@ -37,10 +39,12 @@ public class TestDeletionProtection : BaseTest
         Assert.That(exceptionThrown, Is.True);
 
         // Disable deletion protection
-        await Client.ConfigureIndexAsync(
-            indexName,
-            new ConfigureIndexRequest { DeletionProtection = DeletionProtection.Disabled }
-        ).ConfigureAwait(false);
+        await Client
+            .ConfigureIndexAsync(
+                indexName,
+                new ConfigureIndexRequest { DeletionProtection = DeletionProtection.Disabled }
+            )
+            .ConfigureAwait(false);
         desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));
 
@@ -53,46 +57,52 @@ public class TestDeletionProtection : BaseTest
     {
         var indexName = Helpers.GenerateIndexName("configure-with-deletion-protection");
         // Create index with deletion protection enabled
-        await Helpers.CreatePodIndexAndWaitUntilReady(
-            Client,
-            indexName,
-            Environment,
-            Dimension,
-            Metric,
-            true
-        ).ConfigureAwait(false);
+        await Helpers
+            .CreatePodIndexAndWaitUntilReady(
+                Client,
+                indexName,
+                Environment,
+                Dimension,
+                Metric,
+                true
+            )
+            .ConfigureAwait(false);
 
         var desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Changing replicas only should not change deletion protection
-        await Client.ConfigureIndexAsync(
-            indexName,
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
+        await Client
+            .ConfigureIndexAsync(
+                indexName,
+                new ConfigureIndexRequest
                 {
-                    Pod = new ConfigureIndexRequestSpecPod { Replicas = 2 }
+                    Spec = new ConfigureIndexRequestSpec
+                    {
+                        Pod = new ConfigureIndexRequestSpecPod { Replicas = 2 },
+                    },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
         desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         var replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
         Assert.That(replicaCount, Is.EqualTo(2));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
         // Changing both replicas and deletion protection
-        await Client.ConfigureIndexAsync(
-            indexName,
-            new ConfigureIndexRequest
-            {
-                Spec = new ConfigureIndexRequestSpec
+        await Client
+            .ConfigureIndexAsync(
+                indexName,
+                new ConfigureIndexRequest
                 {
-                    Pod = new ConfigureIndexRequestSpecPod { Replicas = 3, }
-                },
-                DeletionProtection = DeletionProtection.Disabled
-            }
-        ).ConfigureAwait(false);
+                    Spec = new ConfigureIndexRequestSpec
+                    {
+                        Pod = new ConfigureIndexRequestSpecPod { Replicas = 3 },
+                    },
+                    DeletionProtection = DeletionProtection.Disabled,
+                }
+            )
+            .ConfigureAwait(false);
         desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
         Assert.That(replicaCount, Is.EqualTo(3));

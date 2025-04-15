@@ -1,27 +1,39 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record ListItem
+public record ListItem : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     [JsonPropertyName("id")]
     public string? Id { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new ListItem type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static ListItem FromProto(ProtoGrpc.ListItem value)
     {
-        return JsonUtils.Serialize(this);
+        return new ListItem { Id = value.Id };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the ListItem type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.ListItem ToProto()
+    internal ProtoGrpc.ListItem ToProto()
     {
-        var result = new Proto.ListItem();
+        var result = new ProtoGrpc.ListItem();
         if (Id != null)
         {
             result.Id = Id ?? "";
@@ -29,11 +41,9 @@ public record ListItem
         return result;
     }
 
-    /// <summary>
-    /// Returns a new ListItem type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static ListItem FromProto(Proto.ListItem value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new ListItem { Id = value.Id };
+        return JsonUtils.Serialize(this);
     }
 }

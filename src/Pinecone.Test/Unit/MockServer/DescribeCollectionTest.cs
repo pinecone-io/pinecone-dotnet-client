@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
+using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -12,42 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class DescribeCollectionTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string mockResponse = """
-            {
-              "name": "name",
-              "size": 1000000,
-              "status": "Initializing",
-              "dimension": 20000,
-              "vector_count": 1,
-              "environment": "environment"
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/collections/collection_name")
-                    .UsingGet()
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.DescribeCollectionAsync("collection_name", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest()
     {
         const string mockResponse = """
             {
@@ -74,10 +36,10 @@ public class DescribeCollectionTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.DescribeCollectionAsync("tiny-collection", RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.DescribeCollectionAsync("tiny-collection");
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<CollectionModel>(mockResponse)).UsingDefaults()
+        );
     }
 }

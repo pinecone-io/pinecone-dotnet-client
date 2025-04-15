@@ -14,21 +14,25 @@ public class SparseIndexTests : BaseTest
             var indexName = Helpers.GenerateIndexName("sparse-index-testing");
 
             // Create the sparse index
-            var index = await Client.CreateIndexAsync(new CreateIndexRequest
-            {
-                Name = indexName,
-                Metric = CreateIndexRequestMetric.Dotproduct,
-                VectorType = VectorType.Sparse,
-                Spec = new ServerlessIndexSpec
-                {
-                    Serverless = new ServerlessSpec
+            var index = await Client
+                .CreateIndexAsync(
+                    new CreateIndexRequest
                     {
-                        Cloud = ServerlessSpecCloud.Aws,
-                        Region = "us-east-1"
+                        Name = indexName,
+                        Metric = CreateIndexRequestMetric.Dotproduct,
+                        VectorType = VectorType.Sparse,
+                        Spec = new ServerlessIndexSpec
+                        {
+                            Serverless = new ServerlessSpec
+                            {
+                                Cloud = ServerlessSpecCloud.Aws,
+                                Region = "us-east-1",
+                            },
+                        },
+                        DeletionProtection = DeletionProtection.Enabled,
                     }
-                },
-                DeletionProtection = DeletionProtection.Enabled
-            }).ConfigureAwait(false);
+                )
+                .ConfigureAwait(false);
 
             // Verify the index was created successfully
             Assert.That(index, Is.Not.Null);

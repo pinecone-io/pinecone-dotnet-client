@@ -1,7 +1,6 @@
+using System.Text.Json.Serialization;
 using Pinecone.Core;
 using Proto = Pinecone.Grpc;
-
-#nullable enable
 
 namespace Pinecone;
 
@@ -10,14 +9,11 @@ public record FetchRequest
     /// <summary>
     /// The vector IDs to fetch. Does not accept values containing spaces.
     /// </summary>
+    [JsonIgnore]
     public IEnumerable<string> Ids { get; set; } = new List<string>();
 
+    [JsonIgnore]
     public string? Namespace { get; set; }
-
-    public override string ToString()
-    {
-        return JsonUtils.Serialize(this);
-    }
 
     /// <summary>
     /// Maps the FetchRequest type into its Protobuf-equivalent representation.
@@ -34,5 +30,11 @@ public record FetchRequest
             result.Namespace = Namespace ?? "";
         }
         return result;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
     }
 }

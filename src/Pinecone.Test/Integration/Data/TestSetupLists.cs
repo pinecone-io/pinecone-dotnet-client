@@ -57,7 +57,7 @@ public class TestSetupLists : BaseTest
                     "996",
                     "997",
                     "998",
-                    "999"
+                    "999",
                 }
             )
         );
@@ -75,7 +75,7 @@ public class TestSetupLists : BaseTest
             {
                 Prefix = "no-results",
                 Namespace = ListNamespace,
-                PaginationToken = paginationToken
+                PaginationToken = paginationToken,
             };
             var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
@@ -101,7 +101,7 @@ public class TestSetupLists : BaseTest
             {
                 Prefix = "99",
                 Namespace = "no-results",
-                PaginationToken = paginationToken
+                PaginationToken = paginationToken,
             };
             var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
@@ -130,7 +130,7 @@ public class TestSetupLists : BaseTest
                 Prefix = "99",
                 Limit = 5,
                 Namespace = ListNamespace,
-                PaginationToken = paginationToken
+                PaginationToken = paginationToken,
             };
             var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
 
@@ -170,18 +170,20 @@ public class TestSetupLists : BaseTest
                 Prefix = "99",
                 Limit = 5,
                 Namespace = ListNamespace,
-                PaginationToken = paginationToken
+                PaginationToken = paginationToken,
             };
             var listResult = await IndexClient.ListAsync(listRequest).ConfigureAwait(false);
             if (listResult.Vectors?.Count() > 0)
             {
-                var result = await IndexClient.FetchAsync(
-                    new FetchRequest
-                    {
-                        Ids = listResult.Vectors.Select(vector => vector.Id!),
-                        Namespace = ListNamespace
-                    }
-                ).ConfigureAwait(false);
+                var result = await IndexClient
+                    .FetchAsync(
+                        new FetchRequest
+                        {
+                            Ids = listResult.Vectors.Select(vector => vector.Id!),
+                            Namespace = ListNamespace,
+                        }
+                    )
+                    .ConfigureAwait(false);
                 vectors.AddRange(result.Vectors!.Values);
             }
 
@@ -205,7 +207,7 @@ public class TestSetupLists : BaseTest
                     "996",
                     "997",
                     "998",
-                    "999"
+                    "999",
                 }
             )
         );

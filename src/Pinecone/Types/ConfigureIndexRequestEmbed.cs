@@ -1,12 +1,22 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
-public record ConfigureIndexRequestEmbed
+/// <summary>
+/// Configure the integrated inference embedding settings for this index.
+///
+/// You can convert an existing index to an integrated index by specifying the embedding model and field_map. The index vector type and dimension must match the model vector type and dimension, and the index similarity metric must be supported by the model. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+///
+/// You can later change the embedding configuration to update the field map, read parameters, or write parameters. Once set, the model cannot be changed.
+/// </summary>
+public record ConfigureIndexRequestEmbed : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The name of the embedding model to use with the index. The index dimension and model dimension must match, and the index similarity metric must be supported by the model. The index embedding model cannot be changed once set.
     /// </summary>
@@ -31,6 +41,13 @@ public record ConfigureIndexRequestEmbed
     [JsonPropertyName("write_parameters")]
     public Dictionary<string, object?>? WriteParameters { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

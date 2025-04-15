@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 using OneOf;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record CreateIndexRequest
@@ -41,6 +39,7 @@ public record CreateIndexRequest
     [JsonPropertyName("vector_type")]
     public VectorType? VectorType { get; set; }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

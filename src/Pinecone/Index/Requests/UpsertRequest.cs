@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record UpsertRequest
@@ -20,11 +18,6 @@ public record UpsertRequest
     [JsonPropertyName("namespace")]
     public string? Namespace { get; set; }
 
-    public override string ToString()
-    {
-        return JsonUtils.Serialize(this);
-    }
-
     /// <summary>
     /// Maps the UpsertRequest type into its Protobuf-equivalent representation.
     /// </summary>
@@ -40,5 +33,11 @@ public record UpsertRequest
             result.Namespace = Namespace ?? "";
         }
         return result;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
     }
 }

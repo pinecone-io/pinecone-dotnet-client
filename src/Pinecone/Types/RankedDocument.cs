@@ -1,12 +1,18 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
 
-#nullable enable
-
 namespace Pinecone;
 
-public record RankedDocument
+/// <summary>
+/// A ranked document with a relevance score and an index position.
+/// </summary>
+public record RankedDocument : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// The index position of the document from the original request.
     /// </summary>
@@ -22,6 +28,13 @@ public record RankedDocument
     [JsonPropertyName("document")]
     public Dictionary<string, object?>? Document { get; set; }
 
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return JsonUtils.Serialize(this);

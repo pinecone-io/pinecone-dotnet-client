@@ -2,8 +2,6 @@ using System.Text.Json.Serialization;
 using Pinecone.Core;
 using Proto = Pinecone.Grpc;
 
-#nullable enable
-
 namespace Pinecone;
 
 public record DescribeIndexStatsRequest
@@ -16,11 +14,6 @@ public record DescribeIndexStatsRequest
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
 
-    public override string ToString()
-    {
-        return JsonUtils.Serialize(this);
-    }
-
     /// <summary>
     /// Maps the DescribeIndexStatsRequest type into its Protobuf-equivalent representation.
     /// </summary>
@@ -32,5 +25,11 @@ public record DescribeIndexStatsRequest
             result.Filter = Filter.ToProto();
         }
         return result;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return JsonUtils.Serialize(this);
     }
 }

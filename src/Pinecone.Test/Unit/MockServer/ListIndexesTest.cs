@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
+using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -12,117 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class ListIndexesTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string mockResponse = """
-            {
-              "indexes": [
-                {
-                  "name": "x",
-                  "dimension": 20000,
-                  "metric": "cosine",
-                  "host": "host",
-                  "deletion_protection": "disabled",
-                  "tags": {
-                    "tags": "tags"
-                  },
-                  "embed": {
-                    "model": "model",
-                    "metric": "cosine",
-                    "dimension": 20000,
-                    "vector_type": "dense",
-                    "field_map": {
-                      "field_map": {
-                        "key": "value"
-                      }
-                    },
-                    "read_parameters": {
-                      "read_parameters": {
-                        "key": "value"
-                      }
-                    },
-                    "write_parameters": {
-                      "write_parameters": {
-                        "key": "value"
-                      }
-                    }
-                  },
-                  "spec": {
-                    "serverless": {
-                      "cloud": "gcp",
-                      "region": "region"
-                    }
-                  },
-                  "status": {
-                    "ready": true,
-                    "state": "Initializing"
-                  },
-                  "vector_type": "dense"
-                },
-                {
-                  "name": "x",
-                  "dimension": 20000,
-                  "metric": "cosine",
-                  "host": "host",
-                  "deletion_protection": "disabled",
-                  "tags": {
-                    "tags": "tags"
-                  },
-                  "embed": {
-                    "model": "model",
-                    "metric": "cosine",
-                    "dimension": 20000,
-                    "vector_type": "dense",
-                    "field_map": {
-                      "field_map": {
-                        "key": "value"
-                      }
-                    },
-                    "read_parameters": {
-                      "read_parameters": {
-                        "key": "value"
-                      }
-                    },
-                    "write_parameters": {
-                      "write_parameters": {
-                        "key": "value"
-                      }
-                    }
-                  },
-                  "spec": {
-                    "serverless": {
-                      "cloud": "gcp",
-                      "region": "region"
-                    }
-                  },
-                  "status": {
-                    "ready": true,
-                    "state": "Initializing"
-                  },
-                  "vector_type": "dense"
-                }
-              ]
-            }
-            """;
-
-        Server
-            .Given(WireMock.RequestBuilders.Request.Create().WithPath("/indexes").UsingGet())
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ListIndexesAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest_1()
     {
         const string mockResponse = """
             {
@@ -262,15 +149,15 @@ public class ListIndexesTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ListIndexesAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.ListIndexesAsync();
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<IndexList>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_3()
+    public async global::System.Threading.Tasks.Task MockServerTest_2()
     {
         const string mockResponse = """
             {
@@ -325,15 +212,15 @@ public class ListIndexesTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ListIndexesAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.ListIndexesAsync();
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<IndexList>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_4()
+    public async global::System.Threading.Tasks.Task MockServerTest_3()
     {
         const string mockResponse = """
             {
@@ -388,10 +275,10 @@ public class ListIndexesTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ListIndexesAsync(RequestOptions);
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        var response = await Client.ListIndexesAsync();
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<IndexList>(mockResponse)).UsingDefaults()
+        );
     }
 }

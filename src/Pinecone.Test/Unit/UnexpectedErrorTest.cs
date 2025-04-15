@@ -23,14 +23,10 @@ public class UnexpectedErrorTest
         BaseUrl = Server.Urls[0];
 
         // Initialize the Client
-        Client = new PineconeClient("API_KEY", new ClientOptions
-        {
-            BaseUrl = BaseUrl
-        });
+        Client = new PineconeClient("API_KEY", new ClientOptions { BaseUrl = BaseUrl });
 
         RequestOptions = new RequestOptions { BaseUrl = BaseUrl };
     }
-
 
     [OneTimeTearDown]
     public void Teardown()
@@ -54,7 +50,8 @@ public class UnexpectedErrorTest
             );
 
         var exception = Assert.ThrowsAsync<PineconeApiException>(
-            async () => await Client.DescribeIndexAsync("index_name", RequestOptions).ConfigureAwait(false)
+            async () =>
+                await Client.DescribeIndexAsync("index_name", RequestOptions).ConfigureAwait(false)
         );
         Assert.Multiple(() =>
         {

@@ -2,5 +2,5 @@ namespace Pinecone;
 
 public class BasePineconeEnvironment
 {
-    public static string Default = "https://api.pinecone.io";
+    public const string Default = "https://api.pinecone.io";
 }

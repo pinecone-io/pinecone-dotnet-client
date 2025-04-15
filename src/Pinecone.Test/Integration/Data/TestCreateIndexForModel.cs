@@ -13,25 +13,27 @@ public class TestCreateIndexForModel : BaseTest
         const string tagKey = "foo";
         const string tagValue = "bar";
         const CreateIndexForModelRequestCloud cloud = CreateIndexForModelRequestCloud.Aws;
-        var index = await Client.CreateIndexForModelAsync(
-            new CreateIndexForModelRequest
-            {
-                Name = indexName,
-                Cloud = cloud,
-                Region = region,
-                Embed = new CreateIndexForModelRequestEmbed
+        var index = await Client
+            .CreateIndexForModelAsync(
+                new CreateIndexForModelRequest
                 {
-                    Model = model,
-                    Metric = CreateIndexForModelRequestEmbedMetric. Cosine,
-                    FieldMap = new Dictionary<string, object>() { { "text", "your-text-field" } },
-                },
-                DeletionProtection = DeletionProtection.Disabled,
-                Tags = new Dictionary<string, string>
-                {
-                    [tagKey] = tagValue
+                    Name = indexName,
+                    Cloud = cloud,
+                    Region = region,
+                    Embed = new CreateIndexForModelRequestEmbed
+                    {
+                        Model = model,
+                        Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+                        FieldMap = new Dictionary<string, object>()
+                        {
+                            { "text", "your-text-field" },
+                        },
+                    },
+                    DeletionProtection = DeletionProtection.Disabled,
+                    Tags = new Dictionary<string, string> { [tagKey] = tagValue },
                 }
-            }
-        ).ConfigureAwait(false);
+            )
+            .ConfigureAwait(false);
         Assert.Multiple(() =>
         {
             Assert.That(index, Is.Not.Null);

@@ -25,9 +25,13 @@ public record Embedding
     public object Value { get; }
     public bool IsDense => VectorType == VectorType.Dense;
     public bool IsSparse => VectorType == VectorType.Sparse;
+
     public DenseEmbedding AsDense() => (DenseEmbedding)Value;
+
     public SparseEmbedding AsSparse() => (SparseEmbedding)Value;
+
     public static implicit operator Embedding(DenseEmbedding embedding) => new(embedding);
+
     public static implicit operator Embedding(SparseEmbedding embedding) => new(embedding);
 
     public T Match<T>(Func<DenseEmbedding, T> onDense, Func<SparseEmbedding, T> onSparse)
@@ -66,47 +70,66 @@ public record Embedding
 
 internal class EmbeddingConverter : JsonConverter<Embedding>
 {
-    public override bool CanConvert(Type typeToConvert) => typeof(Embedding).IsAssignableFrom(typeToConvert);
+    public override bool CanConvert(Type typeToConvert) =>
+        typeof(Embedding).IsAssignableFrom(typeToConvert);
 
-    public override Embedding Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override Embedding Read(
+        ref Utf8JsonReader reader,
+        Type typeToConvert,
+        JsonSerializerOptions options
+    )
     {
         var jsonObject = JsonElement.ParseValue(ref reader);
         if (!jsonObject.TryGetProperty(Embedding.DiscriminatorName, out var discriminatorElement))
         {
-            throw new JsonException($"Missing discriminator property '{Embedding.DiscriminatorName}'");
+            throw new JsonException(
+                $"Missing discriminator property '{Embedding.DiscriminatorName}'"
+            );
         }
 
         if (discriminatorElement.ValueKind != JsonValueKind.String)
         {
             if (discriminatorElement.ValueKind == JsonValueKind.Null)
             {
-                throw new JsonException($"Discriminator property '{Embedding.DiscriminatorName}' is null");
+                throw new JsonException(
+                    $"Discriminator property '{Embedding.DiscriminatorName}' is null"
+                );
             }
 
             throw new JsonException(
-                $"Discriminator property '{Embedding.DiscriminatorName}' is not a string, instead is {discriminatorElement.ToString()}");
+                $"Discriminator property '{Embedding.DiscriminatorName}' is not a string, instead is {discriminatorElement.ToString()}"
+            );
         }
 
-        var discriminator = discriminatorElement.GetString() ??
-                            throw new JsonException($"Discriminator property '{Embedding.DiscriminatorName}' is null");
+        var discriminator =
+            discriminatorElement.GetString()
+            ?? throw new JsonException(
+                $"Discriminator property '{Embedding.DiscriminatorName}' is null"
+            );
         switch (discriminator)
         {
             case "dense":
-                var denseEmbedding = jsonObject.Deserialize<DenseEmbedding>()
-                                     ?? throw new JsonException("Failed to deserialize DenseEmbedding");
+                var denseEmbedding =
+                    jsonObject.Deserialize<DenseEmbedding>()
+                    ?? throw new JsonException("Failed to deserialize DenseEmbedding");
                 return new Embedding(denseEmbedding);
             case "sparse":
-                var sparseEmbedding = jsonObject.Deserialize<SparseEmbedding>()
-                                      ?? throw new JsonException("Failed to deserialize DenseEmbedding");
+                var sparseEmbedding =
+                    jsonObject.Deserialize<SparseEmbedding>()
+                    ?? throw new JsonException("Failed to deserialize DenseEmbedding");
                 return new Embedding(sparseEmbedding);
             default:
                 throw new JsonException(
-                    $"Discriminator property '{Embedding.DiscriminatorName}' is unexpected value '{discriminator}'");
+                    $"Discriminator property '{Embedding.DiscriminatorName}' is unexpected value '{discriminator}'"
+                );
         }
     }
 
     public override void Write(
-        Utf8JsonWriter writer, Embedding embedding, JsonSerializerOptions options)
+        Utf8JsonWriter writer,
+        Embedding embedding,
+        JsonSerializerOptions options
+    )
     {
         var jsonNode = JsonSerializer.SerializeToNode(embedding.Value, options);
         if (jsonNode == null)

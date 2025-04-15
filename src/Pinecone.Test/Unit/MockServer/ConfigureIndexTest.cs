@@ -1,11 +1,7 @@
-using System.Threading.Tasks;
-using FluentAssertions.Json;
-using Newtonsoft.Json.Linq;
+using global::System.Threading.Tasks;
 using NUnit.Framework;
 using Pinecone;
 using Pinecone.Core;
-
-#nullable enable
 
 namespace Pinecone.Test.Unit.MockServer;
 
@@ -13,92 +9,7 @@ namespace Pinecone.Test.Unit.MockServer;
 public class ConfigureIndexTest : BaseMockServerTest
 {
     [Test]
-    public async Task MockServerTest_1()
-    {
-        const string requestJson = """
-            {}
-            """;
-
-        const string mockResponse = """
-            {
-              "name": "x",
-              "dimension": 20000,
-              "metric": "cosine",
-              "host": "host",
-              "deletion_protection": "disabled",
-              "tags": {
-                "tags": "tags"
-              },
-              "embed": {
-                "model": "model",
-                "metric": "cosine",
-                "dimension": 20000,
-                "vector_type": "dense",
-                "field_map": {
-                  "field_map": {
-                    "key": "value"
-                  }
-                },
-                "read_parameters": {
-                  "read_parameters": {
-                    "key": "value"
-                  }
-                },
-                "write_parameters": {
-                  "write_parameters": {
-                    "key": "value"
-                  }
-                }
-              },
-              "spec": {
-                "serverless": {
-                  "cloud": "gcp",
-                  "region": "region"
-                }
-              },
-              "status": {
-                "ready": true,
-                "state": "Initializing"
-              },
-              "vector_type": "dense"
-            }
-            """;
-
-        Server
-            .Given(
-                WireMock
-                    .RequestBuilders.Request.Create()
-                    .WithPath("/indexes/index_name")
-                    .WithHeader("Content-Type", "application/json")
-                    .UsingPatch()
-                    .WithBodyAsJson(requestJson)
-            )
-            .RespondWith(
-                WireMock
-                    .ResponseBuilders.Response.Create()
-                    .WithStatusCode(200)
-                    .WithBody(mockResponse)
-            );
-
-        var response = await Client.ConfigureIndexAsync(
-            "index_name",
-            new ConfigureIndexRequest
-            {
-                Spec = null,
-                DeletionProtection = null,
-                Tags = null,
-                Embed = null,
-            },
-            RequestOptions
-        );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
-    }
-
-    [Test]
-    public async Task MockServerTest_2()
+    public async global::System.Threading.Tasks.Task MockServerTest_1()
     {
         const string requestJson = """
             {
@@ -175,17 +86,16 @@ public class ConfigureIndexTest : BaseMockServerTest
                 {
                     Pod = new ConfigureIndexRequestSpecPod { PodType = "p1.x2" },
                 },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_3()
+    public async global::System.Threading.Tasks.Task MockServerTest_2()
     {
         const string requestJson = """
             {
@@ -262,17 +172,16 @@ public class ConfigureIndexTest : BaseMockServerTest
                 {
                     Pod = new ConfigureIndexRequestSpecPod { Replicas = 4 },
                 },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_4()
+    public async global::System.Threading.Tasks.Task MockServerTest_3()
     {
         const string requestJson = """
             {
@@ -350,17 +259,16 @@ public class ConfigureIndexTest : BaseMockServerTest
                 {
                     Pod = new ConfigureIndexRequestSpecPod { Replicas = 4, PodType = "p1.x2" },
                 },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 
     [Test]
-    public async Task MockServerTest_5()
+    public async global::System.Threading.Tasks.Task MockServerTest_4()
     {
         const string requestJson = """
             {}
@@ -423,19 +331,15 @@ public class ConfigureIndexTest : BaseMockServerTest
                     .WithBody(mockResponse)
             );
 
-        var response = await Client.ConfigureIndexAsync(
-            "test-index",
-            new ConfigureIndexRequest(),
-            RequestOptions
+        var response = await Client.ConfigureIndexAsync("test-index", new ConfigureIndexRequest());
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
     }
 
     [Test]
-    public async Task MockServerTest_6()
+    public async global::System.Threading.Tasks.Task MockServerTest_5()
     {
         const string requestJson = """
             {
@@ -508,12 +412,11 @@ public class ConfigureIndexTest : BaseMockServerTest
             new ConfigureIndexRequest
             {
                 Tags = new Dictionary<string, string>() { { "tag0", "new-val" }, { "tag1", "" } },
-            },
-            RequestOptions
+            }
         );
-        JToken
-            .Parse(mockResponse)
-            .Should()
-            .BeEquivalentTo(JToken.Parse(JsonUtils.Serialize(response)));
+        Assert.That(
+            response,
+            Is.EqualTo(JsonUtils.Deserialize<Index>(mockResponse)).UsingDefaults()
+        );
     }
 }

@@ -1,27 +1,39 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record Pagination
+public record Pagination : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     [JsonPropertyName("next")]
     public string? Next { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new Pagination type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static Pagination FromProto(ProtoGrpc.Pagination value)
     {
-        return JsonUtils.Serialize(this);
+        return new Pagination { Next = value.Next };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the Pagination type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.Pagination ToProto()
+    internal ProtoGrpc.Pagination ToProto()
     {
-        var result = new Proto.Pagination();
+        var result = new ProtoGrpc.Pagination();
         if (Next != null)
         {
             result.Next = Next ?? "";
@@ -29,11 +41,9 @@ public record Pagination
         return result;
     }
 
-    /// <summary>
-    /// Returns a new Pagination type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static Pagination FromProto(Proto.Pagination value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new Pagination { Next = value.Next };
+        return JsonUtils.Serialize(this);
     }
 }

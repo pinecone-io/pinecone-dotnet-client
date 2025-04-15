@@ -18,7 +18,9 @@ public class Setup
     [OneTimeSetUp]
     public async Task GlobalSetup()
     {
-        await TestContext.Out.WriteLineAsync("Initializing data plane integration tests...").ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Initializing data plane integration tests...")
+            .ConfigureAwait(false);
         Client = new PineconeClient(
             apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
             new ClientOptions { SourceTag = "test-tag" }
@@ -39,7 +41,9 @@ public class Setup
         IndexHost = await SetupIndex(IndexName, Metric, Spec).ConfigureAwait(false);
         IndexClient = Client.Index(host: IndexHost);
         await SeedData().ConfigureAwait(false);
-        await TestContext.Out.WriteLineAsync("Data plane integration test initialization complete.").ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Data plane integration test initialization complete.")
+            .ConfigureAwait(false);
     }
 
     [OneTimeTearDown]
@@ -54,16 +58,20 @@ public class Setup
         ServerlessIndexSpec spec
     )
     {
-        await TestContext.Out.WriteLineAsync("Creating index with name: " + indexName).ConfigureAwait(false);
-        await Client.CreateIndexAsync(
-            new CreateIndexRequest
-            {
-                Name = indexName,
-                Dimension = 2,
-                Metric = metric,
-                Spec = spec,
-            }
-        ).ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Creating index with name: " + indexName)
+            .ConfigureAwait(false);
+        await Client
+            .CreateIndexAsync(
+                new CreateIndexRequest
+                {
+                    Name = indexName,
+                    Dimension = 2,
+                    Metric = metric,
+                    Spec = spec,
+                }
+            )
+            .ConfigureAwait(false);
 
         var description = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
         return description.Host;
@@ -71,18 +79,28 @@ public class Setup
 
     private static async Task SeedData()
     {
-        await TestContext.Out.WriteLineAsync("Sleeping while index boots up...").ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Sleeping while index boots up...")
+            .ConfigureAwait(false);
         await Task.Delay(10_000).ConfigureAwait(false);
-        
-        await TestContext.Out.WriteLineAsync("Seeding data in host " + IndexHost).ConfigureAwait(false);
 
-        await TestContext.Out.WriteLineAsync("Seeding list data in namespace " + ListNamespace).ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Seeding data in host " + IndexHost)
+            .ConfigureAwait(false);
+
+        await TestContext
+            .Out.WriteLineAsync("Seeding list data in namespace " + ListNamespace)
+            .ConfigureAwait(false);
         await Seed.SetupListData(IndexClient, ListNamespace, true).ConfigureAwait(false);
 
-        await TestContext.Out.WriteLineAsync("Seeding data in namespace " + Namespace).ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Seeding data in namespace " + Namespace)
+            .ConfigureAwait(false);
         await Seed.SetupData(IndexClient, Namespace, true).ConfigureAwait(false);
 
-        await TestContext.Out.WriteLineAsync("Seeding data in namespace \"\"").ConfigureAwait(false);
+        await TestContext
+            .Out.WriteLineAsync("Seeding data in namespace \"\"")
+            .ConfigureAwait(false);
         await Seed.SetupData(IndexClient, "", true).ConfigureAwait(false);
     }
 }

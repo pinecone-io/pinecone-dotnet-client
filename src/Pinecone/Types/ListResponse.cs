@@ -1,13 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record ListResponse
+/// <summary>
+/// The response for the `List` operation.
+/// </summary>
+public record ListResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// A list of ids
     /// </summary>
@@ -32,17 +38,32 @@ public record ListResponse
     [JsonPropertyName("usage")]
     public Usage? Usage { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new ListResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static ListResponse FromProto(ProtoGrpc.ListResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new ListResponse
+        {
+            Vectors = value.Vectors?.Select(ListItem.FromProto),
+            Pagination = value.Pagination != null ? Pagination.FromProto(value.Pagination) : null,
+            Namespace = value.Namespace,
+            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
+        };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the ListResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.ListResponse ToProto()
+    internal ProtoGrpc.ListResponse ToProto()
     {
-        var result = new Proto.ListResponse();
+        var result = new ProtoGrpc.ListResponse();
         if (Vectors != null && Vectors.Any())
         {
             result.Vectors.AddRange(Vectors.Select(elem => elem.ToProto()));
@@ -62,17 +83,9 @@ public record ListResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new ListResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static ListResponse FromProto(Proto.ListResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new ListResponse
-        {
-            Vectors = value.Vectors?.Select(ListItem.FromProto),
-            Pagination = value.Pagination != null ? Pagination.FromProto(value.Pagination) : null,
-            Namespace = value.Namespace,
-            Usage = value.Usage != null ? Usage.FromProto(value.Usage) : null,
-        };
+        return JsonUtils.Serialize(this);
     }
 }

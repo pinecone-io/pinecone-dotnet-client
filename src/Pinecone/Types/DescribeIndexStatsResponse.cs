@@ -1,13 +1,19 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Pinecone.Core;
-using Proto = Pinecone.Grpc;
-
-#nullable enable
+using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
-public record DescribeIndexStatsResponse
+/// <summary>
+/// The response for the `describe_index_stats` operation.
+/// </summary>
+public record DescribeIndexStatsResponse : IJsonOnDeserialized
 {
+    [JsonExtensionData]
+    private readonly IDictionary<string, JsonElement> _extensionData =
+        new Dictionary<string, JsonElement>();
+
     /// <summary>
     /// A mapping for each namespace in the index from the namespace name to a
     ///  summary of its contents. If a metadata filter expression is present, the
@@ -50,17 +56,37 @@ public record DescribeIndexStatsResponse
     [JsonPropertyName("vectorType")]
     public string? VectorType { get; set; }
 
-    public override string ToString()
+    [JsonIgnore]
+    public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
+
+    /// <summary>
+    /// Returns a new DescribeIndexStatsResponse type from its Protobuf-equivalent representation.
+    /// </summary>
+    internal static DescribeIndexStatsResponse FromProto(ProtoGrpc.DescribeIndexStatsResponse value)
     {
-        return JsonUtils.Serialize(this);
+        return new DescribeIndexStatsResponse
+        {
+            Namespaces = value.Namespaces?.ToDictionary(
+                kvp => kvp.Key,
+                kvp => NamespaceSummary.FromProto(kvp.Value)
+            ),
+            Dimension = value.Dimension,
+            IndexFullness = value.IndexFullness,
+            TotalVectorCount = value.TotalVectorCount,
+            Metric = value.Metric,
+            VectorType = value.VectorType,
+        };
     }
+
+    void IJsonOnDeserialized.OnDeserialized() =>
+        AdditionalProperties.CopyFromExtensionData(_extensionData);
 
     /// <summary>
     /// Maps the DescribeIndexStatsResponse type into its Protobuf-equivalent representation.
     /// </summary>
-    internal Proto.DescribeIndexStatsResponse ToProto()
+    internal ProtoGrpc.DescribeIndexStatsResponse ToProto()
     {
-        var result = new Proto.DescribeIndexStatsResponse();
+        var result = new ProtoGrpc.DescribeIndexStatsResponse();
         if (Namespaces != null && Namespaces.Any())
         {
             foreach (var kvp in Namespaces)
@@ -92,22 +118,9 @@ public record DescribeIndexStatsResponse
         return result;
     }
 
-    /// <summary>
-    /// Returns a new DescribeIndexStatsResponse type from its Protobuf-equivalent representation.
-    /// </summary>
-    internal static DescribeIndexStatsResponse FromProto(Proto.DescribeIndexStatsResponse value)
+    /// <inheritdoc />
+    public override string ToString()
     {
-        return new DescribeIndexStatsResponse
-        {
-            Namespaces = value.Namespaces?.ToDictionary(
-                kvp => kvp.Key,
-                kvp => NamespaceSummary.FromProto(kvp.Value)
-            ),
-            Dimension = value.Dimension,
-            IndexFullness = value.IndexFullness,
-            TotalVectorCount = value.TotalVectorCount,
-            Metric = value.Metric,
-            VectorType = value.VectorType,
-        };
+        return JsonUtils.Serialize(this);
     }
 }
