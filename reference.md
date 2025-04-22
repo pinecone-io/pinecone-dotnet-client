@@ -584,7 +584,7 @@ await client.DeleteCollectionAsync("test-collection");
 <dl>
 <dd>
 
-The `list_imports` operation lists all recent and ongoing import operations.
+List all recent and ongoing import operations.
 
 By default, `list_imports` returns up to 100 imports per page. If the `limit` parameter is set, `list` returns up to that number of imports instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of imports. When the response does not include a `pagination_token`, there are no more imports to return.
 
@@ -642,7 +642,7 @@ await client.Index.ListBulkImportsAsync(new ListBulkImportsRequest());
 <dl>
 <dd>
 
-The `start_import` operation starts an asynchronous import of vectors from object storage into an index.
+Start an asynchronous import of vectors from object storage into an index.
 
 For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
@@ -698,7 +698,7 @@ await client.Index.StartBulkImportAsync(new StartImportRequest { Uri = "uri" });
 <dl>
 <dd>
 
-The `describe_import` operation returns details of a specific import operation.
+Return details of a specific import operation.
 
 For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
@@ -754,7 +754,7 @@ await client.Index.DescribeBulkImportAsync("101");
 <dl>
 <dd>
 
-The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished.
+Cancel an import operation if it is not yet finished. It has no effect if the operation is already finished.
 
 For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
 </dd>
@@ -810,7 +810,11 @@ await client.Index.CancelBulkImportAsync("101");
 <dl>
 <dd>
 
-This operation converts a query to a vector embedding and then searches a namespace using the embedding. It returns the most similar records in the namespace, along with their similarity scores.
+Search a namespace with a query text, query vector, or record ID and return the most similar records, along with their similarity scores. Optionally, rerank the initial results based on their relevance to the query. 
+
+Searching with text is supported only for [indexes with integrated embedding](https://docs.pinecone.io/guides/indexes/create-an-index#integrated-embedding). Searching with a query vector or record ID is supported for all indexes. 
+
+For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
 </dd>
 </dl>
 </dd>
@@ -885,7 +889,7 @@ await client.Index.SearchRecordsAsync(
 
 Get index stats
 
- The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+ Return statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
 
  Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
 </dd>
@@ -941,9 +945,9 @@ await client.Index.DescribeIndexStatsAsync(new DescribeIndexStatsRequest());
 <dl>
 <dd>
 
-Query vectors
+Search with a vector
 
- The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+ Search a namespace with a query vector or record ID and return the IDs of the most similar records, along with their similarity scores.
 
  For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
 </dd>
@@ -1009,7 +1013,7 @@ await client.Index.QueryAsync(
 
 Delete vectors
 
- The `delete` operation deletes vectors, by id, from a single namespace.
+ Delete vectors by id from a single namespace.
 
  For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
 </dd>
@@ -1073,7 +1077,7 @@ await client.Index.DeleteAsync(
 
 Fetch vectors
 
- The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+ Look up and return vectors by ID from a single namespace. The returned vectors include the vector data and/or metadata.
 
  For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
 </dd>
@@ -1131,9 +1135,9 @@ await client.Index.FetchAsync(new FetchRequest { Ids = ["v1"], Namespace = "exam
 
 List vector IDs
 
- The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+ List the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
 
- `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+ This returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
 
  For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
 
@@ -1200,7 +1204,7 @@ await client.Index.ListAsync(
 
 Update a vector
 
- The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+ Update a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
 
  For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
 </dd>
@@ -1265,9 +1269,9 @@ await client.Index.UpdateAsync(
 
 Upsert vectors
 
- The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+ Upsert vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
 
- For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+ For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data#upsert-vectors).
 </dd>
 </dl>
 </dd>
@@ -1330,9 +1334,9 @@ await client.Index.UpsertAsync(
 <dl>
 <dd>
 
-Generate embeddings for input data.
+Generate vector embeddings for input data. This endpoint uses [Pinecone Inference](https://docs.pinecone.io/guides/inference/understanding-inference).
 
-For guidance and examples, see [Generate embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
+For guidance and examples, see [Embed data](https://docs.pinecone.io/guides/inference/generate-embeddings).
 </dd>
 </dl>
 </dd>
@@ -1441,6 +1445,284 @@ await client.Inference.RerankAsync(
 <dd>
 
 **request:** `RerankRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Index Namespaces
+<details><summary><code>client.Index.Namespaces.<a href="/src/Pinecone/Index/Namespaces/NamespacesClient.cs">ListAsync</a>(NamespacesListRequest { ... }) -> ListNamespacesResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get list of all namespaces
+
+ Get a list of all namespaces within an index.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Index.Namespaces.ListAsync(new NamespacesListRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `NamespacesListRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Index.Namespaces.<a href="/src/Pinecone/Index/Namespaces/NamespacesClient.cs">GetAsync</a>(namespace_) -> NamespaceDescription</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Describe a namespace
+
+ Describe a namespace within an index, showing the vector count within the namespace.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Index.Namespaces.GetAsync("namespace");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**namespace_:** `string` — The namespace to describe
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Index.Namespaces.<a href="/src/Pinecone/Index/Namespaces/NamespacesClient.cs">DeleteAsync</a>(namespace_) -> DeleteResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Delete a namespace
+
+ Delete a namespace from an index.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Index.Namespaces.DeleteAsync("namespace");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**namespace_:** `string` — The namespace to delete
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Inference Models
+<details><summary><code>client.Inference.Models.<a href="/src/Pinecone/Inference/Models/ModelsClient.cs">ListAsync</a>(ListModelsRequest { ... }) -> ModelInfoList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get available models.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inference.Models.ListAsync(new ListModelsRequest());
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `ListModelsRequest` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Inference.Models.<a href="/src/Pinecone/Inference/Models/ModelsClient.cs">GetAsync</a>(modelName) -> ModelInfo</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get model details.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Inference.Models.GetAsync("multilingual-e5-large");
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**modelName:** `string` — The name of the model to look up.
     
 </dd>
 </dl>

@@ -97,6 +97,12 @@ errors:
             message: Collection example-collection not found.
           status: 404
         name: Collection not found.
+      - value:
+          error:
+            code: NOT_FOUND
+            message: Model example-model not found.
+          status: 404
+        name: Model not found
   ConflictError:
     status-code: 409
     type: ErrorResponse
@@ -1743,7 +1749,9 @@ types:
     properties:
       _id:
         type: string
-        docs: The unique ID of the record to upsert.
+        docs: >-
+          The unique ID of the record to upsert. Note that `id` can be used as
+          an alias for `_id`.
     extra-properties: true
     source:
       openapi: ../data-plane/openapi/openapi.yml
@@ -1816,43 +1824,6 @@ types:
     source:
       openapi: ../data-plane/openapi/openapi.yml
   SearchRequest: unknown
-  Document:
-    type: map<string, unknown>
-    docs: Document for reranking
-  RerankResultUsage:
-    docs: Usage statistics for the model inference.
-    properties:
-      rerank_units:
-        type: optional<integer>
-        docs: The number of rerank units consumed by this operation.
-        validation:
-          min: 0
-    source:
-      openapi: ../inference/openapi/openapi.yml
-    inline: true
-  RerankResult:
-    docs: The result of a reranking request.
-    properties:
-      model:
-        type: string
-        docs: The model used to rerank documents.
-      data:
-        docs: The reranked documents.
-        type: list<RankedDocument>
-      usage:
-        type: RerankResultUsage
-        docs: Usage statistics for the model inference.
-    source:
-      openapi: ../inference/openapi/openapi.yml
-  DenseEmbedding:
-    docs: A dense embedding of a single input
-    properties:
-      values:
-        docs: The dense embedding values.
-        type: list<float>
-      vector_type: VectorType
-    source:
-      openapi: ../inference/openapi/openapi.yml
   EmbeddingsListUsage:
     docs: Usage statistics for the model inference.
     properties:
@@ -1883,21 +1854,199 @@ types:
         docs: Usage statistics for the model inference.
     source:
       openapi: ../inference/openapi/openapi.yml
-  SparseEmbedding:
-    docs: A sparse embedding of a single input
-    properties:
-      sparse_values:
-        docs: The sparse embedding values.
-        type: list<float>
-      sparse_indices:
-        docs: The sparse embedding indices.
-        type: list<integer>
-      sparse_tokens:
-        type: optional<list<string>>
-        docs: The normalized tokens used to create the sparse embedding.
-      vector_type: VectorType
+  ModelInfoSupportedParameterAllowedValuesItem:
+    discriminated: false
+    union:
+      - string
+      - integer
     source:
       openapi: ../inference/openapi/openapi.yml
+    inline: true
+  ModelInfoSupportedParameterDefault:
+    discriminated: false
+    docs: The default value for the parameter when a parameter is optional.
+    union:
+      - string
+      - integer
+      - float
+      - boolean
+    source:
+      openapi: ../inference/openapi/openapi.yml
+    inline: true
+  ModelInfoSupportedParameter:
+    docs: >-
+      Describes a parameter supported by the model, including parameter value
+      constraints.
+    properties:
+      parameter:
+        type: string
+        docs: The name of the parameter.
+      type:
+        type: string
+        docs: >-
+          The parameter type e.g. 'one_of', 'numeric_range', or 'any'.
+
+
+          If the type is 'one_of', then 'allowed_values' will be set, and the
+          value specified must be one of the allowed values. 'one_of' is only
+          compatible with value_type 'string' or 'integer'.
+
+
+          If 'numeric_range', then 'min' and 'max' will be set, then the value
+          specified must adhere to the value_type and must fall within the
+          `[min, max]` range (inclusive).
+
+
+          If 'any' then any value is allowed, as long as it adheres to the
+          value_type.
+      value_type:
+        type: string
+        docs: >-
+          The type of value the parameter accepts, e.g. 'string', 'integer',
+          'float', or 'boolean'.
+      required:
+        type: boolean
+        docs: Whether the parameter is required (true) or optional (false).
+      allowed_values:
+        type: optional<list<ModelInfoSupportedParameterAllowedValuesItem>>
+        docs: The allowed parameter values when the type is 'one_of'.
+      min:
+        type: optional<double>
+        docs: >-
+          The minimum allowed value (inclusive) when the type is
+          'numeric_range'.
+      max:
+        type: optional<double>
+        docs: >-
+          The maximum allowed value (inclusive) when the type is
+          'numeric_range'.
+      default:
+        type: optional<ModelInfoSupportedParameterDefault>
+        docs: The default value for the parameter when a parameter is optional.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  Embedding:
+    discriminant: vector_type
+    base-properties: {}
+    docs: Embedding of a single input
+    union:
+      dense: DenseEmbedding
+      sparse: SparseEmbedding
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  ModelInfoList:
+    docs: The list of available models.
+    properties:
+      models: optional<list<ModelInfo>>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  Document:
+    type: map<string, unknown>
+    docs: Document for reranking
+  ModelInfoType:
+    enum:
+      - embed
+      - rerank
+    docs: The type of model (e.g. 'embed' or 'rerank').
+    inline: true
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  ModelInfoVectorType:
+    enum:
+      - dense
+      - sparse
+    docs: Whether the embedding model produces 'dense' or 'sparse' embeddings.
+    inline: true
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  ModelInfo:
+    docs: >-
+      Represents the model configuration including model type, supported
+      parameters, and other model details.
+    properties:
+      name:
+        type: string
+        docs: The name of the model.
+      short_description:
+        type: string
+        docs: A summary of the model.
+      type:
+        type: ModelInfoType
+        docs: The type of model (e.g. 'embed' or 'rerank').
+      vector_type:
+        type: optional<ModelInfoVectorType>
+        docs: Whether the embedding model produces 'dense' or 'sparse' embeddings.
+      dimension:
+        type: optional<integer>
+        docs: >-
+          The embedding model dimension (applies to dense embedding models
+          only).
+        validation:
+          min: 1
+          max: 20000
+      modality:
+        type: optional<string>
+        docs: The modality of the model (e.g. 'text').
+      sequence_length:
+        type: optional<integer>
+        docs: The maximum tokens per sequence supported by the model.
+        validation:
+          min: 1
+      batch_size:
+        type: optional<integer>
+        docs: The maximum batch size (number of sequences) supported by the model.
+        validation:
+          min: 1
+      supported_metrics: optional<ModelInfoSupportedMetrics>
+      supported_parameters: list<ModelInfoSupportedParameter>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  RerankResultUsage:
+    docs: Usage statistics for the model inference.
+    properties:
+      rerank_units:
+        type: optional<integer>
+        docs: The number of rerank units consumed by this operation.
+        validation:
+          min: 0
+    source:
+      openapi: ../inference/openapi/openapi.yml
+    inline: true
+  RerankResult:
+    docs: The result of a reranking request.
+    properties:
+      model:
+        type: string
+        docs: The model used to rerank documents.
+      data:
+        docs: The reranked documents.
+        type: list<RankedDocument>
+      usage:
+        type: RerankResultUsage
+        docs: Usage statistics for the model inference.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  ModelInfoMetric:
+    enum:
+      - cosine
+      - euclidean
+      - dotproduct
+    docs: >-
+      A distance metric that the embedding model supports for similarity
+      searches.
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  DenseEmbedding:
+    docs: A dense embedding of a single input
+    properties:
+      values:
+        docs: The dense embedding values.
+        type: list<float>
+    source:
+      openapi: ../inference/openapi/openapi.yml
+  ModelInfoSupportedMetrics:
+    docs: The distance metrics supported by the model for similarity search.
+    type: list<ModelInfoMetric>
   RankedDocument:
     docs: A ranked document with a relevance score and an index position.
     properties:
@@ -1912,18 +2061,15 @@ types:
       document: optional<Document>
     source:
       openapi: ../inference/openapi/openapi.yml
-  Embedding:
-    docs: Embedding of a single input
+  SparseEmbedding:
+    docs: A sparse embedding of a single input
     properties:
-      values:
-        type: optional<list<float>>
-        docs: The dense embedding values.
       sparse_values:
-        type: optional<list<float>>
         docs: The sparse embedding values.
+        type: list<float>
       sparse_indices:
-        type: optional<list<integer>>
         docs: The sparse embedding indices.
+        type: list<integer>
       sparse_tokens:
         type: optional<list<string>>
         docs: The normalized tokens used to create the sparse embedding.
@@ -2002,6 +2148,17 @@ types:
       id: optional<string>
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+  ListNamespacesResponse:
+    docs: The response for the list namespace operation.
+    properties:
+      namespaces:
+        type: optional<list<NamespaceDescription>>
+        docs: The list of namespaces belonging to this index.
+      pagination:
+        type: optional<Pagination>
+        docs: Pagination token to continue past this listing
+    source:
+      proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
   ListResponse:
     docs: The response for the `List` operation.
     properties:
@@ -2017,6 +2174,12 @@ types:
       usage:
         type: optional<Usage>
         docs: The usage for this operation.
+    source:
+      proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+  NamespaceDescription:
+    properties:
+      name: optional<string>
+      recordCount: optional<uint64>
     source:
       proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
   NamespaceSummary:
@@ -2059,8 +2222,8 @@ types:
         type: optional<list<float>>
         docs: >-
           The query vector. This should be the same length as the dimension of
-          the index being queried. Each `query()` request can contain only one
-          of the parameters `id` or `vector`.
+          the index being queried. Each request can contain either the `id` or
+          `vector` parameter.
       sparseValues:
         type: optional<SparseValues>
         docs: The query sparse values.

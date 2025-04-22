@@ -20,7 +20,9 @@ public record SearchRecordsRequestRerank : IJsonOnDeserialized
     public required string Model { get; set; }
 
     /// <summary>
-    /// The fields to use for reranking.
+    /// The field(s) to consider for reranking. If not provided, the default is `["text"]`.
+    ///
+    /// The number of fields supported is [model-specific](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models).
     /// </summary>
     [JsonPropertyName("rank_fields")]
     public IEnumerable<string> RankFields { get; set; } = new List<string>();

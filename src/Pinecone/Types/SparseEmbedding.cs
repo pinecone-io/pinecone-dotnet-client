@@ -31,9 +31,6 @@ public record SparseEmbedding : IJsonOnDeserialized
     [JsonPropertyName("sparse_tokens")]
     public IEnumerable<string>? SparseTokens { get; set; }
 
-    [JsonPropertyName("vector_type")]
-    public required VectorType VectorType { get; set; }
-
     [JsonIgnore]
     public ReadOnlyAdditionalProperties AdditionalProperties { get; private set; } = new();
 

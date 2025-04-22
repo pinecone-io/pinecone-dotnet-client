@@ -29,7 +29,7 @@ public record EmbeddingsList : IJsonOnDeserialized
     /// The embeddings generated for the inputs.
     /// </summary>
     [JsonPropertyName("data")]
-    public IEnumerable<Embedding> Data { get; set; } = new List<Embedding>();
+    public IEnumerable<object> Data { get; set; } = new List<object>();
 
     /// <summary>
     /// Usage statistics for the model inference.

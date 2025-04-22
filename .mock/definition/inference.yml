@@ -16,14 +16,15 @@ service:
       method: POST
       auth: true
       docs: >-
-        Generate embeddings for input data.
+        Generate vector embeddings for input data. This endpoint uses [Pinecone
+        Inference](https://docs.pinecone.io/guides/inference/understanding-inference).
 
 
-        For guidance and examples, see [Generate
-        embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
+        For guidance and examples, see [Embed
+        data](https://docs.pinecone.io/guides/inference/generate-embeddings).
       source:
         openapi: ../inference/openapi/openapi.yml
-      display-name: Embed data
+      display-name: Generate vectors
       request:
         name: EmbedRequest
         body:
@@ -63,13 +64,10 @@ service:
               vector_type: dense
               data:
                 - values:
-                    - 1.1
-                  sparse_values:
-                    - 1.1
-                  sparse_indices:
-                    - 1
-                  sparse_tokens:
-                    - sparse_tokens
+                    - 0.1
+                    - 0.2
+                    - 0.3
+                  vector_type: dense
               usage:
                 total_tokens: 205
     rerank:
@@ -109,9 +107,13 @@ service:
               default: true
             rank_fields:
               type: optional<list<string>>
-              docs: >-
-                The fields to rank the documents by. If not provided, the
-                default is `"text"`.
+              docs: >
+                The field(s) to consider for reranking. If not provided, the
+                default is `["text"]`.
+
+
+                The number of fields supported is
+                [model-specific](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models).
             documents:
               docs: The documents to rerank.
               type: list<root.Document>

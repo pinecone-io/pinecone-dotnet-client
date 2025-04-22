@@ -1,0 +1,87 @@
+imports:
+  root: ../__package__.yml
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    list:
+      path: /namespaces
+      method: GET
+      auth: false
+      docs: |-
+        Get list of all namespaces
+
+         Get a list of all namespaces within an index.
+      source:
+        proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+      request:
+        name: NamespacesListRequest
+        query-parameters:
+          paginationToken:
+            type: optional<string>
+            docs: Pagination token to continue a previous listing operation
+          limit:
+            type: optional<uint>
+            docs: Max number of namespaces to return
+      response:
+        docs: OK
+        type: root.ListNamespacesResponse
+        status-code: 200
+      examples:
+        - response:
+            body:
+              namespaces:
+                - name: name
+                  recordCount: 1000000
+              pagination:
+                next: next
+    get:
+      path: /namespaces/{namespace}
+      method: GET
+      auth: false
+      docs: |-
+        Describe a namespace
+
+         Describe a namespace within an index, showing the vector count within the namespace.
+      source:
+        proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+      path-parameters:
+        namespace:
+          type: string
+          docs: The namespace to describe
+      response:
+        docs: OK
+        type: root.NamespaceDescription
+        status-code: 200
+      examples:
+        - path-parameters:
+            namespace: namespace
+          response:
+            body:
+              name: name
+              recordCount: 1000000
+    delete:
+      path: /namespaces/{namespace}
+      method: DELETE
+      auth: false
+      docs: |-
+        Delete a namespace
+
+         Delete a namespace from an index.
+      source:
+        proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+      path-parameters:
+        namespace:
+          type: string
+          docs: The namespace to delete
+      response:
+        docs: OK
+        type: root.DeleteResponse
+        status-code: 200
+      examples:
+        - path-parameters:
+            namespace: namespace
+          response:
+            body: {}
+  source:
+    proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto

@@ -1,6 +1,5 @@
 using global::System.Threading.Tasks;
 using NUnit.Framework;
-using Pinecone;
 using Pinecone.Core;
 
 namespace Pinecone.Test.Unit.MockServer;

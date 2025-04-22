@@ -1,52 +1,49 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
+using Pinecone;
 using Pinecone.Core;
-using Pinecone.Inference;
 
-namespace Pinecone;
+namespace Pinecone.Inference;
 
-public partial class InferenceClient
+public partial class ModelsClient
 {
     private RawClient _client;
 
-    internal InferenceClient(RawClient client)
+    internal ModelsClient(RawClient client)
     {
         _client = client;
-        Models = new ModelsClient(_client);
     }
 
-    public ModelsClient Models { get; }
-
     /// <summary>
-    /// Generate vector embeddings for input data. This endpoint uses [Pinecone Inference](https://docs.pinecone.io/guides/inference/understanding-inference).
-    ///
-    /// For guidance and examples, see [Embed data](https://docs.pinecone.io/guides/inference/generate-embeddings).
+    /// Get available models.
     /// </summary>
     /// <example><code>
-    /// await client.Inference.EmbedAsync(
-    ///     new EmbedRequest
-    ///     {
-    ///         Model = "multilingual-e5-large",
-    ///         Inputs = new List&lt;EmbedRequestInputsItem&gt;() { new EmbedRequestInputsItem() },
-    ///     }
-    /// );
+    /// await client.Inference.Models.ListAsync(new ListModelsRequest());
     /// </code></example>
-    public async Task<EmbeddingsList> EmbedAsync(
-        EmbedRequest request,
+    public async Task<ModelInfoList> ListAsync(
+        ListModelsRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        if (request.Type != null)
+        {
+            _query["type"] = request.Type.Value.Stringify();
+        }
+        if (request.VectorType != null)
+        {
+            _query["vector_type"] = request.VectorType.Value.Stringify();
+        }
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
-                    Method = HttpMethod.Post,
-                    Path = "embed",
-                    Body = request,
-                    ContentType = "application/json",
+                    Method = HttpMethod.Get,
+                    Path = "models",
+                    Query = _query,
                     Options = options,
                 },
                 cancellationToken
@@ -57,7 +54,7 @@ public partial class InferenceClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<EmbeddingsList>(responseBody)!;
+                return JsonUtils.Deserialize<ModelInfoList>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -71,12 +68,12 @@ public partial class InferenceClient
             {
                 switch (response.StatusCode)
                 {
-                    case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
                         );
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                     case 500:
                         throw new InternalServerError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -96,31 +93,13 @@ public partial class InferenceClient
     }
 
     /// <summary>
-    /// Rerank documents according to their relevance to a query.
-    ///
-    /// For guidance and examples, see [Rerank documents](https://docs.pinecone.io/guides/inference/rerank).
+    /// Get model details.
     /// </summary>
     /// <example><code>
-    /// await client.Inference.RerankAsync(
-    ///     new RerankRequest
-    ///     {
-    ///         Model = "bge-reranker-v2-m3",
-    ///         Query = "What is the capital of France?",
-    ///         Documents = new List&lt;Dictionary&lt;string, object?&gt;&gt;()
-    ///         {
-    ///             new Dictionary&lt;string, object&gt;()
-    ///             {
-    ///                 { "id", "1" },
-    ///                 { "text", "Paris is the capital of France." },
-    ///                 { "title", "France" },
-    ///                 { "url", "https://example.com" },
-    ///             },
-    ///         },
-    ///     }
-    /// );
+    /// await client.Inference.Models.GetAsync("multilingual-e5-large");
     /// </code></example>
-    public async Task<RerankResult> RerankAsync(
-        RerankRequest request,
+    public async Task<ModelInfo> GetAsync(
+        string modelName,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
@@ -130,10 +109,11 @@ public partial class InferenceClient
                 new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
-                    Method = HttpMethod.Post,
-                    Path = "rerank",
-                    Body = request,
-                    ContentType = "application/json",
+                    Method = HttpMethod.Get,
+                    Path = string.Format(
+                        "models/{0}",
+                        ValueConvert.ToPathParameterString(modelName)
+                    ),
                     Options = options,
                 },
                 cancellationToken
@@ -144,7 +124,7 @@ public partial class InferenceClient
             var responseBody = await response.Raw.Content.ReadAsStringAsync();
             try
             {
-                return JsonUtils.Deserialize<RerankResult>(responseBody)!;
+                return JsonUtils.Deserialize<ModelInfo>(responseBody)!;
             }
             catch (JsonException e)
             {
@@ -158,12 +138,12 @@ public partial class InferenceClient
             {
                 switch (response.StatusCode)
                 {
-                    case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
                         );
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                     case 500:
                         throw new InternalServerError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)

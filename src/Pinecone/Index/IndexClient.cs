@@ -4,6 +4,7 @@ using System.Threading;
 using Grpc.Core;
 using Pinecone.Core;
 using Pinecone.Grpc;
+using Pinecone.Index;
 
 namespace Pinecone;
 
@@ -20,10 +21,13 @@ public partial class IndexClient
         _client = client;
         _grpc = _client.Grpc;
         _vectorService = new VectorService.VectorServiceClient(_grpc.Channel);
+        Namespaces = new NamespacesClient(_client);
     }
 
+    public NamespacesClient Namespaces { get; }
+
     /// <summary>
-    /// The `list_imports` operation lists all recent and ongoing import operations.
+    /// List all recent and ongoing import operations.
     ///
     /// By default, `list_imports` returns up to 100 imports per page. If the `limit` parameter is set, `list` returns up to that number of imports instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of imports. When the response does not include a `pagination_token`, there are no more imports to return.
     ///
@@ -84,7 +88,7 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `start_import` operation starts an asynchronous import of vectors from object storage into an index.
+    /// Start an asynchronous import of vectors from object storage into an index.
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
@@ -135,7 +139,7 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `describe_import` operation returns details of a specific import operation.
+    /// Return details of a specific import operation.
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
@@ -187,7 +191,7 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// The `cancel_import` operation cancels an import operation if it is not yet finished. It has no effect if the operation is already finished.
+    /// Cancel an import operation if it is not yet finished. It has no effect if the operation is already finished.
     ///
     /// For guidance and examples, see [Import data](https://docs.pinecone.io/guides/data/import-data).
     /// </summary>
@@ -239,7 +243,11 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// This operation converts a query to a vector embedding and then searches a namespace using the embedding. It returns the most similar records in the namespace, along with their similarity scores.
+    /// Search a namespace with a query text, query vector, or record ID and return the most similar records, along with their similarity scores. Optionally, rerank the initial results based on their relevance to the query.
+    ///
+    /// Searching with text is supported only for [indexes with integrated embedding](https://docs.pinecone.io/guides/indexes/create-an-index#integrated-embedding). Searching with a query vector or record ID is supported for all indexes.
+    ///
+    /// For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
     /// </summary>
     /// <example><code>
     /// await client.Index.SearchRecordsAsync(
@@ -317,7 +325,7 @@ public partial class IndexClient
     /// <summary>
     /// Get index stats
     ///
-    ///  The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+    ///  Return statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
     ///
     ///  Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
     /// </summary>
@@ -356,9 +364,9 @@ public partial class IndexClient
     }
 
     /// <summary>
-    /// Query vectors
+    /// Search with a vector
     ///
-    ///  The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+    ///  Search a namespace with a query vector or record ID and return the IDs of the most similar records, along with their similarity scores.
     ///
     ///  For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
     /// </summary>
@@ -407,7 +415,7 @@ public partial class IndexClient
     /// <summary>
     /// Delete vectors
     ///
-    ///  The `delete` operation deletes vectors, by id, from a single namespace.
+    ///  Delete vectors by id from a single namespace.
     ///
     ///  For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
     /// </summary>
@@ -454,7 +462,7 @@ public partial class IndexClient
     /// <summary>
     /// Fetch vectors
     ///
-    ///  The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+    ///  Look up and return vectors by ID from a single namespace. The returned vectors include the vector data and/or metadata.
     ///
     ///  For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
     /// </summary>
@@ -495,9 +503,9 @@ public partial class IndexClient
     /// <summary>
     /// List vector IDs
     ///
-    ///  The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+    ///  List the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
     ///
-    ///  `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+    ///  This returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
     ///
     ///  For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
     ///
@@ -547,7 +555,7 @@ public partial class IndexClient
     /// <summary>
     /// Update a vector
     ///
-    ///  The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+    ///  Update a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
     ///
     ///  For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
     /// </summary>
@@ -595,9 +603,9 @@ public partial class IndexClient
     /// <summary>
     /// Upsert vectors
     ///
-    ///  The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+    ///  Upsert vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
     ///
-    ///  For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+    ///  For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data#upsert-vectors).
     /// </summary>
     /// <example><code>
     /// await client.Index.UpsertAsync(

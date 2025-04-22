@@ -6,13 +6,13 @@ namespace Pinecone;
 public record SearchRecordsRequest
 {
     /// <summary>
-    /// The query inputs to search with.
+    /// .
     /// </summary>
     [JsonPropertyName("query")]
     public required SearchRecordsRequestQuery Query { get; set; }
 
     /// <summary>
-    /// The fields to return in the search results.
+    /// The fields to return in the search results. If not specified, the response will include all fields.
     /// </summary>
     [JsonPropertyName("fields")]
     public IEnumerable<string>? Fields { get; set; }
