@@ -10,7 +10,7 @@ namespace Pinecone.Test.Integration.Control
         public static string IndexName { get; private set; } = null!;
         public static string PineconeEnvironment { get; private set; } = null!;
         public static int Dimension { get; private set; }
-        public static CreateIndexRequestMetric Metric { get; private set; }
+        public static MetricType Metric { get; private set; }
         public static string CollectionName { get; private set; } = null!;
         public static string Host { get; private set; } = null!;
 
@@ -26,7 +26,7 @@ namespace Pinecone.Test.Integration.Control
             );
             PineconeEnvironment = "us-west1-gcp";
             Dimension = 2;
-            Metric = CreateIndexRequestMetric.Cosine;
+            Metric = MetricType.Cosine;
             IndexName = Helpers.GenerateIndexName("global-index");
 
             Host = await Helpers

@@ -72,7 +72,7 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
     Name = "example-index",
     Dimension = 1538,
-    Metric = CreateIndexRequestMetric.Cosine,
+    Metric = MetricType.Cosine,
     Spec = new ServerlessIndexSpec
     {
         Serverless = new ServerlessSpec
@@ -98,7 +98,7 @@ var index = await pinecone.CreateIndexAsync(new CreateIndexRequest
 {
     Name = "example-index",
     Dimension = 1538,
-    Metric = CreateIndexRequestMetric.Cosine,
+    Metric = MetricType.Cosine,
     Spec = new PodIndexSpec
     {
         Pod = new PodSpec

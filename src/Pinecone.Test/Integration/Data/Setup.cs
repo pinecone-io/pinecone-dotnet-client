@@ -10,7 +10,7 @@ public class Setup
     public static string IndexHost { get; private set; } = null!;
     public static string IndexName { get; private set; } = null!;
     public static string ListNamespace { get; private set; } = null!;
-    public static CreateIndexRequestMetric Metric { get; private set; }
+    public static MetricType Metric { get; private set; }
     public static string Namespace { get; private set; } = null!;
     public static ServerlessIndexSpec Spec { get; private set; } = null!;
     public static IndexClient IndexClient { get; private set; } = null!;
@@ -25,7 +25,7 @@ public class Setup
             apiKey: Helpers.GetEnvironmentVar("PINECONE_API_KEY"),
             new ClientOptions { SourceTag = "test-tag" }
         );
-        Metric = CreateIndexRequestMetric.Cosine;
+        Metric = MetricType.Cosine;
         Spec = new ServerlessIndexSpec
         {
             Serverless = new ServerlessSpec
@@ -54,7 +54,7 @@ public class Setup
 
     private static async Task<string> SetupIndex(
         string indexName,
-        CreateIndexRequestMetric metric,
+        MetricType metric,
         ServerlessIndexSpec spec
     )
     {

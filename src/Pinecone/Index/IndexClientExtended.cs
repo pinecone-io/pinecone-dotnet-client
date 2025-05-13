@@ -1,6 +1,8 @@
 using System.Net.Http;
 using System.Text.Json;
+using Grpc.Core;
 using Pinecone.Core;
+using Pinecone.Grpc;
 
 namespace Pinecone;
 
@@ -112,7 +114,7 @@ public partial class IndexClient
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                 }
             }
             catch (JsonException)
@@ -125,6 +127,90 @@ public partial class IndexClient
                 response.StatusCode,
                 responseBody
             );
+        }
+    }
+
+    /// <summary>
+    /// Describe a namespace
+    ///
+    ///  Describe a namespace within an index, showing the vector count within the namespace.
+    /// </summary>
+    /// <example><code>
+    /// await client.Index.DescribeNamespaceAsync("namespace");
+    /// </code></example>
+    public async Task<NamespaceDescription> DescribeNamespaceAsync(
+        string @namespace,
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.DescribeNamespaceAsync(new DescribeNamespaceRequest
+            {
+                Namespace = @namespace
+            }, callOptions);
+            var response = await call.ConfigureAwait(false);
+            return NamespaceDescription.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
+        }
+    }
+
+    /// <summary>
+    /// Delete a namespace
+    ///
+    ///  Delete a namespace from an index.
+    /// </summary>
+    /// <example><code>
+    /// await client.Index.DeleteNamespaceAsync("namespace");
+    /// </code></example>
+    public async Task<DeleteResponse> DeleteNamespaceAsync(
+        string @namespace,
+        GrpcRequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var callOptions = _grpc.CreateCallOptions(
+                options ?? new GrpcRequestOptions(),
+                cancellationToken
+            );
+            var call = _vectorService.DeleteNamespaceAsync(new DeleteNamespaceRequest
+            {
+                Namespace = @namespace
+            }, callOptions);
+            var response = await call.ConfigureAwait(false);
+            return DeleteResponse.FromProto(response);
+        }
+        catch (RpcException rpc)
+        {
+            var statusCode = (int)rpc.StatusCode;
+            throw new PineconeApiException(
+                $"Error with gRPC status code {statusCode}",
+                statusCode,
+                rpc.Message
+            );
+        }
+        catch (Exception e)
+        {
+            throw new PineconeException("Error", e);
         }
     }
 }
