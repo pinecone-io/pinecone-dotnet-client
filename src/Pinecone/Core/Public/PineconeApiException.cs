@@ -5,20 +5,12 @@ namespace Pinecone;
 /// </summary>
 public class PineconeApiException : PineconeException
 {
-    public PineconeApiException(string message, int statusCode, object body) : base(CreateMessage(message, body))
+    public PineconeApiException(string message, int statusCode, object body) : base(message)
     {
         StatusCode = statusCode;
-        Body = body;
-    }
-
-    private static string CreateMessage(string message, object body)
-    {
-        if (body is null)
-        {
-            return message;
-        }
-        
-        return $"{message}\nBody: {body}";
+        Body = body;        
+        Data["StatusCode"] = statusCode;
+        Data["ResponseBody"] = body;
     }
 
     /// <summary>
