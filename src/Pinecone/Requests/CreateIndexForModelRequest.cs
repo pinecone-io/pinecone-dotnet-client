@@ -34,7 +34,7 @@ public record CreateIndexForModelRequest
     ///
     /// Once set the model cannot be changed, but you can later update the embedding configuration for an integrated inference index including field map, read parameters, or write parameters.
     ///
-    /// Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+    /// Refer to the [model guide](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models) for available models and model details.
     /// </summary>
     [JsonPropertyName("embed")]
     public required CreateIndexForModelRequestEmbed Embed { get; set; }

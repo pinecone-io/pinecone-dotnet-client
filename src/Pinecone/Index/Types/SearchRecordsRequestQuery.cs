@@ -5,7 +5,7 @@ using Pinecone.Core;
 namespace Pinecone;
 
 /// <summary>
-/// The query inputs to search with.
+/// .
 /// </summary>
 public record SearchRecordsRequestQuery : IJsonOnDeserialized
 {
@@ -14,13 +14,13 @@ public record SearchRecordsRequestQuery : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// The number of results to return for each search.
+    /// The number of similar records to return.
     /// </summary>
     [JsonPropertyName("top_k")]
     public required int TopK { get; set; }
 
     /// <summary>
-    /// The filter to apply.
+    /// The filter to apply. You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
     /// </summary>
     [JsonPropertyName("filter")]
     public Dictionary<string, object?>? Filter { get; set; }

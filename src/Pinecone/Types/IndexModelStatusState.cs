@@ -30,4 +30,7 @@ public enum IndexModelStatusState
 
     [EnumMember(Value = "Ready")]
     Ready,
+
+    [EnumMember(Value = "Disabled")]
+    Disabled,
 }

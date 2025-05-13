@@ -23,7 +23,7 @@ public record SparseEmbedding : IJsonOnDeserialized
     /// The sparse embedding indices.
     /// </summary>
     [JsonPropertyName("sparse_indices")]
-    public IEnumerable<int> SparseIndices { get; set; } = new List<int>();
+    public IEnumerable<long> SparseIndices { get; set; } = new List<long>();
 
     /// <summary>
     /// The normalized tokens used to create the sparse embedding.

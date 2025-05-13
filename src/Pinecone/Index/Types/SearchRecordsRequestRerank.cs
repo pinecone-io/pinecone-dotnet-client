@@ -14,13 +14,15 @@ public record SearchRecordsRequestRerank : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// The name of the [reranking model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) to use.
+    /// The name of the [reranking model](https://docs.pinecone.io/guides/search/rerank-results#reranking-models) to use.
     /// </summary>
     [JsonPropertyName("model")]
     public required string Model { get; set; }
 
     /// <summary>
-    /// The fields to use for reranking.
+    /// The field(s) to consider for reranking. If not provided, the default is `["text"]`.
+    ///
+    /// The number of fields supported is [model-specific](https://docs.pinecone.io/guides/search/rerank-results#reranking-models).
     /// </summary>
     [JsonPropertyName("rank_fields")]
     public IEnumerable<string> RankFields { get; set; } = new List<string>();
@@ -32,7 +34,7 @@ public record SearchRecordsRequestRerank : IJsonOnDeserialized
     public int? TopN { get; set; }
 
     /// <summary>
-    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) for available model parameters.
+    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/search/rerank-results#reranking-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
     public Dictionary<string, object?>? Parameters { get; set; }

@@ -4,8 +4,8 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
-[JsonConverter(typeof(EnumSerializer<CreateIndexForModelRequestEmbedMetric>))]
-public enum CreateIndexForModelRequestEmbedMetric
+[JsonConverter(typeof(EnumSerializer<MetricType>))]
+public enum MetricType
 {
     [EnumMember(Value = "cosine")]
     Cosine,

@@ -48,7 +48,7 @@ public record Index : IJsonOnDeserialized
     public ModelIndexEmbed? Embed { get; set; }
 
     [JsonPropertyName("spec")]
-    public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
+    public required OneOf<ServerlessIndexSpec, PodIndexSpec, ByocIndexSpec> Spec { get; set; }
 
     [JsonPropertyName("status")]
     public required IndexModelStatus Status { get; set; }

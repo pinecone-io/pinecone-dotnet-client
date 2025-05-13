@@ -1,0 +1,287 @@
+imports:
+  root: __package__.yml
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    list:
+      path: /backups
+      method: GET
+      auth: true
+      docs: List all backups for a project.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      display-name: List backups for all indexes in a project
+      response:
+        docs: >-
+          This operation returns a list of all the backups for the given index
+          that you have previously created.
+        type: root.BackupList
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - name: A list containing backups.
+          response:
+            body:
+              data:
+                - backup_id: 670e8400-e29b-41d4-a716-446655440000
+                  source_index_name: my-index
+                  source_index_id: idx_456
+                  name: backup_2024_03_15
+                  description: Monthly backup of production index
+                  status: Ready
+                  cloud: aws
+                  region: us-east-1
+                  dimension: 1536
+                  metric: cosine
+                  record_count: 120000
+                  namespace_count: 3
+                  size_bytes: 10000000
+                  tags:
+                    environment: production
+                    type: monthly
+                  created_at: '2024-03-15T10:30:00Z'
+                - backup_id: 670e8400-e29b-41d4-a716-446655440001
+                  source_index_name: my-index-2
+                  source_index_id: idx_789
+                  name: backup_2024_03_20
+                  description: Pre-deployment safety backup
+                  status: Ready
+                  cloud: aws
+                  region: us-east-1
+                  dimension: 1536
+                  metric: cosine
+                  record_count: 125000
+                  namespace_count: 4
+                  size_bytes: 10500000
+                  tags:
+                    environment: production
+                    type: pre-deploy
+                  created_at: '2024-03-20T15:45:00Z'
+              pagination:
+                next: dXNlcl9pZD11c2VyXzE=
+    backupIndex:
+      path: /indexes/{index_name}/backups
+      method: POST
+      auth: true
+      docs: |
+        Create a backup of an index.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      path-parameters:
+        index_name:
+          type: string
+          docs: Name of the index to backup
+      display-name: Create a backup of an index
+      request:
+        name: BackupIndexRequest
+        body:
+          properties:
+            name:
+              type: optional<string>
+              docs: The name of the backup.
+            description:
+              type: optional<string>
+              docs: A description of the backup.
+        content-type: application/json
+      response:
+        docs: The backup has been successfully created.
+        type: root.BackupModel
+        status-code: 201
+      errors:
+        - root.BadRequestError
+        - root.UnauthorizedError
+        - root.PaymentRequiredError
+        - root.ForbiddenError
+        - root.UnprocessableEntityError
+        - root.InternalServerError
+      examples:
+        - name: Creating a backup of an index with no name
+          path-parameters:
+            index_name: index_name
+          request: {}
+          response:
+            body:
+              backup_id: 670e8400-e29b-41d4-a716-446655440001
+              source_index_name: my-index
+              source_index_id: 670e8400-e29b-41d4-a716-446655440000
+              name: backup-2025-02-04
+              description: Backup before bulk update.
+              status: Ready
+              cloud: aws
+              region: us-east-1
+              dimension: 1536
+              metric: cosine
+              record_count: 120000
+              namespace_count: 3
+              size_bytes: 10000000
+              tags:
+                tag0: val0
+                tag1: val1
+              created_at: created_at
+        - name: Creating a backup of an index with a name
+          path-parameters:
+            index_name: index_name
+          request:
+            name: backup-index
+          response:
+            body:
+              backup_id: 670e8400-e29b-41d4-a716-446655440001
+              source_index_name: my-index
+              source_index_id: 670e8400-e29b-41d4-a716-446655440000
+              name: backup-2025-02-04
+              description: Backup before bulk update.
+              status: Ready
+              cloud: aws
+              region: us-east-1
+              dimension: 1536
+              metric: cosine
+              record_count: 120000
+              namespace_count: 3
+              size_bytes: 10000000
+              tags:
+                tag0: val0
+                tag1: val1
+              created_at: created_at
+        - name: Creating a backup of an index with a name and description
+          path-parameters:
+            index_name: index_name
+          request:
+            name: backup-index
+            description: Backup of the index
+          response:
+            body:
+              backup_id: 670e8400-e29b-41d4-a716-446655440001
+              source_index_name: my-index
+              source_index_id: 670e8400-e29b-41d4-a716-446655440000
+              name: backup-2025-02-04
+              description: Backup before bulk update.
+              status: Ready
+              cloud: aws
+              region: us-east-1
+              dimension: 1536
+              metric: cosine
+              record_count: 120000
+              namespace_count: 3
+              size_bytes: 10000000
+              tags:
+                tag0: val0
+                tag1: val1
+              created_at: created_at
+    get:
+      path: /backups/{backup_id}
+      method: GET
+      auth: true
+      docs: Get a description of a backup.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      path-parameters:
+        backup_id:
+          type: string
+          docs: The ID of the backup to describe.
+      display-name: Describe a backup
+      response:
+        docs: Configuration information and deployment status of the backup.
+        type: root.BackupModel
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.NotFoundError
+        - root.InternalServerError
+      examples:
+        - name: A backup
+          path-parameters:
+            backup_id: 670e8400-e29b-41d4-a716-446655440000
+          response:
+            body:
+              backup_id: 670e8400-e29b-41d4-a716-446655440000
+              source_index_name: my-index
+              source_index_id: 670e8400-e29b-41d4-a716-446655440001
+              name: backup_2024_03_15
+              description: Monthly backup of production index
+              status: Ready
+              cloud: aws
+              region: us-east-1
+              dimension: 1536
+              metric: cosine
+              record_count: 120000
+              namespace_count: 3
+              size_bytes: 10000000
+              tags:
+                environment: production
+                type: monthly
+              created_at: '2024-03-15T10:30:00Z'
+    delete:
+      path: /backups/{backup_id}
+      method: DELETE
+      auth: true
+      docs: Delete a backup.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      path-parameters:
+        backup_id:
+          type: string
+          docs: The ID of the backup to delete.
+      display-name: Delete a backup
+      errors:
+        - root.UnauthorizedError
+        - root.NotFoundError
+        - root.PreconditionFailedError
+        - root.InternalServerError
+      examples:
+        - path-parameters:
+            backup_id: 670e8400-e29b-41d4-a716-446655440000
+    createIndexFromBackup:
+      path: /backups/{backup_id}/create-index
+      method: POST
+      auth: true
+      docs: Create an index from a backup.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      path-parameters:
+        backup_id:
+          type: string
+          docs: The ID of the backup to create an index from.
+      display-name: Create an index from a backup
+      request:
+        name: CreateIndexFromBackupRequest
+        body:
+          properties:
+            name:
+              type: string
+              docs: >
+                The name of the index. Resource name must be 1-45 characters
+                long, start and end with an alphanumeric character, and consist
+                only of lower case alphanumeric characters or '-'.
+              validation:
+                minLength: 1
+                maxLength: 45
+            tags: optional<root.IndexTags>
+            deletion_protection: optional<root.DeletionProtection>
+        content-type: application/json
+      response:
+        docs: The request to create the index has been accepted.
+        type: root.CreateIndexFromBackupResponse
+        status-code: 202
+      errors:
+        - root.BadRequestError
+        - root.UnauthorizedError
+        - root.PaymentRequiredError
+        - root.ForbiddenError
+        - root.NotFoundError
+        - root.ConflictError
+        - root.UnprocessableEntityError
+        - root.InternalServerError
+      examples:
+        - path-parameters:
+            backup_id: 670e8400-e29b-41d4-a716-446655440000
+          request:
+            name: example-index
+          response:
+            body:
+              restore_job_id: 670e8400-e29b-41d4-a716-446655440000
+              index_id: 123e4567-e89b-12d3-a456-426614174000
+  source:
+    openapi: ../control-plane/openapi/openapi.yml

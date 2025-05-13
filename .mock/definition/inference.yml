@@ -16,14 +16,11 @@ service:
       method: POST
       auth: true
       docs: >-
-        Generate embeddings for input data.
-
-
-        For guidance and examples, see [Generate
-        embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
+        Generate vector embeddings for input data. This endpoint uses [Pinecone
+        Inference](https://docs.pinecone.io/guides/index-data/indexing-overview#vector-embedding).
       source:
         openapi: ../inference/openapi/openapi.yml
-      display-name: Embed data
+      display-name: Generate vectors
       request:
         name: EmbedRequest
         body:
@@ -32,13 +29,13 @@ service:
               type: string
               docs: >-
                 The
-                [model](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+                [model](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models)
                 to use for embedding generation.
             parameters:
               type: optional<map<string, unknown>>
               docs: >-
                 Additional model-specific parameters. Refer to the [model
-                guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models)
+                guide](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models)
                 for available model parameters.
             inputs:
               docs: List of inputs to generate embeddings for.
@@ -81,7 +78,7 @@ service:
 
 
         For guidance and examples, see [Rerank
-        documents](https://docs.pinecone.io/guides/inference/rerank).
+        results](https://docs.pinecone.io/guides/search/rerank-results).
       source:
         openapi: ../inference/openapi/openapi.yml
       display-name: Rerank documents
@@ -93,7 +90,7 @@ service:
               type: string
               docs: >-
                 The
-                [model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+                [model](https://docs.pinecone.io/guides/search/rerank-results#reranking-models)
                 to use for reranking.
             query:
               type: string
@@ -109,9 +106,13 @@ service:
               default: true
             rank_fields:
               type: optional<list<string>>
-              docs: >-
-                The fields to rank the documents by. If not provided, the
-                default is `"text"`.
+              docs: >
+                The field(s) to consider for reranking. If not provided, the
+                default is `["text"]`.
+
+
+                The number of fields supported is
+                [model-specific](https://docs.pinecone.io/guides/search/rerank-results#reranking-models).
             documents:
               docs: The documents to rerank.
               type: list<root.Document>
@@ -119,7 +120,7 @@ service:
               type: optional<map<string, unknown>>
               docs: >-
                 Additional model-specific parameters. Refer to the [model
-                guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+                guide](https://docs.pinecone.io/guides/search/rerank-results#reranking-models)
                 for available model parameters.
         content-type: application/json
       response:

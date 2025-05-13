@@ -12,7 +12,7 @@ public record StartImportRequest
     public string? IntegrationId { get; set; }
 
     /// <summary>
-    /// The [URI prefix](https://docs.pinecone.io/guides/data/understanding-imports#directory-structure) under which the data to import is available. All data within this prefix will be listed then imported into the target index. Currently only `s3://` URIs are supported.
+    /// The [URI prefix](https://docs.pinecone.io/guides/index-data/import-data#prepare-your-data) under which the data to import is available. All data within this prefix will be listed then imported into the target index. Currently only `s3://` URIs are supported.
     /// </summary>
     [JsonPropertyName("uri")]
     public required string Uri { get; set; }

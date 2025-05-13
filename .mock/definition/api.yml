@@ -8,7 +8,7 @@ default-environment: Default
 headers:
   X-Pinecone-API-Version:
     name: version
-    type: literal<"2025-01">
+    type: literal<"2025-04">
 auth-schemes:
   ApiKeyAuth:
     header: Api-Key
