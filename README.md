@@ -399,6 +399,142 @@ var updateResponse = await index.UpdateAsync(new UpdateRequest
 });
 ```
 
+### Namespaces
+Namespaces live inside your indexes. 
+You don't need to create them before using them.
+Simply upsert records to a namespace and it will be created automatically.
+
+#### List namespaces
+The following example lists all namespaces in the index.
+
+```csharp
+using Pinecone;
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var index = pinecone.Index("example-index");
+var namespaces = await index.ListNamespacesAsync(new ListNamespacesRequest());
+foreach(var @namespace in namespaces.Namespaces)
+{
+    Console.WriteLine($"Namespace: {@namespace.Name}");
+    Console.WriteLine($"Record Count: {@namespace.RecordCount}");
+}
+```
+
+#### Describe a namespace
+The following example describes a namespace.
+
+```csharp
+using Pinecone;
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var index = pinecone.Index("example-index");
+var @namespace = await index.DescribeNamespaceAsync("namespace-name");
+Console.WriteLine($"Namespace: {@namespace.Name}");
+Console.WriteLine($"Record Count: {@namespace.RecordCount}");
+```
+
+#### Delete a namespace
+The following example deletes a namespace.
+
+```csharp
+using Pinecone;
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var index = pinecone.Index("example-index");
+await index.DeleteNamespaceAsync("namespace-name");
+```
+
+### Backups
+
+#### Backup an index
+The following example creates a backup of an index.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var backup = await pinecone.Backups.BackupIndexAsync("index-name", new BackupIndexRequest());
+```
+
+#### Restore a backup
+The following example restores a backup of an index, which creates a restore job.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var response = await pinecone.Backups.CreateIndexFromBackupAsync("backup-id", new CreateIndexFromBackupRequest
+{
+    Name = "new-index-name"
+});
+Console.WriteLine($"Restore Job ID: {response.RestoreJobId}");
+Console.WriteLine($"New Index ID: {response.IndexId}");
+```
+
+#### Get a backup
+The following example describes a backup.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");        
+var backup = await pinecone.Backups.GetAsync("backup-id");
+```
+
+#### List backups
+The following example describes a backup.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var backups = await Client.Backups.ListAsync();
+foreach (var backup in backups.Data)
+{
+    Console.WriteLine($"BackupId: {backup.BackupId}");
+    Console.WriteLine($"Name: {backup.Name}");
+    Console.WriteLine($"CreatedAt: {backup.CreatedAt}");
+    Console.WriteLine($"Status: {backup.Status}");
+    Console.WriteLine($"RecordCount: {backup.RecordCount}");
+}
+```
+
+#### Delete backup
+The following example describes a backup.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+await pinecone.Backups.DeleteAsync("backup-id");
+```
+
+#### List restore jobs
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var jobs = await pinecone.RestoreJobs.ListAsync(new ListRestoreJobsRequest());
+foreach(var job in jobs.Data)
+{
+    Console.WriteLine($"Restore Job ID: {job.RestoreJobId}");
+    Console.WriteLine($"Status: {job.Status}");
+    Console.WriteLine($"CreatedAt: {job.CreatedAt}");
+    Console.WriteLine($"TargetIndexName: {job.TargetIndexName}");
+}
+```
+
+#### Get restore job
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var job = await pinecone.RestoreJobs.GetAsync("job-id");
+Console.WriteLine($"Restore Job ID: {job.RestoreJobId}");
+Console.WriteLine($"Status: {job.Status}");
+Console.WriteLine($"CreatedAt: {job.CreatedAt}");
+Console.WriteLine($"TargetIndexName: {job.TargetIndexName}");
+```
+
 ## Collections
 
 Collections fall under data plane operations.
@@ -567,6 +703,34 @@ var result = await pinecone.Inference.RerankAsync(new RerankRequest
 var data = result.Data;
 ```
 
+### Models
+
+The following example shows how to list all available models.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var models = await pinecone.Inference.Models.ListAsync(new ListModelsRequest());
+foreach (var model in models.Models)
+{
+    Console.WriteLine($"Name: {model.Model}");
+    Console.WriteLine($"Type: {model.Type}");
+    Console.WriteLine($"Vector type: {model.VectorType}");
+}
+```
+
+The following example shows how to get a specific model.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var model = await Client.Inference.Models.GetAsync("pinecone-sparse-english-v0");
+Console.WriteLine($"Name: {model.Model}");
+Console.WriteLine($"Type: {model.Type}");
+Console.WriteLine($"Vector type: {model.VectorType}");
+```
 
 ## Imports
 ### Start an import
