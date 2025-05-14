@@ -53,7 +53,7 @@ public static class Helpers
         string indexName,
         string environment,
         int dimension,
-        CreateIndexRequestMetric metric,
+        MetricType metric,
         bool deletionProtection = false,
         string? sourceCollection = null
     )
@@ -109,7 +109,7 @@ public static class Helpers
         string indexName,
         string environment,
         int dimension,
-        CreateIndexRequestMetric metric,
+        MetricType metric,
         bool deletionProtection = false,
         string? sourceCollection = null
     )
@@ -342,6 +342,45 @@ public static class Helpers
         }
     }
 
+    public static async Task TryDeleteBackup(PineconeClient client, string backupId)
+    {
+        var timeWaited = 0;
+        while (timeWaited < 120)
+        {
+            await TestContext
+                .Out.WriteLineAsync(
+                    $"Waiting for backup {backupId} to be ready to delete. Waited {timeWaited} seconds..."
+                )
+                .ConfigureAwait(false);
+            timeWaited += 5;
+            await Task.Delay(5000).ConfigureAwait(false);
+            try
+            {
+                await TestContext
+                    .Out.WriteLineAsync($"Attempting delete of backup {backupId}")
+                    .ConfigureAwait(false);
+                await client.Backups.DeleteAsync(backupId).ConfigureAwait(false);
+                await TestContext
+                    .Out.WriteLineAsync($"Deleted backup {backupId}")
+                    .ConfigureAwait(false);
+                break;
+            }
+            catch (Exception e)
+            {
+                await TestContext
+                    .Out.WriteLineAsync(
+                        $"Unable to delete backup {backupId}: {e.Message}"
+                    )
+                    .ConfigureAwait(false);
+            }
+        }
+
+        if (timeWaited >= 120)
+        {
+            throw new Exception($"Backup {backupId} could not be deleted after 120 seconds");
+        }
+    }
+    
     public static async Task Cleanup(PineconeClient client)
     {
         var indexes = await client.ListIndexesAsync().ConfigureAwait(false);
@@ -349,16 +388,17 @@ public static class Helpers
         {
             await TryDeleteIndex(client, index).ConfigureAwait(false);
         }
+        
         var collections = await client.ListCollectionsAsync().ConfigureAwait(false);
         foreach (var collection in collections.Collections ?? [])
         {
             await TryDeleteCollection(client, collection.Name).ConfigureAwait(false);
         }
-    }
-
-    private static string GetEnvironmentVariable(string name)
-    {
-        return Environment.GetEnvironmentVariable(name)
-            ?? throw new Exception($"Expected environment variable {name} is not set");
+        
+        var backups = await client.Backups.ListAsync().ConfigureAwait(false);
+        foreach (var backup in backups.Data ?? [])
+        {
+            await TryDeleteBackup(client, backup.BackupId).ConfigureAwait(false);
+        }
     }
 }

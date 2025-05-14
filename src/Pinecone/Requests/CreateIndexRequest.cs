@@ -22,7 +22,7 @@ public record CreateIndexRequest
     /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If the 'vector_type' is 'sparse', the metric must be 'dotproduct'. If the `vector_type` is `dense`, the metric defaults to 'cosine'.
     /// </summary>
     [JsonPropertyName("metric")]
-    public CreateIndexRequestMetric? Metric { get; set; }
+    public MetricType? Metric { get; set; }
 
     [JsonPropertyName("deletion_protection")]
     public DeletionProtection? DeletionProtection { get; set; }
@@ -31,7 +31,7 @@ public record CreateIndexRequest
     public Dictionary<string, string>? Tags { get; set; }
 
     [JsonPropertyName("spec")]
-    public required OneOf<ServerlessIndexSpec, PodIndexSpec> Spec { get; set; }
+    public required OneOf<ServerlessIndexSpec, PodIndexSpec, ByocIndexSpec> Spec { get; set; }
 
     /// <summary>
     /// The index vector type. You can use 'dense' or 'sparse'. If 'dense', the vector dimension must be specified.  If 'sparse', the vector dimension should not be specified.

@@ -3,13 +3,13 @@ using NUnit.Framework;
 namespace Pinecone.Test.Integration.Data;
 
 [TestFixture]
-public class TestIndexNamespace : BaseTest
+public class TestIndexNamespaces : BaseTest
 {
     private string _indexName;
     private string _namespace;
     private IndexClient _client;
 
-    [SetUp]
+    [OneTimeSetUp]
     public async Task SetUp()
     {
         _indexName = Helpers.GenerateIndexName("create-index-for-upsert-testing");
@@ -27,7 +27,7 @@ public class TestIndexNamespace : BaseTest
                 Embed = new CreateIndexForModelRequestEmbed
                 {
                     Model = model,
-                    Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+                    Metric = MetricType.Cosine,
                     FieldMap = new Dictionary<string, object?> { ["text"] = "chunk_text" },
                 },
                 DeletionProtection = DeletionProtection.Disabled,
@@ -36,9 +36,27 @@ public class TestIndexNamespace : BaseTest
 
         await Task.Delay(TimeSpan.FromSeconds(10));
         _client = Client.Index(index.Name, index.Host);
+        
+        await _client.UpsertRecordsAsync(
+            _namespace,
+            [
+                new UpsertRecord
+                {
+                    Id = "seed-record",
+                    AdditionalProperties =
+                    {
+                        ["chunk_text"] =
+                            "Generated inside of setup",
+                        ["category"] = "test",
+                    },
+                }
+            ]
+        );
+
+        await Task.Delay(TimeSpan.FromSeconds(10));
     }
 
-    [TearDown]
+    [OneTimeTearDown]
     public async Task TearDown()
     {
         await Client.DeleteIndexAsync(_indexName);
@@ -93,7 +111,7 @@ public class TestIndexNamespace : BaseTest
             ]
         );
 
-        await Task.Delay(10_000);
+        await Task.Delay(TimeSpan.FromSeconds(10));
 
         var response = await _client.SearchRecordsAsync(
             _namespace,
@@ -116,5 +134,53 @@ public class TestIndexNamespace : BaseTest
             var hits = response.Result.Hits.ToList();
             Assert.That(hits, Has.Count.GreaterThan(0));
         });
+    }
+
+    [Test]
+    public async Task ShouldListNamespaces()
+    {
+        var namespaces = await _client.ListNamespacesAsync(new ListNamespacesRequest());
+        Assert.That(namespaces, Is.Not.Null);
+        Assert.That(namespaces.Namespaces, Is.Not.Null);
+        Assert.That(namespaces.Namespaces, Is.Not.Empty);
+    }
+    
+    [Test]
+    public async Task ShouldDescribeNamespace()
+    {
+        await Task.Delay(TimeSpan.FromSeconds(20));
+        var @namespace = await _client.DescribeNamespaceAsync(_namespace);
+        Assert.That(@namespace, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(@namespace.Name, Is.EqualTo(_namespace));
+            Assert.That(@namespace.RecordCount, Is.GreaterThan(0));
+        });
+    }
+
+    [Test]
+    public async Task ShouldDeleteNamespace()
+    {
+        var @namespace = Helpers.RandomString(10);
+        await _client.UpsertRecordsAsync(
+            @namespace,
+            [
+                new UpsertRecord
+                {
+                    Id = "seed-record",
+                    AdditionalProperties =
+                    {
+                        ["chunk_text"] =
+                            "Generated inside of setup",
+                        ["category"] = "test",
+                    },
+                }
+            ]
+        );
+
+        await Task.Delay(10_000);
+
+        var deleteResponse = await _client.DeleteNamespaceAsync(@namespace);
+        Assert.That(deleteResponse, Is.Not.Null);
     }
 }

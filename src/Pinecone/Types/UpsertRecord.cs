@@ -13,7 +13,7 @@ public record UpsertRecord : IJsonOnDeserialized, IJsonOnSerializing
         new Dictionary<string, object?>();
 
     /// <summary>
-    /// The unique ID of the record to upsert.
+    /// The unique ID of the record to upsert. Note that `id` can be used as an alias for `_id`.
     /// </summary>
     [JsonPropertyName("_id")]
     public required string Id { get; set; }

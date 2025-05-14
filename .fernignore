@@ -5,6 +5,7 @@ src/Pinecone/Core/NdJsonRequest.cs
 src/Pinecone/Core/NdJsonContent.cs
 src/Pinecone/Core/Public/SourceTagOption.cs
 src/Pinecone/Core/Public/IsTlsEnabledOption.cs
+src/Pinecone/Core/Public/PineconeApiException.cs
 src/Pinecone/Types/Embedding.cs
 src/Pinecone/Index/IndexClientExtended.cs
 src/Pinecone.Test/Integration
@@ -19,4 +20,5 @@ CONTRIBUTING.md
 README.md
 icon.png
 LICENSE
+.gitignore
 src/Pinecone/Pinecone.Custom.props

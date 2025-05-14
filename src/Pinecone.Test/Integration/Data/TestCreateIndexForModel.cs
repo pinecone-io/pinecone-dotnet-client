@@ -23,8 +23,8 @@ public class TestCreateIndexForModel : BaseTest
                     Embed = new CreateIndexForModelRequestEmbed
                     {
                         Model = model,
-                        Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
-                        FieldMap = new Dictionary<string, object>()
+                        Metric = MetricType.Cosine,
+                        FieldMap = new Dictionary<string, object?>
                         {
                             { "text", "your-text-field" },
                         },

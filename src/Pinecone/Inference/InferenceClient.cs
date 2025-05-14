@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using Pinecone.Core;
+using Pinecone.Inference;
 
 namespace Pinecone;
 
@@ -12,12 +13,13 @@ public partial class InferenceClient
     internal InferenceClient(RawClient client)
     {
         _client = client;
+        Models = new ModelsClient(_client);
     }
 
+    public ModelsClient Models { get; }
+
     /// <summary>
-    /// Generate embeddings for input data.
-    ///
-    /// For guidance and examples, see [Generate embeddings](https://docs.pinecone.io/guides/inference/generate-embeddings).
+    /// Generate vector embeddings for input data. This endpoint uses [Pinecone Inference](https://docs.pinecone.io/guides/index-data/indexing-overview#vector-embedding).
     /// </summary>
     /// <example><code>
     /// await client.Inference.EmbedAsync(
@@ -68,7 +70,9 @@ public partial class InferenceClient
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -94,7 +98,7 @@ public partial class InferenceClient
     /// <summary>
     /// Rerank documents according to their relevance to a query.
     ///
-    /// For guidance and examples, see [Rerank documents](https://docs.pinecone.io/guides/inference/rerank).
+    /// For guidance and examples, see [Rerank results](https://docs.pinecone.io/guides/search/rerank-results).
     /// </summary>
     /// <example><code>
     /// await client.Inference.RerankAsync(
@@ -155,7 +159,9 @@ public partial class InferenceClient
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)

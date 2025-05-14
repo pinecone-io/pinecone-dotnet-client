@@ -81,9 +81,9 @@ public class TestCollectionsHappyPath : BaseTest
     {
         var metrics = new[]
         {
-            CreateIndexRequestMetric.Cosine,
-            CreateIndexRequestMetric.Euclidean,
-            CreateIndexRequestMetric.Dotproduct,
+            MetricType.Cosine,
+            MetricType.Euclidean,
+            MetricType.Dotproduct,
         };
         var targetMetric = metrics.FirstOrDefault(m => m != Metric);
 

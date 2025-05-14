@@ -62,7 +62,7 @@ public class PineconeClient : BasePinecone
         var defaultHeaders = new Headers()
         {
             ["Api-Key"] = apiKey,
-            ["X-Pinecone-API-Version"] = "2025-01",
+            ["X-Pinecone-API-Version"] = "2025-04",
             ["X-Fern-Language"] = "C#",
             ["X-Fern-SDK-Name"] = "Pinecone",
             ["X-Fern-SDK-Version"] = Version.Current,

@@ -19,7 +19,7 @@ public record QueryRequest
     public required uint TopK { get; set; }
 
     /// <summary>
-    /// The filter to apply. You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
+    /// The filter to apply. You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata). You can use vector metadata to limit your search. See [Understanding metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
     /// </summary>
     [JsonPropertyName("filter")]
     public Metadata? Filter { get; set; }
@@ -37,13 +37,13 @@ public record QueryRequest
     public bool? IncludeMetadata { get; set; }
 
     /// <summary>
-    /// DEPRECATED. The query vectors. Each `query()` request can contain only one of the parameters `queries`, `vector`, or  `id`.
+    /// DEPRECATED. Use `vector` or `id` instead.
     /// </summary>
     [JsonPropertyName("queries")]
     public IEnumerable<QueryVector>? Queries { get; set; }
 
     /// <summary>
-    /// The query vector. This should be the same length as the dimension of the index being queried. Each `query()` request can contain only one of the parameters `id` or `vector`.
+    /// The query vector. This should be the same length as the dimension of the index being queried. Each request can contain either the `id` or `vector` parameter.
     /// </summary>
     [JsonPropertyName("vector")]
     public ReadOnlyMemory<float>? Vector { get; set; }
@@ -55,7 +55,7 @@ public record QueryRequest
     public SparseValues? SparseVector { get; set; }
 
     /// <summary>
-    /// The unique ID of the vector to be used as a query vector. Each `query()` request can contain only one of the parameters `queries`, `vector`, or  `id`.
+    /// The unique ID of the vector to be used as a query vector. Each request can contain either the `vector` or `id` parameter.
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id { get; set; }

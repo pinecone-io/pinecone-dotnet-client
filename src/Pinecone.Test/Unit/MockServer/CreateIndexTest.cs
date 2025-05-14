@@ -88,7 +88,7 @@ public class CreateIndexTest : BaseMockServerTest
             {
                 Name = "movie-recommendations",
                 Dimension = 1536,
-                Metric = CreateIndexRequestMetric.Cosine,
+                Metric = MetricType.Cosine,
                 DeletionProtection = DeletionProtection.Enabled,
                 Spec = new ServerlessIndexSpec
                 {
@@ -185,7 +185,7 @@ public class CreateIndexTest : BaseMockServerTest
             new CreateIndexRequest
             {
                 Name = "sparse-index",
-                Metric = CreateIndexRequestMetric.Dotproduct,
+                Metric = MetricType.Dotproduct,
                 DeletionProtection = DeletionProtection.Enabled,
                 Spec = new ServerlessIndexSpec
                 {
@@ -295,7 +295,7 @@ public class CreateIndexTest : BaseMockServerTest
             {
                 Name = "movie-recommendations",
                 Dimension = 1536,
-                Metric = CreateIndexRequestMetric.Cosine,
+                Metric = MetricType.Cosine,
                 DeletionProtection = DeletionProtection.Enabled,
                 Spec = new PodIndexSpec
                 {

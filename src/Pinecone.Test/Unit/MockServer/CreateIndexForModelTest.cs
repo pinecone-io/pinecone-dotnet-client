@@ -94,7 +94,7 @@ public class CreateIndexForModelTest : BaseMockServerTest
                 Embed = new CreateIndexForModelRequestEmbed
                 {
                     Model = "multilingual-e5-large",
-                    Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+                    Metric = MetricType.Cosine,
                     FieldMap = new Dictionary<string, object>() { { "text", "your-text-field" } },
                 },
             }

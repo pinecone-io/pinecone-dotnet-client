@@ -1,0 +1,200 @@
+imports:
+  root: ../__package__.yml
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    list:
+      path: /models
+      method: GET
+      auth: true
+      docs: Get available models.
+      source:
+        openapi: ../inference/openapi/openapi.yml
+      display-name: Get available models.
+      request:
+        name: ListModelsRequest
+        query-parameters:
+          type:
+            type: optional<root.ModelType>
+            docs: Filter models by type ('embed' or 'rerank').
+          vector_type:
+            type: optional<root.VectorType>
+            docs: >-
+              Filter embedding models by vector type ('dense' or 'sparse'). Only
+              relevant when `type=embed`.
+      response:
+        docs: The list of available models.
+        type: root.ModelInfoList
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.NotFoundError
+        - root.InternalServerError
+      examples:
+        - name: Multiple available models.
+          response:
+            body:
+              models:
+                - model: multilingual-e5-large
+                  short_description: An example embedding model.
+                  type: embed
+                  vector_type: dense
+                  default_dimension: 1024
+                  modality: text
+                  max_sequence_length: 512
+                  max_batch_size: 96
+                  provider_name: NVIDIA
+                  supported_dimensions:
+                    - 1024
+                  supported_metrics:
+                    - cosine
+                    - euclidean
+                  supported_parameters:
+                    - parameter: example_required_param
+                      type: one_of
+                      value_type: string
+                      required: true
+                      allowed_values:
+                        - value1
+                        - value2
+                      min: 1
+                      max: 1
+                    - parameter: example_param_with_default
+                      type: one_of
+                      value_type: string
+                      required: false
+                      allowed_values:
+                        - value1
+                        - value2
+                      min: 1
+                      max: 1
+                      default: value1
+                    - parameter: example_numeric_range
+                      type: numeric_range
+                      value_type: integer
+                      required: false
+                      min: 0
+                      max: 10
+                      default: 5
+                - model: multilingual-e5-large
+                  short_description: An example reranking model.
+                  type: rerank
+                  vector_type: dense
+                  default_dimension: 1024
+                  modality: text
+                  max_sequence_length: 512
+                  max_batch_size: 96
+                  provider_name: NVIDIA
+                  supported_dimensions:
+                    - 1024
+                  supported_metrics:
+                    - cosine
+                  supported_parameters:
+                    - parameter: example_any_value
+                      type: any
+                      value_type: boolean
+                      required: false
+                      min: 1
+                      max: 1
+                      default: true
+    get:
+      path: /models/{model_name}
+      method: GET
+      auth: true
+      docs: Get model details.
+      source:
+        openapi: ../inference/openapi/openapi.yml
+      path-parameters:
+        model_name:
+          type: string
+          docs: The name of the model to look up.
+      display-name: Get available model details.
+      response:
+        docs: The model details.
+        type: root.ModelInfo
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.NotFoundError
+        - root.InternalServerError
+      examples:
+        - name: An embedding model.
+          path-parameters:
+            model_name: multilingual-e5-large
+          response:
+            body:
+              model: multilingual-e5-large
+              short_description: An example embedding model.
+              type: embed
+              vector_type: dense
+              default_dimension: 1024
+              modality: text
+              max_sequence_length: 512
+              max_batch_size: 96
+              provider_name: NVIDIA
+              supported_dimensions:
+                - 1024
+              supported_metrics:
+                - cosine
+                - euclidean
+              supported_parameters:
+                - parameter: example_required_param
+                  type: one_of
+                  value_type: string
+                  required: true
+                  allowed_values:
+                    - value1
+                    - value2
+                  min: 1
+                  max: 1
+                  default: default
+                - parameter: example_param_with_default
+                  type: one_of
+                  value_type: string
+                  required: false
+                  allowed_values:
+                    - value1
+                    - value2
+                  min: 1
+                  max: 1
+                  default: value1
+                - parameter: example_numeric_range
+                  type: numeric_range
+                  value_type: integer
+                  required: false
+                  allowed_values:
+                    - allowed_values
+                  min: 0
+                  max: 10
+                  default: 5
+        - name: A reranking model.
+          path-parameters:
+            model_name: multilingual-e5-large
+          response:
+            body:
+              model: multilingual-e5-large
+              short_description: An example reranking model.
+              type: rerank
+              vector_type: dense
+              default_dimension: 1024
+              modality: text
+              max_sequence_length: 512
+              max_batch_size: 96
+              provider_name: NVIDIA
+              supported_dimensions:
+                - 1024
+              supported_metrics:
+                - cosine
+              supported_parameters:
+                - parameter: example_any_value
+                  type: any
+                  value_type: boolean
+                  required: false
+                  allowed_values:
+                    - allowed_values
+                  min: 1
+                  max: 1
+                  default: true
+  source:
+    openapi: ../inference/openapi/openapi.yml

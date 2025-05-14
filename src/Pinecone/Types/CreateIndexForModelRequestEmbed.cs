@@ -9,7 +9,7 @@ namespace Pinecone;
 ///
 /// Once set the model cannot be changed, but you can later update the embedding configuration for an integrated inference index including field map, read parameters, or write parameters.
 ///
-/// Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+/// Refer to the [model guide](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models) for available models and model details.
 /// </summary>
 public record CreateIndexForModelRequestEmbed : IJsonOnDeserialized
 {
@@ -27,13 +27,19 @@ public record CreateIndexForModelRequestEmbed : IJsonOnDeserialized
     /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric will be defaulted according to the model. Cannot be updated once set.
     /// </summary>
     [JsonPropertyName("metric")]
-    public CreateIndexForModelRequestEmbedMetric? Metric { get; set; }
+    public MetricType? Metric { get; set; }
 
     /// <summary>
     /// Identifies the name of the text field from your document model that will be embedded.
     /// </summary>
     [JsonPropertyName("field_map")]
     public Dictionary<string, object?> FieldMap { get; set; } = new Dictionary<string, object?>();
+
+    /// <summary>
+    /// The dimension of embedding vectors produced for the index.
+    /// </summary>
+    [JsonPropertyName("dimension")]
+    public int? Dimension { get; set; }
 
     /// <summary>
     /// The read parameters for the embedding model.

@@ -9,8 +9,7 @@ service:
       method: GET
       auth: true
       docs: >-
-        The `list_imports` operation lists all recent and ongoing import
-        operations.
+        List all recent and ongoing import operations.
 
 
         By default, `list_imports` returns up to 100 imports per page. If the
@@ -22,7 +21,7 @@ service:
 
 
         For guidance and examples, see [Import
-        data](https://docs.pinecone.io/guides/data/import-data).
+        data](https://docs.pinecone.io/guides/index-data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       display-name: List imports
@@ -62,12 +61,12 @@ service:
       method: POST
       auth: true
       docs: >-
-        The `start_import` operation starts an asynchronous import of vectors
-        from object storage into an index.
+        Start an asynchronous import of vectors from object storage into an
+        index.
 
 
         For guidance and examples, see [Import
-        data](https://docs.pinecone.io/guides/data/import-data).
+        data](https://docs.pinecone.io/guides/index-data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       display-name: Start import
@@ -87,7 +86,7 @@ service:
               type: string
               docs: >-
                 The [URI
-                prefix](https://docs.pinecone.io/guides/data/understanding-imports#directory-structure)
+                prefix](https://docs.pinecone.io/guides/index-data/import-data#prepare-your-data)
                 under which the data to import is available. All data within
                 this prefix will be listed then imported into the target index.
                 Currently only `s3://` URIs are supported.
@@ -111,12 +110,11 @@ service:
       method: GET
       auth: true
       docs: >-
-        The `describe_import` operation returns details of a specific import
-        operation.
+        Return details of a specific import operation.
 
 
         For guidance and examples, see [Import
-        data](https://docs.pinecone.io/guides/data/import-data).
+        data](https://docs.pinecone.io/guides/index-data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       path-parameters:
@@ -146,12 +144,12 @@ service:
       method: DELETE
       auth: true
       docs: >-
-        The `cancel_import` operation cancels an import operation if it is not
-        yet finished. It has no effect if the operation is already finished.
+        Cancel an import operation if it is not yet finished. It has no effect
+        if the operation is already finished.
 
 
         For guidance and examples, see [Import
-        data](https://docs.pinecone.io/guides/data/import-data).
+        data](https://docs.pinecone.io/guides/index-data/import-data).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       path-parameters:
@@ -173,26 +171,39 @@ service:
       method: POST
       auth: true
       docs: >-
-        This operation converts a query to a vector embedding and then searches
-        a namespace using the embedding. It returns the most similar records in
-        the namespace, along with their similarity scores.
+        Search a namespace with a query text, query vector, or record ID and
+        return the most similar records, along with their similarity scores.
+        Optionally, rerank the initial results based on their relevance to the
+        query. 
+
+
+        Searching with text is supported only for [indexes with integrated
+        embedding](https://docs.pinecone.io/guides/indexes/create-an-index#integrated-embedding).
+        Searching with a query vector or record ID is supported for all
+        indexes. 
+
+
+        For guidance and examples, see
+        [Search](https://docs.pinecone.io/guides/search/semantic-search).
       source:
         openapi: ../data-plane/openapi/openapi.yml
       path-parameters:
         namespace:
           type: string
           docs: The namespace to search.
-      display-name: Search a namespace
+      display-name: Search with text
       request:
         name: SearchRecordsRequest
         body:
           properties:
             query:
               type: SearchRecordsRequestQuery
-              docs: The query inputs to search with.
+              docs: .
             fields:
               type: optional<list<string>>
-              docs: The fields to return in the search results.
+              docs: >-
+                The fields to return in the search results. If not specified,
+                the response will include all fields.
             rerank:
               type: optional<SearchRecordsRequestRerank>
               docs: Parameters for reranking the initial search results.
@@ -201,8 +212,6 @@ service:
         docs: A successful search namespace response.
         type: root.SearchRecordsResponse
         status-code: 200
-      errors:
-        - root.BadRequestError
       examples:
         - path-parameters:
             namespace: namespace
@@ -232,7 +241,7 @@ service:
       docs: |-
         Get index stats
 
-         The `describe_index_stats` operation returns statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
+         Return statistics about the contents of an index, including the vector count per namespace, the number of dimensions, and the index fullness.
 
          Serverless indexes scale automatically as needed, so index fullness is relevant only for pod-based indexes.
       source:
@@ -263,16 +272,47 @@ service:
               dimension: 3
               indexFullness: 0.2
               totalVectorCount: 125
+    listNamespaces:
+      path: /namespaces
+      method: GET
+      auth: false
+      docs: |-
+        Get list of all namespaces
+
+         Get a list of all namespaces within an index.
+      source:
+        proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
+      request:
+        name: ListNamespacesRequest
+        query-parameters:
+          paginationToken:
+            type: optional<string>
+            docs: Pagination token to continue a previous listing operation
+          limit:
+            type: optional<uint>
+            docs: Max number of namespaces to return
+      response:
+        docs: OK
+        type: root.ListNamespacesResponse
+        status-code: 200
+      examples:
+        - response:
+            body:
+              namespaces:
+                - name: name
+                  recordCount: 1000000
+              pagination:
+                next: next
     query:
       path: /query
       method: POST
       auth: false
       docs: |-
-        Query vectors
+        Search with a vector
 
-         The `query` operation searches a namespace, using a query vector. It retrieves the ids of the most similar items in a namespace, along with their similarity scores.
+         Search a namespace with a query vector or record ID and return the IDs of the most similar records, along with their similarity scores.
 
-         For guidance and examples, see [Query data](https://docs.pinecone.io/guides/data/query-data).
+         For guidance and examples, see [Search](https://docs.pinecone.io/guides/search/semantic-search).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -290,7 +330,10 @@ service:
               docs: >-
                 The filter to apply. You can use vector metadata to limit your
                 search. See [Understanding
-                metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
+                metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
+                You can use vector metadata to limit your search. See
+                [Understanding
+                metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
             includeValues:
               type: optional<boolean>
               docs: Indicates whether vector values are included in the response.
@@ -301,16 +344,13 @@ service:
                 as the ids.
             queries:
               type: optional<list<root.QueryVector>>
-              docs: >-
-                DEPRECATED. The query vectors. Each `query()` request can
-                contain only one of the parameters `queries`, `vector`, or 
-                `id`.
+              docs: DEPRECATED. Use `vector` or `id` instead.
             vector:
               type: optional<list<float>>
               docs: >-
                 The query vector. This should be the same length as the
-                dimension of the index being queried. Each `query()` request can
-                contain only one of the parameters `id` or `vector`.
+                dimension of the index being queried. Each request can contain
+                either the `id` or `vector` parameter.
             sparseVector:
               type: optional<root.SparseValues>
               docs: The query sparse values.
@@ -318,8 +358,7 @@ service:
               type: optional<string>
               docs: >-
                 The unique ID of the vector to be used as a query vector. Each
-                `query()` request can contain only one of the parameters
-                `queries`, `vector`, or  `id`.
+                request can contain either the `vector` or `id` parameter.
         content-type: application/json
       response:
         docs: OK
@@ -361,9 +400,9 @@ service:
       docs: |-
         Delete vectors
 
-         The `delete` operation deletes vectors, by id, from a single namespace.
+         Delete vectors by id from a single namespace.
 
-         For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/data/delete-data).
+         For guidance and examples, see [Delete data](https://docs.pinecone.io/guides/manage-data/delete-data).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -387,7 +426,7 @@ service:
                 If specified, the metadata filter here will be used to select
                 the vectors to delete. This is mutually exclusive
                  with specifying ids to delete in the ids param or using `delete_all=True`.
-                 For guidance and examples, see [Understanding metadata](https://docs.pinecone.io/guides/data/understanding-metadata).
+                 For guidance and examples, see [Understanding metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
                  Serverless indexes do not support delete by metadata. Instead, you can use the `list` operation to fetch the vector IDs based on their common ID prefix and then delete the records by ID.
         content-type: application/json
       response:
@@ -410,9 +449,9 @@ service:
       docs: |-
         Fetch vectors
 
-         The `fetch` operation looks up and returns vectors, by ID, from a single namespace. The returned vectors include the vector data and/or metadata.
+         Look up and return vectors by ID from a single namespace. The returned vectors include the vector data and/or metadata.
 
-         For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/data/fetch-data).
+         For guidance and examples, see [Fetch data](https://docs.pinecone.io/guides/manage-data/fetch-data).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -457,11 +496,11 @@ service:
       docs: |-
         List vector IDs
 
-         The `list` operation lists the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
+         List the IDs of vectors in a single namespace of a serverless index. An optional prefix can be passed to limit the results to IDs with a common prefix.
 
-         `list` returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
+         This returns up to 100 IDs at a time by default in sorted order (bitwise/"C" collation). If the `limit` parameter is set, `list` returns up to that number of IDs instead. Whenever there are additional IDs to return, the response also includes a `pagination_token` that you can use to get the next batch of IDs. When the response does not include a `pagination_token`, there are no more IDs to return.
 
-         For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/data/list-record-ids).
+         For guidance and examples, see [List record IDs](https://docs.pinecone.io/guides/manage-data/list-record-ids).
 
          **Note:** `list` is supported only for serverless indexes.
       source:
@@ -504,9 +543,9 @@ service:
       docs: |-
         Update a vector
 
-         The `update` operation updates a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
+         Update a vector in a namespace. If a value is included, it will overwrite the previous value. If a `set_metadata` is included, the values of the fields specified in it will be added or overwrite the previous value.
 
-         For guidance and examples, see [Update data](https://docs.pinecone.io/guides/data/update-data).
+         For guidance and examples, see [Update data](https://docs.pinecone.io/guides/manage-data/update-data).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -550,9 +589,9 @@ service:
       docs: |-
         Upsert vectors
 
-         The `upsert` operation writes vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
+         Upsert vectors into a namespace. If a new value is upserted for an existing vector ID, it will overwrite the previous value.
 
-         For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/data/upsert-data).
+         For guidance and examples, see [Upsert data](https://docs.pinecone.io/guides/index-data/upsert-data#upsert-vectors).
       source:
         proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
       request:
@@ -587,14 +626,17 @@ service:
     proto: ../vector-service/proto/pinecone/data/v1/vector_service.proto
 types:
   SearchRecordsRequestQuery:
-    docs: The query inputs to search with.
+    docs: .
     properties:
       top_k:
         type: integer
-        docs: The number of results to return for each search.
+        docs: The number of similar records to return.
       filter:
         type: optional<map<string, unknown>>
-        docs: The filter to apply.
+        docs: >-
+          The filter to apply. You can use vector metadata to limit your search.
+          See [Understanding
+          metadata](https://docs.pinecone.io/guides/index-data/indexing-overview#metadata).
       inputs: optional<root.EmbedInputs>
       vector: optional<root.SearchRecordsVector>
       id:
@@ -612,10 +654,16 @@ types:
         type: string
         docs: >-
           The name of the [reranking
-          model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          model](https://docs.pinecone.io/guides/search/rerank-results#reranking-models)
           to use.
       rank_fields:
-        docs: The fields to use for reranking.
+        docs: >
+          The field(s) to consider for reranking. If not provided, the default
+          is `["text"]`.
+
+
+          The number of fields supported is
+          [model-specific](https://docs.pinecone.io/guides/search/rerank-results#reranking-models).
         type: list<string>
       top_n:
         type: optional<integer>
@@ -626,7 +674,7 @@ types:
         type: optional<map<string, unknown>>
         docs: >-
           Additional model-specific parameters. Refer to the [model
-          guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models)
+          guide](https://docs.pinecone.io/guides/search/rerank-results#reranking-models)
           for available model parameters.
       query:
         type: optional<string>

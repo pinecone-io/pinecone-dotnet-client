@@ -47,7 +47,7 @@ public class InferenceTests : BaseTest
     {
         // Prepare the query and documents to be reranked
         var query = "The tech company Apple is known for its innovative products like the iPhone.";
-        var documents = new List<Dictionary<string, object>>
+        var documents = new List<Dictionary<string, object?>>
         {
             new()
             {
@@ -77,8 +77,7 @@ public class InferenceTests : BaseTest
         var rerankModel = "bge-reranker-v2-m3";
         var rankFields = new List<string> { "my_field" };
         var topN = 2;
-        var returnDocuments = true;
-        var parameters = new Dictionary<string, object> { ["truncate"] = "END" };
+        var parameters = new Dictionary<string, object?> { ["truncate"] = "END" };
 
         // Perform the reranking
         var rerankResult = await Client

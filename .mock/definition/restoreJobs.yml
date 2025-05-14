@@ -1,0 +1,110 @@
+imports:
+  root: __package__.yml
+service:
+  auth: false
+  base-path: ''
+  endpoints:
+    list:
+      path: /restore-jobs
+      method: GET
+      auth: true
+      docs: List all restore jobs for a project.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      display-name: List restore jobs
+      request:
+        name: ListRestoreJobsRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of results to return per page.
+            validation:
+              min: 1
+              max: 100
+          paginationToken:
+            type: optional<string>
+            docs: The token to use to retrieve the next page of results.
+      response:
+        docs: >-
+          This operation returns a list of all the restore jobs that you have
+          previously created.
+        type: root.RestoreJobList
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - name: A list containing restore jobs.
+          response:
+            body:
+              data:
+                - restore_job_id: 670e8400-e29b-41d4-a716-446655440001
+                  backup_id: 670e8400-e29b-41d4-a716-446655440000
+                  target_index_name: my-index
+                  target_index_id: idx_456
+                  status: Completed
+                  created_at: '2024-03-15T10:30:00Z'
+                  completed_at: '2024-03-15T10:35:00Z'
+                  percent_complete: 100
+              pagination:
+                next: dXNlcl9pZD11c2VyXzE=
+        - name: A list containing restore jobs, without pagination.
+          response:
+            body:
+              data:
+                - restore_job_id: 670e8400-e29b-41d4-a716-446655440001
+                  backup_id: 670e8400-e29b-41d4-a716-446655440000
+                  target_index_name: my-index
+                  target_index_id: idx_456
+                  status: Completed
+                  created_at: '2024-03-15T10:30:00Z'
+                  completed_at: '2024-03-15T10:35:00Z'
+                  percent_complete: 100
+        - name: An empty list.
+          response:
+            body:
+              data:
+                - restore_job_id: 670e8400-e29b-41d4-a716-446655440001
+                  backup_id: 670e8400-e29b-41d4-a716-446655440000
+                  target_index_name: sample-index
+                  target_index_id: 670e8400-e29b-41d4-a716-446655440002
+                  status: Completed
+                  created_at: '2025-02-04T13:00:00Z'
+                  completed_at: '2025-02-04T14:00:00Z'
+                  percent_complete: 42.2
+    get:
+      path: /restore-jobs/{job_id}
+      method: GET
+      auth: true
+      docs: Get a description of a restore job.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      path-parameters:
+        job_id:
+          type: string
+          docs: The ID of the restore job to describe.
+      display-name: Describe a restore job
+      response:
+        docs: Configuration information and deployment status of the restore job.
+        type: root.RestoreJobModel
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.NotFoundError
+        - root.InternalServerError
+      examples:
+        - path-parameters:
+            job_id: 670e8400-e29b-41d4-a716-446655440000
+          response:
+            body:
+              restore_job_id: 670e8400-e29b-41d4-a716-446655440001
+              backup_id: 670e8400-e29b-41d4-a716-446655440000
+              target_index_name: sample-index
+              target_index_id: 670e8400-e29b-41d4-a716-446655440002
+              status: Completed
+              created_at: '2025-02-04T13:00:00Z'
+              completed_at: '2025-02-04T14:00:00Z'
+              percent_complete: 42.2
+  source:
+    openapi: ../control-plane/openapi/openapi.yml

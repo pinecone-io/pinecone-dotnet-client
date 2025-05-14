@@ -19,7 +19,7 @@ public class SparseIndexTests : BaseTest
                     new CreateIndexRequest
                     {
                         Name = indexName,
-                        Metric = CreateIndexRequestMetric.Dotproduct,
+                        Metric = MetricType.Dotproduct,
                         VectorType = VectorType.Sparse,
                         Spec = new ServerlessIndexSpec
                         {
@@ -45,8 +45,8 @@ public class SparseIndexTests : BaseTest
         }
         catch (PineconeApiException e)
         {
-            TestContext.WriteLine(e.Message);
-            TestContext.WriteLine(e.Body is string ? e.Body : JsonSerializer.Serialize(e.Body));
+            TestContext.Out.WriteLine(e.Message);
+            TestContext.Out.WriteLine(e.Body is string ? e.Body : JsonSerializer.Serialize(e.Body));
             throw;
         }
     }

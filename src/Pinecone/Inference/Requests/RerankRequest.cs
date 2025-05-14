@@ -6,7 +6,7 @@ namespace Pinecone;
 public record RerankRequest
 {
     /// <summary>
-    /// The [model](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) to use for reranking.
+    /// The [model](https://docs.pinecone.io/guides/search/rerank-results#reranking-models) to use for reranking.
     /// </summary>
     [JsonPropertyName("model")]
     public required string Model { get; set; }
@@ -30,7 +30,9 @@ public record RerankRequest
     public bool? ReturnDocuments { get; set; }
 
     /// <summary>
-    /// The fields to rank the documents by. If not provided, the default is `"text"`.
+    /// The field(s) to consider for reranking. If not provided, the default is `["text"]`.
+    ///
+    /// The number of fields supported is [model-specific](https://docs.pinecone.io/guides/search/rerank-results#reranking-models).
     /// </summary>
     [JsonPropertyName("rank_fields")]
     public IEnumerable<string>? RankFields { get; set; }
@@ -43,7 +45,7 @@ public record RerankRequest
         new List<Dictionary<string, object?>>();
 
     /// <summary>
-    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#reranking-models) for available model parameters.
+    /// Additional model-specific parameters. Refer to the [model guide](https://docs.pinecone.io/guides/search/rerank-results#reranking-models) for available model parameters.
     /// </summary>
     [JsonPropertyName("parameters")]
     public Dictionary<string, object?>? Parameters { get; set; }

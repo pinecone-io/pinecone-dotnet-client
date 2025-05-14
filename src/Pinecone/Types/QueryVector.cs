@@ -15,7 +15,7 @@ public record QueryVector : IJsonOnDeserialized
         new Dictionary<string, JsonElement>();
 
     /// <summary>
-    /// The query vector. This should be the same length as the dimension of the index being queried. Each `query()` request can contain only one of the parameters `id` or `vector`.
+    /// The query vector. This should be the same length as the dimension of the index being queried. Each request can contain either the `id` or `vector` parameter.
     /// </summary>
     [JsonPropertyName("values")]
     public ReadOnlyMemory<float>? Values { get; set; }

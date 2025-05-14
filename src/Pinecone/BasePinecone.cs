@@ -20,11 +20,11 @@ public partial class BasePinecone
             new Dictionary<string, string>()
             {
                 { "Api-Key", apiKey },
-                { "X-Pinecone-API-Version", "2025-01" },
+                { "X-Pinecone-API-Version", "2025-04" },
                 { "X-Fern-Language", "C#" },
                 { "X-Fern-SDK-Name", "Pinecone" },
                 { "X-Fern-SDK-Version", Version.Current },
-                { "User-Agent", "Pinecone.Client/3.1.0" },
+                { "User-Agent", "Pinecone.Client/4.0.0" },
             }
         );
         clientOptions ??= new ClientOptions();
@@ -40,9 +40,15 @@ public partial class BasePinecone
             }
         }
         _client = new RawClient(clientOptions);
+        Backups = new BackupsClient(_client);
+        RestoreJobs = new RestoreJobsClient(_client);
         Index = new IndexClient(_client);
         Inference = new InferenceClient(_client);
     }
+
+    public BackupsClient Backups { get; }
+
+    public RestoreJobsClient RestoreJobs { get; }
 
     public IndexClient Index { get; }
 
@@ -54,7 +60,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation returns a list of all indexes in a project.
+    /// List all indexes in a project.
     /// </summary>
     /// <example><code>
     /// await client.ListIndexesAsync();
@@ -118,9 +124,9 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation deploys a Pinecone index. This is where you specify the measure of similarity, the dimension of vectors to be stored in the index, which cloud provider you would like to deploy with, and more.
+    /// Create a Pinecone index. This is where you specify the measure of similarity, the dimension of vectors to be stored in the index, which cloud provider you would like to deploy with, and more.
     ///
-    /// For guidance and examples, see [Create an index](https://docs.pinecone.io/guides/indexes/create-an-index#create-a-serverless-index).
+    /// For guidance and examples, see [Create an index](https://docs.pinecone.io/guides/index-data/create-an-index).
     /// </summary>
     /// <example><code>
     /// await client.CreateIndexAsync(
@@ -128,7 +134,7 @@ public partial class BasePinecone
     ///     {
     ///         Name = "movie-recommendations",
     ///         Dimension = 1536,
-    ///         Metric = CreateIndexRequestMetric.Cosine,
+    ///         Metric = MetricType.Cosine,
     ///         DeletionProtection = DeletionProtection.Enabled,
     ///         Spec = new ServerlessIndexSpec
     ///         {
@@ -181,7 +187,9 @@ public partial class BasePinecone
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -291,7 +299,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation deletes an existing index.
+    /// Delete an existing index.
     /// </summary>
     /// <example><code>
     /// await client.DeleteIndexAsync("test-index");
@@ -360,11 +368,9 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation configures an existing index.
+    /// Configure an existing index. For serverless indexes, you can configure index deletion protection, tags, and integrated inference embedding settings for the index. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
     ///
-    /// For serverless indexes, you can configure index deletion protection, tags, and integrated inference embedding settings for the index. For pod-based indexes, you can configure the pod size, number of replicas, tags, and index deletion protection.
-    ///
-    /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/create-an-index#create-an-index-from-a-collection) from the collection. For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/configure-an-index).
+    /// It is not possible to change the pod type of a pod-based index. However, you can create a collection from a pod-based index and then [create a new pod-based index with a different pod type](http://docs.pinecone.io/guides/indexes/pods/create-a-pod-based-index#create-a-pod-index-from-a-collection) from the collection. For guidance and examples, see [Configure an index](http://docs.pinecone.io/guides/indexes/pods/manage-pod-based-indexes).
     /// </summary>
     /// <example><code>
     /// await client.ConfigureIndexAsync(
@@ -422,7 +428,9 @@ public partial class BasePinecone
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -460,7 +468,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation returns a list of all collections in a project.
+    /// List all collections in a project.
     /// Serverless indexes do not support collections.
     /// </summary>
     /// <example><code>
@@ -525,7 +533,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation creates a Pinecone collection.
+    /// Create a Pinecone collection.
     ///
     /// Serverless indexes do not support collections.
     /// </summary>
@@ -574,7 +582,9 @@ public partial class BasePinecone
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -612,9 +622,11 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation creates a serverless integrated inference index for a specific embedding model.
+    /// Create an index with integrated embedding.
     ///
-    /// Refer to the [model guide](https://docs.pinecone.io/guides/inference/understanding-inference#embedding-models) for available models and model details.
+    /// With this type of index, you provide source text, and Pinecone uses a [hosted embedding model](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models) to convert the text automatically during [upsert](https://docs.pinecone.io/reference/api/2025-01/data-plane/upsert_records) and [search](https://docs.pinecone.io/reference/api/2025-01/data-plane/search_records).
+    ///
+    /// For guidance and examples, see [Create an index](https://docs.pinecone.io/guides/index-data/create-an-index#integrated-embedding).
     /// </summary>
     /// <example><code>
     /// await client.CreateIndexForModelAsync(
@@ -627,7 +639,7 @@ public partial class BasePinecone
     ///         Embed = new CreateIndexForModelRequestEmbed
     ///         {
     ///             Model = "multilingual-e5-large",
-    ///             Metric = CreateIndexForModelRequestEmbedMetric.Cosine,
+    ///             Metric = MetricType.Cosine,
     ///             FieldMap = new Dictionary&lt;string, object&gt;() { { "text", "your-text-field" } },
     ///         },
     ///     }
@@ -673,7 +685,9 @@ public partial class BasePinecone
                 switch (response.StatusCode)
                 {
                     case 400:
-                        throw new BadRequestError(JsonUtils.Deserialize<object>(responseBody));
+                        throw new BadRequestError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
                     case 401:
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -705,7 +719,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation gets a description of a collection.
+    /// Get a description of a collection.
     /// Serverless indexes do not support collections.
     /// </summary>
     /// <example><code>
@@ -776,7 +790,7 @@ public partial class BasePinecone
     }
 
     /// <summary>
-    /// This operation deletes an existing collection.
+    /// Delete an existing collection.
     /// Serverless indexes do not support collections.
     /// </summary>
     /// <example><code>

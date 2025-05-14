@@ -23,7 +23,7 @@ public record ModelIndexEmbed : IJsonOnDeserialized
     /// The distance metric to be used for similarity search. You can use 'euclidean', 'cosine', or 'dotproduct'. If not specified, the metric will be defaulted according to the model. Cannot be updated once set.
     /// </summary>
     [JsonPropertyName("metric")]
-    public ModelIndexEmbedMetric? Metric { get; set; }
+    public MetricType? Metric { get; set; }
 
     /// <summary>
     /// The dimensions of the vectors to be inserted in the index.

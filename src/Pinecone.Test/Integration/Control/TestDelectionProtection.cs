@@ -85,7 +85,7 @@ public class TestDeletionProtection : BaseTest
             )
             .ConfigureAwait(false);
         desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
-        var replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
+        var replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas, _ => null);
         Assert.That(replicaCount, Is.EqualTo(2));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Enabled));
 
@@ -104,7 +104,7 @@ public class TestDeletionProtection : BaseTest
             )
             .ConfigureAwait(false);
         desc = await Client.DescribeIndexAsync(indexName).ConfigureAwait(false);
-        replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas);
+        replicaCount = desc.Spec.Match(_ => null, podSpec => podSpec.Pod?.Replicas, _ => null);
         Assert.That(replicaCount, Is.EqualTo(3));
         Assert.That(desc.DeletionProtection, Is.EqualTo(DeletionProtection.Disabled));
     }

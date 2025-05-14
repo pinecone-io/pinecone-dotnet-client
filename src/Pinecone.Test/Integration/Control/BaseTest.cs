@@ -9,6 +9,6 @@ public abstract class BaseTest
     protected string IndexName => Setup.IndexName;
     protected string Environment => Setup.PineconeEnvironment;
     protected int Dimension => Setup.Dimension;
-    protected CreateIndexRequestMetric Metric => Setup.Metric;
+    protected MetricType Metric => Setup.Metric;
     protected string CollectionName => Setup.CollectionName;
 }

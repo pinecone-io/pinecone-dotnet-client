@@ -9,6 +9,7 @@ public class TestSetupUpsert : BaseTest
     public async Task TestUpsertToNamespace(bool useNondefaultNamespace)
     {
         var indexClient = await CreateIndexForTest().ConfigureAwait(false);
+        await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with tuples
@@ -76,6 +77,7 @@ public class TestSetupUpsert : BaseTest
     public async Task TestUpsertToNamespaceWithSparseEmbeddingValues(bool useNondefaultNamespace)
     {
         var indexClient = await CreateIndexForTest().ConfigureAwait(false);
+        await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
         var targetNamespace = useNondefaultNamespace ? Namespace : "";
 
         // Upsert with sparse values object
@@ -155,7 +157,7 @@ public class TestSetupUpsert : BaseTest
                 {
                     Name = indexName,
                     Dimension = 2,
-                    Metric = CreateIndexRequestMetric.Cosine,
+                    Metric = MetricType.Cosine,
                     Spec = new ServerlessIndexSpec
                     {
                         Serverless = new ServerlessSpec
