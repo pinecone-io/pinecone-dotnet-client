@@ -485,7 +485,7 @@ The following example describes a backup.
 using Pinecone;
 
 var pinecone = new PineconeClient("PINECONE_API_KEY");
-var backups = await Client.Backups.ListAsync();
+var backups = await pinecone.Backups.ListAsync();
 foreach (var backup in backups.Data)
 {
     Console.WriteLine($"BackupId: {backup.BackupId}");
@@ -726,7 +726,7 @@ The following example shows how to get a specific model.
 using Pinecone;
 
 var pinecone = new PineconeClient("PINECONE_API_KEY");
-var model = await Client.Inference.Models.GetAsync("pinecone-sparse-english-v0");
+var model = await pinecone.Inference.Models.GetAsync("pinecone-sparse-english-v0");
 Console.WriteLine($"Name: {model.Model}");
 Console.WriteLine($"Type: {model.Type}");
 Console.WriteLine($"Vector type: {model.VectorType}");
