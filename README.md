@@ -409,6 +409,7 @@ The following example lists all namespaces in the index.
 
 ```csharp
 using Pinecone;
+
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 var index = pinecone.Index("example-index");
 var namespaces = await index.ListNamespacesAsync(new ListNamespacesRequest());
@@ -424,6 +425,7 @@ The following example describes a namespace.
 
 ```csharp
 using Pinecone;
+
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 var index = pinecone.Index("example-index");
 var @namespace = await index.DescribeNamespaceAsync("namespace-name");
@@ -436,6 +438,7 @@ The following example deletes a namespace.
 
 ```csharp
 using Pinecone;
+
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 var index = pinecone.Index("example-index");
 await index.DeleteNamespaceAsync("namespace-name");
@@ -709,6 +712,7 @@ The following example shows how to list all available models.
 
 ```csharp
 using Pinecone;
+using Pinecone.Inference;
 
 var pinecone = new PineconeClient("PINECONE_API_KEY");
 var models = await pinecone.Inference.Models.ListAsync(new ListModelsRequest());
