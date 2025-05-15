@@ -67,6 +67,19 @@ public class TestBackups : BaseTest
     }
 
     [Test]
+    public async Task TestListBackupsByIndex()
+    {
+        var backups = await Client.Backups.ListByIndexAsync(
+            IndexName, 
+            new ListBackupsByIndexRequest(), 
+            _options
+        );
+        Assert.That(backups, Is.Not.Null);
+        Assert.That(backups.Data, Is.Not.Null);
+        Assert.That(backups.Data, Is.Not.Empty);
+    }
+
+    [Test]
     public async Task TestGetBackup()
     {
         var backup = await Client.Backups.GetAsync(_backup.BackupId, _options);

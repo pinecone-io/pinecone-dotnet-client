@@ -16,23 +16,38 @@ public partial class BackupsClient
     }
 
     /// <summary>
-    /// List all backups for a project.
+    /// List all backups for an index.
     /// </summary>
     /// <example><code>
-    /// await client.Backups.ListAsync();
+    /// await client.Backups.ListByIndexAsync("index_name", new ListBackupsByIndexRequest());
     /// </code></example>
-    public async Task<BackupList> ListAsync(
+    public async Task<BackupList> ListByIndexAsync(
+        string indexName,
+        ListBackupsByIndexRequest request,
         RequestOptions? options = null,
         CancellationToken cancellationToken = default
     )
     {
+        var _query = new Dictionary<string, object>();
+        if (request.Limit != null)
+        {
+            _query["limit"] = request.Limit.Value.ToString();
+        }
+        if (request.PaginationToken != null)
+        {
+            _query["paginationToken"] = request.PaginationToken;
+        }
         var response = await _client
             .SendRequestAsync(
                 new JsonRequest
                 {
                     BaseUrl = _client.Options.BaseUrl,
                     Method = HttpMethod.Get,
-                    Path = "backups",
+                    Path = string.Format(
+                        "indexes/{0}/backups",
+                        ValueConvert.ToPathParameterString(indexName)
+                    ),
+                    Query = _query,
                     Options = options,
                 },
                 cancellationToken
@@ -61,6 +76,8 @@ public partial class BackupsClient
                         throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
                         );
+                    case 404:
+                        throw new NotFoundError(JsonUtils.Deserialize<ErrorResponse>(responseBody));
                     case 500:
                         throw new InternalServerError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
@@ -146,6 +163,70 @@ public partial class BackupsClient
                         );
                     case 422:
                         throw new UnprocessableEntityError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                    case 500:
+                        throw new InternalServerError(
+                            JsonUtils.Deserialize<ErrorResponse>(responseBody)
+                        );
+                }
+            }
+            catch (JsonException)
+            {
+                // unable to map error response, throwing generic error
+            }
+            throw new PineconeApiException(
+                $"Error with status code {response.StatusCode}",
+                response.StatusCode,
+                responseBody
+            );
+        }
+    }
+
+    /// <summary>
+    /// List all backups for a project.
+    /// </summary>
+    /// <example><code>
+    /// await client.Backups.ListAsync();
+    /// </code></example>
+    public async Task<BackupList> ListAsync(
+        RequestOptions? options = null,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var response = await _client
+            .SendRequestAsync(
+                new JsonRequest
+                {
+                    BaseUrl = _client.Options.BaseUrl,
+                    Method = HttpMethod.Get,
+                    Path = "backups",
+                    Options = options,
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+        if (response.StatusCode is >= 200 and < 400)
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                return JsonUtils.Deserialize<BackupList>(responseBody)!;
+            }
+            catch (JsonException e)
+            {
+                throw new PineconeException("Failed to deserialize response", e);
+            }
+        }
+
+        {
+            var responseBody = await response.Raw.Content.ReadAsStringAsync();
+            try
+            {
+                switch (response.StatusCode)
+                {
+                    case 401:
+                        throw new UnauthorizedError(
                             JsonUtils.Deserialize<ErrorResponse>(responseBody)
                         );
                     case 500:
