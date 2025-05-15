@@ -482,7 +482,7 @@ var backup = await pinecone.Backups.GetAsync("backup-id");
 ```
 
 #### List backups
-The following example describes a backup.
+The following example lists all backups.
 
 ```csharp
 using Pinecone;
@@ -499,8 +499,27 @@ foreach (var backup in backups.Data)
 }
 ```
 
+
+#### List backups by index
+The following example lists backups for a specific index.
+
+```csharp
+using Pinecone;
+
+var pinecone = new PineconeClient("PINECONE_API_KEY");
+var backups = await pinecone.Backups.ListByIndexAsync( "index-name", new ListBackupsByIndexRequest());
+foreach (var backup in backups.Data)
+{
+    Console.WriteLine($"BackupId: {backup.BackupId}");
+    Console.WriteLine($"Name: {backup.Name}");
+    Console.WriteLine($"CreatedAt: {backup.CreatedAt}");
+    Console.WriteLine($"Status: {backup.Status}");
+    Console.WriteLine($"RecordCount: {backup.RecordCount}");
+}
+```
+
 #### Delete backup
-The following example describes a backup.
+The following example deletes a backup.
 
 ```csharp
 using Pinecone;
