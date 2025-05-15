@@ -572,7 +572,7 @@ await client.DeleteCollectionAsync("test-collection");
 </details>
 
 ## Backups
-<details><summary><code>client.Backups.<a href="/src/Pinecone/Backups/BackupsClient.cs">ListAsync</a>() -> BackupList</code></summary>
+<details><summary><code>client.Backups.<a href="/src/Pinecone/Backups/BackupsClient.cs">ListByIndexAsync</a>(indexName, ListBackupsByIndexRequest { ... }) -> BackupList</code></summary>
 <dl>
 <dd>
 
@@ -584,7 +584,7 @@ await client.DeleteCollectionAsync("test-collection");
 <dl>
 <dd>
 
-List all backups for a project.
+List all backups for an index.
 </dd>
 </dl>
 </dd>
@@ -599,8 +599,31 @@ List all backups for a project.
 <dd>
 
 ```csharp
-await client.Backups.ListAsync();
+await client.Backups.ListByIndexAsync("index_name", new ListBackupsByIndexRequest());
 ```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**indexName:** `string` — Name of the backed up index
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `ListBackupsByIndexRequest` 
+    
 </dd>
 </dl>
 </dd>
@@ -663,6 +686,45 @@ await client.Backups.BackupIndexAsync("index_name", new BackupIndexRequest());
 
 **request:** `BackupIndexRequest` 
     
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.Backups.<a href="/src/Pinecone/Backups/BackupsClient.cs">ListAsync</a>() -> BackupList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+List all backups for a project.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```csharp
+await client.Backups.ListAsync();
+```
 </dd>
 </dl>
 </dd>

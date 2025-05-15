@@ -4,29 +4,49 @@ service:
   auth: false
   base-path: ''
   endpoints:
-    list:
-      path: /backups
+    listByIndex:
+      path: /indexes/{index_name}/backups
       method: GET
       auth: true
-      docs: List all backups for a project.
+      docs: List all backups for an index.
       source:
         openapi: ../control-plane/openapi/openapi.yml
-      display-name: List backups for all indexes in a project
+      path-parameters:
+        index_name:
+          type: string
+          docs: Name of the backed up index
+      display-name: List backups for an index
+      request:
+        name: ListBackupsByIndexRequest
+        query-parameters:
+          limit:
+            type: optional<integer>
+            default: 10
+            docs: The number of results to return per page.
+            validation:
+              min: 1
+              max: 100
+          paginationToken:
+            type: optional<string>
+            docs: The token to use to retrieve the next page of results.
       response:
         docs: >-
-          This operation returns a list of all the backups for the given index
-          that you have previously created.
+          This operation returns a list of all the backups that you have
+          previously created, and which are associated with the given index.
         type: root.BackupList
         status-code: 200
       errors:
         - root.UnauthorizedError
+        - root.NotFoundError
         - root.InternalServerError
       examples:
         - name: A list containing backups.
+          path-parameters:
+            index_name: index_name
           response:
             body:
               data:
-                - backup_id: 670e8400-e29b-41d4-a716-446655440000
+                - backup_id: bkp_123abc
                   source_index_name: my-index
                   source_index_id: idx_456
                   name: backup_2024_03_15
@@ -43,9 +63,9 @@ service:
                     environment: production
                     type: monthly
                   created_at: '2024-03-15T10:30:00Z'
-                - backup_id: 670e8400-e29b-41d4-a716-446655440001
-                  source_index_name: my-index-2
-                  source_index_id: idx_789
+                - backup_id: bkp_789xyz
+                  source_index_name: my-index
+                  source_index_id: idx_456
                   name: backup_2024_03_20
                   description: Pre-deployment safety backup
                   status: Ready
@@ -170,6 +190,64 @@ service:
                 tag0: val0
                 tag1: val1
               created_at: created_at
+    list:
+      path: /backups
+      method: GET
+      auth: true
+      docs: List all backups for a project.
+      source:
+        openapi: ../control-plane/openapi/openapi.yml
+      display-name: List backups for all indexes in a project
+      response:
+        docs: >-
+          This operation returns a list of all the backups for the given index
+          that you have previously created.
+        type: root.BackupList
+        status-code: 200
+      errors:
+        - root.UnauthorizedError
+        - root.InternalServerError
+      examples:
+        - name: A list containing backups.
+          response:
+            body:
+              data:
+                - backup_id: 670e8400-e29b-41d4-a716-446655440000
+                  source_index_name: my-index
+                  source_index_id: idx_456
+                  name: backup_2024_03_15
+                  description: Monthly backup of production index
+                  status: Ready
+                  cloud: aws
+                  region: us-east-1
+                  dimension: 1536
+                  metric: cosine
+                  record_count: 120000
+                  namespace_count: 3
+                  size_bytes: 10000000
+                  tags:
+                    environment: production
+                    type: monthly
+                  created_at: '2024-03-15T10:30:00Z'
+                - backup_id: 670e8400-e29b-41d4-a716-446655440001
+                  source_index_name: my-index-2
+                  source_index_id: idx_789
+                  name: backup_2024_03_20
+                  description: Pre-deployment safety backup
+                  status: Ready
+                  cloud: aws
+                  region: us-east-1
+                  dimension: 1536
+                  metric: cosine
+                  record_count: 125000
+                  namespace_count: 4
+                  size_bytes: 10500000
+                  tags:
+                    environment: production
+                    type: pre-deploy
+                  created_at: '2024-03-20T15:45:00Z'
+              pagination:
+                next: dXNlcl9pZD11c2VyXzE=
     get:
       path: /backups/{backup_id}
       method: GET
