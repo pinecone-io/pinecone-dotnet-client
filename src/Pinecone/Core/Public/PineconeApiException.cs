@@ -16,7 +16,7 @@ public class PineconeApiException : PineconeException
         StatusCode = statusCode;
         Body = body;        
         Data["StatusCode"] = statusCode;
-        Data["ResponseBody"] = JsonUtils.Serialize(body);
+        Data["ResponseBody"] = body;
     }
 
     /// <summary>
