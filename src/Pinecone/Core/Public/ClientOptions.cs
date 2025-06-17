@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Grpc.Net.Client;
@@ -6,6 +5,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public partial class ClientOptions
 {
     /// <summary>

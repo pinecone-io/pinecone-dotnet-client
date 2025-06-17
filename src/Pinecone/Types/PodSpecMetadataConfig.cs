@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Configuration for the behavior of Pinecone's internal metadata index. By default, all metadata is indexed; when `metadata_config` is present, only specified metadata fields are indexed. These configurations are only valid for use with pod-based indexes.
 /// </summary>
+[Serializable]
 public record PodSpecMetadataConfig : IJsonOnDeserialized
 {
     [JsonExtensionData]

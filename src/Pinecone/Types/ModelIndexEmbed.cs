@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The embedding model and document fields mapped to embedding inputs.
 /// </summary>
+[Serializable]
 public record ModelIndexEmbed : IJsonOnDeserialized
 {
     [JsonExtensionData]

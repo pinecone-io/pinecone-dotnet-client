@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `describe_index_stats` operation.
 /// </summary>
+[Serializable]
 public record DescribeIndexStatsResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

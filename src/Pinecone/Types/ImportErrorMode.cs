@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Indicates how to respond to errors during the import process.
 /// </summary>
+[Serializable]
 public record ImportErrorMode : IJsonOnDeserialized
 {
     [JsonExtensionData]

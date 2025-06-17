@@ -3,6 +3,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public record CreateIndexFromBackupRequest
 {
     /// <summary>
@@ -16,10 +17,9 @@ public record CreateIndexFromBackupRequest
 
     [JsonPropertyName("deletion_protection")]
     public DeletionProtection? DeletionProtection { get; set; }
-
     /// <inheritdoc />
-    public override string ToString()
-    {
+    public override string ToString() {
         return JsonUtils.Serialize(this);
     }
+
 }

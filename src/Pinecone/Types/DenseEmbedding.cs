@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// A dense embedding of a single input
 /// </summary>
+[Serializable]
 public record DenseEmbedding : IJsonOnDeserialized
 {
     [JsonExtensionData]

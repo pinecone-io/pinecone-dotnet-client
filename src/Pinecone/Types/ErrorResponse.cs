@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The response shape used for all error responses.
 /// </summary>
+[Serializable]
 public record ErrorResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

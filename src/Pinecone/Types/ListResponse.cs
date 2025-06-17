@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `List` operation.
 /// </summary>
+[Serializable]
 public record ListResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

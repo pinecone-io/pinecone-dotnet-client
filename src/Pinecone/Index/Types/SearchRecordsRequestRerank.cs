@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Parameters for reranking the initial search results.
 /// </summary>
+[Serializable]
 public record SearchRecordsRequestRerank : IJsonOnDeserialized
 {
     [JsonExtensionData]

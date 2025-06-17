@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The list of indexes that exist in the project.
 /// </summary>
+[Serializable]
 public record IndexList : IJsonOnDeserialized
 {
     [JsonExtensionData]

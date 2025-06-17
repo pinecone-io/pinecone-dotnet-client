@@ -3,6 +3,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public record ListBulkImportsRequest
 {
     /// <summary>

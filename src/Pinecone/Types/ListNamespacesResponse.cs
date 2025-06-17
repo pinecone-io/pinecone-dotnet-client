@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the list namespace operation.
 /// </summary>
+[Serializable]
 public record ListNamespacesResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Embeddings generated for the input.
 /// </summary>
+[Serializable]
 public record EmbeddingsList : IJsonOnDeserialized
 {
     [JsonExtensionData]

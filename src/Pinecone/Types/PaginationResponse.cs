@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The pagination object that is returned with paginated responses.
 /// </summary>
+[Serializable]
 public record PaginationResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

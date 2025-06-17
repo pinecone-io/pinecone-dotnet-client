@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `fetch` operation.
 /// </summary>
+[Serializable]
 public record FetchResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

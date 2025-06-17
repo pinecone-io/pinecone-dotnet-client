@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Usage statistics for the model inference.
 /// </summary>
+[Serializable]
 public record EmbeddingsListUsage : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `Delete` operation.
 /// </summary>
+[Serializable]
 public record DeleteResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

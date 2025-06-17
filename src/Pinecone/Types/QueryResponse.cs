@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `query` operation. These are the matches found for a particular query vector. The matches are ordered from most similar to least similar.
 /// </summary>
+[Serializable]
 public record QueryResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

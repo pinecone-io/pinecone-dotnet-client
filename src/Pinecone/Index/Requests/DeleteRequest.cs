@@ -4,6 +4,7 @@ using Proto = Pinecone.Grpc;
 
 namespace Pinecone;
 
+[Serializable]
 public record DeleteRequest
 {
     /// <summary>

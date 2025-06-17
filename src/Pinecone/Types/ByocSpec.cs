@@ -6,6 +6,7 @@ namespace Pinecone;
 /// <summary>
 /// Configuration needed to deploy an index in a BYOC environment.
 /// </summary>
+[Serializable]
 public record ByocSpec : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]

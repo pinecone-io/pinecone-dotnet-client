@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The RestoreJobModel describes the status of a restore job.
 /// </summary>
+[Serializable]
 public record RestoreJobModel : IJsonOnDeserialized
 {
     [JsonExtensionData]

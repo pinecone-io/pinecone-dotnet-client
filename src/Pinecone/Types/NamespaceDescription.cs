@@ -5,6 +5,7 @@ using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+[Serializable]
 public record NamespaceDescription : IJsonOnDeserialized
 {
     [JsonExtensionData]

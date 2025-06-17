@@ -11,6 +11,7 @@ namespace Pinecone;
 ///
 /// You can later change the embedding configuration to update the field map, read parameters, or write parameters. Once set, the model cannot be changed.
 /// </summary>
+[Serializable]
 public record ConfigureIndexRequestEmbed : IJsonOnDeserialized
 {
     [JsonExtensionData]

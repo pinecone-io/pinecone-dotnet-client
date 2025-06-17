@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The CollectionModel describes the configuration and status of a Pinecone collection.
 /// </summary>
+[Serializable]
 public record CollectionModel : IJsonOnDeserialized
 {
     [JsonExtensionData]

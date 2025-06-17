@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `start_import` operation.
 /// </summary>
+[Serializable]
 public record StartImportResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

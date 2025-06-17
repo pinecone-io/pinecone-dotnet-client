@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// Describes a parameter supported by the model, including parameter value constraints.
 /// </summary>
+[Serializable]
 public record ModelInfoSupportedParameter : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `update` operation.
 /// </summary>
+[Serializable]
 public record UpdateResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

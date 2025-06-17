@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The records search response.
 /// </summary>
+[Serializable]
 public record SearchRecordsResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]
