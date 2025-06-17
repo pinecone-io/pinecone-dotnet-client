@@ -1,3 +1,5 @@
+using Pinecone.Core;
+
 namespace Pinecone;
 
 /// <summary>
@@ -5,6 +7,10 @@ namespace Pinecone;
 /// </summary>
 public class PineconeApiException : PineconeException
 {
+    public PineconeApiException(string message, int statusCode, ErrorResponse body)
+        : this(message + (body.Error?.Message != null ? ": " + body.Error.Message : ""), statusCode, (object)body)
+    { }
+
     public PineconeApiException(string message, int statusCode, object body) : base(message)
     {
         StatusCode = statusCode;
