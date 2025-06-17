@@ -5,6 +5,7 @@ using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+[Serializable]
 public record ScoredVector : IJsonOnDeserialized
 {
     [JsonExtensionData]

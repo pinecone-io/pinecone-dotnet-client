@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Configuration needed to deploy a pod-based index.
 /// </summary>
+[Serializable]
 public record PodSpec : IJsonOnDeserialized
 {
     [JsonExtensionData]

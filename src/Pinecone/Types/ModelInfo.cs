@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Represents the model configuration including model type, supported parameters, and other model details.
 /// </summary>
+[Serializable]
 public record ModelInfo : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for the `cancel_import` operation.
 /// </summary>
+[Serializable]
 public record CancelImportResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

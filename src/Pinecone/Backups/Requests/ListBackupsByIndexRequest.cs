@@ -3,6 +3,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public record ListBackupsByIndexRequest
 {
     /// <summary>
@@ -16,10 +17,9 @@ public record ListBackupsByIndexRequest
     /// </summary>
     [JsonIgnore]
     public string? PaginationToken { get; set; }
-
     /// <inheritdoc />
-    public override string ToString()
-    {
+    public override string ToString() {
         return JsonUtils.Serialize(this);
     }
+
 }

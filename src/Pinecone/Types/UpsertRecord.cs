@@ -6,6 +6,7 @@ namespace Pinecone;
 /// <summary>
 /// The request for the `upsert` operation.
 /// </summary>
+[Serializable]
 public record UpsertRecord : IJsonOnDeserialized, IJsonOnSerializing
 {
     [JsonExtensionData]

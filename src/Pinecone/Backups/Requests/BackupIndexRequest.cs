@@ -3,6 +3,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public record BackupIndexRequest
 {
     /// <summary>
@@ -16,10 +17,9 @@ public record BackupIndexRequest
     /// </summary>
     [JsonPropertyName("description")]
     public string? Description { get; set; }
-
     /// <inheritdoc />
-    public override string ToString()
-    {
+    public override string ToString() {
         return JsonUtils.Serialize(this);
     }
+
 }

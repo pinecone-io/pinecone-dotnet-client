@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Detailed information about the error that occurred.
 /// </summary>
+[Serializable]
 public record ErrorResponseError : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// A record whose vector values are similar to the provided search query.
 /// </summary>
+[Serializable]
 public record Hit : IJsonOnDeserialized
 {
     [JsonExtensionData]

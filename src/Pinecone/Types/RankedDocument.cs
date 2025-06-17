@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// A ranked document with a relevance score and an index position.
 /// </summary>
+[Serializable]
 public record RankedDocument : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The list of collections that exist in the project.
 /// </summary>
+[Serializable]
 public record CollectionList : IJsonOnDeserialized
 {
     [JsonExtensionData]

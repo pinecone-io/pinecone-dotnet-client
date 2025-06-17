@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The result of a reranking request.
 /// </summary>
+[Serializable]
 public record RerankResult : IJsonOnDeserialized
 {
     [JsonExtensionData]

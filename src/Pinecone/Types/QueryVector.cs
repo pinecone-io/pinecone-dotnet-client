@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// A single query vector within a `QueryRequest`.
 /// </summary>
+[Serializable]
 public record QueryVector : IJsonOnDeserialized
 {
     [JsonExtensionData]

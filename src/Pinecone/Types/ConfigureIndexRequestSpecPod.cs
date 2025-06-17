@@ -4,6 +4,7 @@ using Pinecone.Core;
 
 namespace Pinecone;
 
+[Serializable]
 public record ConfigureIndexRequestSpecPod : IJsonOnDeserialized
 {
     [JsonExtensionData]

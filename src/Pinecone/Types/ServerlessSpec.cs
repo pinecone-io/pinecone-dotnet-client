@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// Configuration needed to deploy a serverless index.
 /// </summary>
+[Serializable]
 public record ServerlessSpec : IJsonOnDeserialized
 {
     [JsonExtensionData]

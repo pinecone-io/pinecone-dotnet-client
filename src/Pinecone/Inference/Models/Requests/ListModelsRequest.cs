@@ -4,6 +4,7 @@ using Pinecone.Core;
 
 namespace Pinecone.Inference;
 
+[Serializable]
 public record ListModelsRequest
 {
     /// <summary>

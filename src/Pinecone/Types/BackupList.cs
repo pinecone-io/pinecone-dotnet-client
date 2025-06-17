@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The list of backups that exist in the project.
 /// </summary>
+[Serializable]
 public record BackupList : IJsonOnDeserialized
 {
     [JsonExtensionData]

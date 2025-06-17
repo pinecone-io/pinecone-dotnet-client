@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// A sparse embedding of a single input
 /// </summary>
+[Serializable]
 public record SparseEmbedding : IJsonOnDeserialized
 {
     [JsonExtensionData]

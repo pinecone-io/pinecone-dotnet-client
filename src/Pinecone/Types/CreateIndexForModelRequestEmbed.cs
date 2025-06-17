@@ -11,6 +11,7 @@ namespace Pinecone;
 ///
 /// Refer to the [model guide](https://docs.pinecone.io/guides/index-data/create-an-index#embedding-models) for available models and model details.
 /// </summary>
+[Serializable]
 public record CreateIndexForModelRequestEmbed : IJsonOnDeserialized
 {
     [JsonExtensionData]

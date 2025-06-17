@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The model for an import operation.
 /// </summary>
+[Serializable]
 public record ImportModel : IJsonOnDeserialized
 {
     [JsonExtensionData]

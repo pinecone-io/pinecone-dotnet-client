@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// The IndexModel describes the configuration and status of a Pinecone index.
 /// </summary>
+[Serializable]
 public record Index : IJsonOnDeserialized
 {
     [JsonExtensionData]

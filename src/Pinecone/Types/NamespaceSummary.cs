@@ -8,6 +8,7 @@ namespace Pinecone;
 /// <summary>
 /// A summary of the contents of a namespace.
 /// </summary>
+[Serializable]
 public record NamespaceSummary : IJsonOnDeserialized
 {
     [JsonExtensionData]

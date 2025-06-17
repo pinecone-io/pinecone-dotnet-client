@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The response for creating an index from a backup.
 /// </summary>
+[Serializable]
 public record CreateIndexFromBackupResponse : IJsonOnDeserialized
 {
     [JsonExtensionData]

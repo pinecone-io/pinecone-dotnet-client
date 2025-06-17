@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The BackupModel describes the configuration and status of a Pinecone backup.
 /// </summary>
+[Serializable]
 public record BackupModel : IJsonOnDeserialized
 {
     [JsonExtensionData]

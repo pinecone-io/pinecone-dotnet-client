@@ -6,6 +6,7 @@ using ProtoGrpc = Pinecone.Grpc;
 
 namespace Pinecone;
 
+[Serializable]
 public record SparseValues : IJsonOnDeserialized
 {
     [JsonExtensionData]

@@ -7,6 +7,7 @@ namespace Pinecone;
 /// <summary>
 /// The list of restore jobs that exist in the project.
 /// </summary>
+[Serializable]
 public record RestoreJobList : IJsonOnDeserialized
 {
     [JsonExtensionData]
